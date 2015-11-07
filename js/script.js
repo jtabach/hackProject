@@ -2,8 +2,8 @@
 // Created player object literal
 var player = {
     firstName: 'Jeff',
-    lastName: 'Swagboy',
-    position: 'Right Wing',
+    lastName: 'Tabachnick',
+    position: 'Left Wing',
     skills: {
         offense: {
             Shooting: Math.floor(Math.random()*10+60),
