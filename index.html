@@ -11,124 +11,164 @@
     <body>
         
         <div id="wrapper">
-        <div id="playerInfo"> 
-            <h3 id="basics">Jeff Tabachnick - Left Wing - Age:25</h3>
-        </div>
-        <div id="teamRecord">
-            <h3 id="record">Team Record: 0-0-0</h3>
-        </div>
-            
-        <div class="clear"></div>
-            
-        <a id="playGameLink">
-            <button>
-                <h1>Play Season Game</h1>
-                <img src="img/hockeyRink.jpeg" height="160px" width="300px">
-            </button>
-        </a>
-        
-        <a id="increaseSkill">
-            <button>
-                <h1>Improve Player</h1>
-                <img src="img/attributes.jpeg" height="160px" width="300px">
-            </button>
-        </a>
-        
-        <a id="playoffGameLink">
-            <button>
-                <h1>Play Playoff Game</h1>
-                <img src="img/playoffRink.jpg" height="160px" width="300px">
-            </button>
-        </a>
-        
-        <a id="statsLink">
-            <button>
-                <h1>Player Stats</h1>
-                <img src="img/stats.jpg" height="160px" width="300px">
-            </button>
-        </a>
-        
-        <div class="clear"></div>
-        <div id="playGame">
-            <div id="gameNumber">
-                <h2>Regular Season Game #</h2>
-                <button class="pGame" id="play">Play</button>
+            <div id="playerInfo"> 
+                <h3 id="basics">Jeff Tabachnick - Left Wing - Age:25</h3>
             </div>
+            <div id="teamRecord">
+                <h3 id="record">Team Record: 0-0-0</h3>
+            </div>
+
             <div class="clear"></div>
-            <div id="scoreLine" >
-                <h4 class="game" id="team">Team</h4>
-                <h4 class="game" id="period1">1st</h4>
-                <h4 class="game" id="period2">2nd</h4>
-                <h4 class="game" id="period3">3rd</h4>
-                <h4 class="game" id="periodOT">OT</h4>
-                <h4 class="game" id="final">Final</h4>
-                <div class="clear"></div>
-                <h4 class="game" id="team">Visitor</h4>
-                <h4 class="game" id="period1V">-</h4>
-                <h4 class="game" id="period2V">-</h4>
-                <h4 class="game" id="period3V">-</h4>
-                <h4 class="game" id="periodOTV">-</h4>
-                <h4 class="game" id="periodFV">-</h4>
-                <div class="clear"></div>
-                <h4 class="game" id="team">Home</h4>
-                <h4 class="game" id="period1H">-</h4>
-                <h4 class="game" id="period2H">-</h4>
-                <h4 class="game" id="period3H">-</h4>
-                <h4 class="game" id="periodOTH">-</h4>
-                <h4 class="game" id="periodFH">-</h4>
-            </div>
+
+            <a id="playGameLink" >
+                <button>
+                    <h1>Play Season Game</h1>
+                    <img src="img/hockeyRink.jpeg" height="160px" width="300px">
+                </button>
+            </a>
+
+            <a id="increaseSkill">
+                <button>
+                    <h1>Improve Player</h1>
+                    <img src="img/attributes.jpeg" height="160px" width="300px">
+                </button>
+            </a>
+
+            <a id="playoffGameLink" class="gray">
+                <button>
+                    <h1>Play Playoff Game</h1>
+                    <img src="img/playoffRink.jpg" height="160px" width="300px" >
+                </button>
+            </a>
+
+            <a id="statsLink">
+                <button>
+                    <h1>Player Stats</h1>
+                    <img src="img/stats.jpg" height="160px" width="300px">
+                </button>
+            </a>
+
             <div class="clear"></div>
-            <div id="teamWins">
-                <h2>Team Wins</h2>
-                <button class = "pGame" id="gameStats">Stats</button>
-            </div>
-            <div class="clear"></div>
-            <div id="statLine" >
-                <h4 class="game">Player</h4>
-                <h4 class="game">G</h4>
-                <h4 class="game">A</h4>
-                <h4 class="game">P</h4>
-                <h4 class="game">H</h4>
-                <h4 class="game">TOI</h4>
+            <div id="playGame">
+                <div id="gameNumber">
+                    <h2>Regular Season Game #</h2>
+                    <button class="pGame" id="play">Play</button>
+                </div>
                 <div class="clear"></div>
-                <h4 class="game" id="playerName">Jeff</h4>
-                <h4 class="game" id="gameGoals">0</h4>
-                <h4 class="game" id="gameAssists">0</h4>
-                <h4 class="game" id="gamePoints">0</h4>
-                <h4 class="game" id="gameHits">0</h4>
-                <h4 class="game" id="gameTOI">0</h4>
+                <div id="scoreLine" >
+                    <h4 class="game" id="team">Team</h4>
+                    <h4 class="game" id="period1">1st</h4>
+                    <h4 class="game" id="period2">2nd</h4>
+                    <h4 class="game" id="period3">3rd</h4>
+                    <h4 class="game" id="periodOT">OT</h4>
+                    <h4 class="game" id="final">Final</h4>
+                    <div class="clear"></div>
+                    <h4 class="game" id="team">Visitor</h4>
+                    <h4 class="game" id="period1V">-</h4>
+                    <h4 class="game" id="period2V">-</h4>
+                    <h4 class="game" id="period3V">-</h4>
+                    <h4 class="game" id="periodOTV">-</h4>
+                    <h4 class="game" id="periodFV">-</h4>
+                    <div class="clear"></div>
+                    <h4 class="game" id="team">Home</h4>
+                    <h4 class="game" id="period1H">-</h4>
+                    <h4 class="game" id="period2H">-</h4>
+                    <h4 class="game" id="period3H">-</h4>
+                    <h4 class="game" id="periodOTH">-</h4>
+                    <h4 class="game" id="periodFH">-</h4>
+                </div>
+                <div class="clear"></div>
+                <div id="teamWins">
+                    <h2>Team Wins</h2>
+                    <button class = "pGame" id="gameStats">Stats</button>
+                </div>
+                <div class="clear"></div>
+                <div id="statLine" >
+                    <h4 class="game">Player</h4>
+                    <h4 class="game">G</h4>
+                    <h4 class="game">A</h4>
+                    <h4 class="game">P</h4>
+                    <h4 class="game">H</h4>
+                    <h4 class="game">TOI</h4>
+                    <div class="clear"></div>
+                    <h4 class="game" id="playerName">Jeff</h4>
+                    <h4 class="game" id="gameGoals">0</h4>
+                    <h4 class="game" id="gameAssists">0</h4>
+                    <h4 class="game" id="gamePoints">0</h4>
+                    <h4 class="game" id="gameHits">0</h4>
+                    <h4 class="game" id="gameTOI">0</h4>
+                </div>
+                <div id="attributesEarned">
+                    <h2>Attribute Points Earned</h2>
+                    <button class="x" id="xGame">X</button>
+                    <h3 id="close">CLOSE --></h3>
+                </div>
             </div>
-            <div id="attributesEarned">
-                <h2>Attribute Points Earned</h2>
-                <button class="x" id="xGame">X</button>
-                <h3 id="close">CLOSE --></h3>
-            </div>
-        </div>
+
             
             
-        <div id="seeStats">
-            <div id="myPlayerStats">
-                <h2>Player Stats</h2>
+            
+            <div id="seeAttributes">
+                <div id="attributePoints">
+                    <h2>Player Attributes</h2>
+                    <h3>Points: NA</h3>
+                </div>
+                <div class="clear"><br>
+                </div>
+                <button class="skill" area="offense" id="Shooting">Shooting: NA</button>
+                <button class="skill" area="offense" id="Passing">Passing: NA</button>
+                <button class="skill" area="offense" id="Handling">Handling: NA</button>
+                <div class="average" id="averageOffense">
+                    <h3>Offense: NA</h3>
+                </div>
+                <div class="clear"></div>
+                <button class="skill" area="defense" id="Checking">Checking: NA</button>
+                <button class="skill" area="defense" id="Positioning">Positioning: NA</button>
+                <button class="skill" area="defense" id="Takeaway">Takeaway: NA</button>
+                <div class="average" id="averageDefense">
+                    <h3>Defense: NA</h3>
+                </div>
+                <div class="clear"></div>
+                <button class="skill" area="athletics" id="Speed">Speed: NA</button>
+                <button class="skill" area="athletics" id="Strength">Strength: NA</button>
+                <button class="skill" area="athletics" id="Endurance">Endurance: NA</button>
+                <div class="average" id="averageAthletics">
+                    <h3>Athlete: NA</h3>
+                </div>
+                <div class="clear"></div>
+                <div id="averageOverall">
+                    <h3>Player Overall: NA</h3>
+                </div>
             </div>
-            <div id="playerStats" >
-                <div class="clear"></div>
-                <h4 class="stats">Season</h4>
-                <h4 class="stats">Games</h4>
-                <h4 class="stats">Goals</h4>
-                <h4 class="stats">Assists</h4>
-                <h4 class="stats">Points</h4>
-                <h4 class="stats">Hits</h4>
-                <h4 class="stats" id="seasonTOIC">Time on Ice</h4>
-                <div class="clear"></div>
-                <h4 class="stats" id="seasonNum">1</h4>
-                <h4 class="stats" id="seasonGames">0</h4>
-                <h4 class="stats" id="seasonGoals">0</h4>
-                <h4 class="stats" id="seasonAssists">0</h4>
-                <h4 class="stats" id="seasonPoints">0</h4>
-                <h4 class="stats" id="seasonHits">0</h4>
-                <h4 class="stats" id="seasonTOI">0</h4>
-             </div>
-        </div>
+
+
+
+
+            
+            
+            <div id="seeStats">
+                <div id="myPlayerStats">
+                    <h2>Player Stats</h2>
+                </div>
+                <div id="playerStats" >
+                    <div class="clear"></div>
+                    <h4 class="stats">Season</h4>
+                    <h4 class="stats">Games</h4>
+                    <h4 class="stats">Goals</h4>
+                    <h4 class="stats">Assists</h4>
+                    <h4 class="stats">Points</h4>
+                    <h4 class="stats">Hits</h4>
+                    <h4 class="stats" id="seasonTOIC">Time on Ice</h4>
+                    <div class="clear"></div>
+                    <h4 class="stats" id="seasonNum">1</h4>
+                    <h4 class="stats" id="seasonGames">0</h4>
+                    <h4 class="stats" id="seasonGoals">0</h4>
+                    <h4 class="stats" id="seasonAssists">0</h4>
+                    <h4 class="stats" id="seasonPoints">0</h4>
+                    <h4 class="stats" id="seasonHits">0</h4>
+                    <h4 class="stats" id="seasonTOI">0</h4>
+                 </div>
+            </div>
             
             
             

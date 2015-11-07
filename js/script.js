@@ -28,6 +28,8 @@ var areasArray = [];
 var skillsArray = [];
 var overallOffense, overallDefense, overallAthletics, overallSkill;
 
+var playGameLinkActive = false, improvePlayerLinkActive = false, playerStatsLinkActive = false;
+
 // Gets the overall skill level of the player
 function getNewOverallSkillLevel (obj) {
 
@@ -72,69 +74,51 @@ function addSkillPoint (attribute, target) {
 
 $(document).ready(function() {
     
+    // Hides the divs for the playGame link when the page loads
+    $("#playGame, #gameNumber, #scoreLine, #teamWins, #statLine, #attributesEarned, #seeStats, #seeAttributes").hide();
     
     
     
-    $("#increaseSkill").fancybox({
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    $("#increaseSkill").on('click', function(){
+    
+        // Check to see if playGame link or playerStats link is active
+        // If it is, don't allow increase Skill dev to show
+        if(playGameLinkActive === false && playerStatsLinkActive === false){
         
-        // Does not allow fancybox to autoSize
-        'autoSize': false,
-        // Sets the type of fancybox to an iframe
-        'type': 'iframe',
-        // Sets height and width of the iframe
-        'width': 800,
-        'height': 500,
-        'maxHeight': 355,
+            if (improvePlayerLinkActive === false){
+                $("#playGame, #seeStats").hide();
+                $("#playGameLink, #statsLink").addClass('gray');
+                improvePlayerLinkActive = true;           
+            } else {
+                $("#playGameLink, #statsLink").removeClass('gray');
+                improvePlayerLinkActive = false;
+            }
         
-        // Updates the player attribute stats before the iframe is loaded.
-        beforeLoad : function () {
-        
+            
             // Invokes the function and passes player skills object
             getNewOverallSkillLevel(player.skills);
-            
-        },
-        
-        // Loads the updated player stats
-        afterLoad : function () {
-            
-            // Creates the html of the iframe
-            this.inner.append('<div id="attributePoints"><h1>Player Attributes</h1><h3>Points: ' + attributePoints + '</h3></div>');
-            this.inner.append('<div class="clear"><br></div>');
-            this.inner.append('<button class="skill" area="offense" id="Shooting">Shooting ' + player.skills.offense.Shooting + '</button>');
-            this.inner.append('<button class="skill" area="offense" id="Passing">Passing ' + player.skills.offense.Passing + '</button>');
-            this.inner.append('<button class="skill" area="offense" id="Handling">Handling ' + player.skills.offense.Handling + '</button>');
-            this.inner.append('<div class="average" id="averageOffense"><h3>Offense: ' + overallOffense + '</h3></div>');
-            this.inner.append('<div class="clear"></div>');
-            this.inner.append('<button class="skill" area="defense" id="Checking">Checking ' + player.skills.defense.Checking + '</button>');
-            this.inner.append('<button class="skill" area="defense" id="Positioning">Positioning ' + player.skills.defense.Positioning + '</button>');
-            this.inner.append('<button class="skill" area="defense" id="Takeaway">Takeaway ' + player.skills.defense.Takeaway + '</button>');
-            this.inner.append('<div class="average" id="averageDefense"><h3>Defense: ' + overallDefense + '</h3></div>');
-            this.inner.append('<div class="clear"></div>');
-            this.inner.append('<button class="skill" area="athletics" id="Speed">Speed ' + player.skills.athletics.Speed + '</button>');
-            this.inner.append('<button class="skill" area="athletics" id="Strength">Strength ' + player.skills.athletics.Strength + '</button>');
-            this.inner.append('<button class="skill" area="athletics" id="Endurance">Endurance ' + player.skills.athletics.Endurance + '</button>');
-            this.inner.append('<div class="average" id="averageAthletics"><h3>Athlete: ' + overallAthletics + '</h3></div>');
-            this.inner.append('<div class="clear"></div>');
-            this.inner.append('<div id="averageOverall"><h3>Player Overall: ' + overallSkill + '</h3></div>');
-            
-            
+
+            $("#seeAttributes").toggle();
+
+
             // Click function on an attribute
             $('.skill').on('click', function(){
 
                 // Checks to see if any attributes points are available and subtracts from the total
                 if (attributePoints > 0){
                     attributePoints--;
-                    
+
                     /* Invokes a callback fuction and passes the button Id, 
                     the button attribute area, and the function addSkillPoint */
                     getSkillType(this.id, $(this).attr("area"), addSkillPoint);
 //                    editButtonHTML(this.id, $(this).attr("area"), editButtonHTML, $(this));
-                    
+
                     getNewOverallSkillLevel(player.skills);
 
                     // Checks which skill has been selected, adds an attribute point, and changes the HTML
                     $(this).html(this.id + " " + player.skills[$(this).attr("area")][this.id]);
-                    
+
 
                     // Changes the HTML of attribute points left
                     $("#attributePoints > h3").html("Points: " + attributePoints);
@@ -144,9 +128,9 @@ $(document).ready(function() {
                     $("#averageOverall > h3").html("Player Overall: " + overallSkill);
                 }
             });
-
-        },
+        }
     });
+       
     
     
     
@@ -159,17 +143,33 @@ $(document).ready(function() {
 
     
     
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
-    // Shows the divs for playGame, gamenumner, and Scoreline when the play game link is clicked
     $("#playGameLink").on('click', function(){
-        $("#playGame, #gameNumber, #scoreLine").show();
         
-        //Updates the game number and changes the html
-        $("#gameNumber h2").html("Regular Season Game #" + (games+1));
+        // Check to see if improvePlayer link or playerStats link is active
+        // If it is, don't allow increase Skill dev to show
+        if(improvePlayerLinkActive === false && playerStatsLinkActive === false){
+        
+            if (playGameLinkActive === false){
+                $("#seeAttributes, #seeStats").hide();
+                $("#increaseSkill, #statsLink").addClass('gray');
+                playGameLinkActive = true;           
+            } 
+        
+            $("#playGame, #gameNumber, #scoreLine").show();
+
+            //Updates the game number and changes the html
+            $("#gameNumber h2").html("Regular Season Game #" + (games+1));
+        }
     });
        
     // When play button is clicked, simulation begins showing the score of the game period by period
     $('#play').on('click', function(){
+        
+        $("#playGameLink").addClass('gray');
+        $("#increaseSkill").addClass('gray');
+        $("#statsLink").addClass('gray');
 
         // Checks to see if the play button has been clicked
         if (playButtonClicked === false){
@@ -220,7 +220,8 @@ $(document).ready(function() {
         }   
     });
     
-    // Shows the div for player stats when the gameStats button is clicked.
+        
+
     $('#gameStats').on('click', function(){
         
         // Checks to see if the stats button has previously been clicked for the game
@@ -256,15 +257,35 @@ $(document).ready(function() {
         playButtonClicked = false;
         statsButtonClicked = false;
         
+        $("#playGameLink, #increaseSkill, #statsLink").removeClass('gray');
+        playGameLinkActive = false;
+        
         // Adds attribute point for completion of game
         attributePoints++;
     });
     
     
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
     $("#statsLink").on('click', function(){
         
-        updateStats();
-        $("#seeStats").toggle();
+        // Check to see if playGame link or improvePlayer link is active
+        // If it is, don't allow seeStats dev to show
+        if(improvePlayerLinkActive === false && playGameLinkActive === false){
+        
+            if (playerStatsLinkActive === false){
+                $("#seeAttributes, #playGame").hide();
+                $("#increaseSkill, #playGameLink").addClass('gray');
+                playerStatsLinkActive = true;           
+            } else {
+                $("#increaseSkill, #playGameLink").removeClass('gray');
+                playerStatsLinkActive = false;
+            }
+        
+            updateStats();
+            $("#seeStats").toggle();
+        }
+        
     });
     
     
