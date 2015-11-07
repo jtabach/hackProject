@@ -1,0 +1,151 @@
+* {
+    margin: 0;
+    padding: 0;
+    background: #efefef;
+}
+
+button:focus {
+    outline: none;
+}
+
+#wrapper {
+    margin: auto;
+    width: 650px;
+    border: solid 1px gray;
+    background: #cbcbcb;
+}
+
+#playerInfo, #teamRecord{
+    margin: 5px 15px 0px 15px;
+}
+
+#playerInfo {
+    float: left;
+}
+
+#teamRecord {
+    float: right;
+}
+
+#basics, #record {
+    background: #cbcbcb;
+}
+
+#playGameLink, #playoffGameLink, #increaseSkill, #statsLink {
+    float: left;
+    margin: 5px 10px;
+}
+
+.skill {
+    margin: 20px;
+    padding: 10px;
+    width: 130px;
+    height: 50px;
+    float: left;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.skill:hover {
+    background: gray;
+    cursor:pointer;
+    color: white !important;
+}
+
+.clear {
+    clear: both;
+}
+
+#stats {
+    border: 5px solid blue;
+}
+
+#attributePoints h1 {
+    margin-left: 20px;
+    float: left;
+}
+
+#attributePoints h3 {
+    margin-right: 30px;
+    margin-top: 10px;
+    float: right;
+}
+
+.average {
+    text-align: center;
+    float: left;
+    margin: 34px 10px 0 10px;
+}
+
+#averageOverall {
+    text-align: center;
+}
+
+#playGame, #seeStats{
+    padding: 10px;
+    margin: 5px auto;
+    border: 3px solid gray;
+    position: relative;
+    width: 600px;
+    height: 215px;
+    margin-bottom: 10px;
+}
+
+#seeStats {
+    height: 100px;
+}
+
+#gameNumber h2, #teamWins h2, #attributesEarned h2 {
+    float: left;
+}
+
+.pGame {
+    float: right;
+    margin: 0px 0px 0px 0px;
+    padding: 0px 20px 0px 20px;
+    font-size: 20px;
+    height: 30px;
+    width: 140px;
+    background: #000098;
+    color: #ffffff;
+}
+
+.pGame:hover, #xGame:hover {
+    background: #a30505;
+    cursor: pointer;
+}
+
+.game, .stats{
+    float: left;
+    text-align: center;
+    width: 98px;
+    border: 1px solid #bfbfbf;
+    padding: 3px 0px;
+}
+
+.stats {
+    width: 81px;
+}
+
+#seasonTOIC, #seasonTOI {
+    width: 98px;
+}
+
+#close, #xGame {
+    float:right;
+    margin-top: 13px;
+}
+
+#xGame {
+    margin-right: -10px;
+}
+
+.x {
+    float: right;
+    margin: 0px 0px 0px 0px;
+    padding: 0px 5px 0px 5px;
+    font-size: 10px;
+    height: 20px;
+    background: #000098;
+    color: #ffffff;
+}
