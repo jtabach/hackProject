@@ -31,7 +31,6 @@ var skillsArray = [];
 var overallOffense, overallDefense, overallAthletics, overallSkill;
 
 var playGameLinkActive = false, improvePlayerLinkActive = false, playerStatsLinkActive = false;
-var welcomed = false;
 
 // Player effect starts at zero but can be increased to directly effect outcome of games as player progresses
 var playerEffect = 0;
@@ -100,14 +99,15 @@ function addSkillPoint (attribute, target) {
 
 
 
+// DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //
+// DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //
+// DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //
+// DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //
 
 
 $(document).ready(function() {
     
-    // Invokes the welcome screen
-    
     $("#playerInfoLink, #playGameLink, #improvePlayerLink, #playoffGameLink, #playerStatsLink, #teamRecordLink, #pick, #draft, #submitGames").hide();
-    
     
     // When next button is clicked, player it taken into the NHL draft
     $("#welcomeNext").on('click', function(){
@@ -129,9 +129,6 @@ $(document).ready(function() {
         return false;
     });
     
-    
-    
-    
     $("#beginDraft").on('click', function(){
         $("p").append("<br><br><h2>With the number " + player.pick + " of the NHL draft, the " +
                      player.team + " select " + player.position + ", " + player.firstName + 
@@ -142,7 +139,6 @@ $(document).ready(function() {
                     "<div class='clear'></div>" +
                     "</form>");
         $("#submitGames").show();
-    
     });
     
     $("#submitGames").on('click', function(){
@@ -151,31 +147,33 @@ $(document).ready(function() {
         $("#welcome, #draft, #pick").hide();
         $("#playerInfoLink, #playGameLink, #improvePlayerLink, #playoffGameLink, #playerStatsLink, #teamRecordLink").show();
     });
-    
-//    
-    
-    
+
     // Hides the divs for the playGame link when the page loads
     $("#playGame, #gameNumber, #scoreLine, #teamWins, #statLine, #attributesEarned, #playerStats, #improvePlayer, #pick, #draft").hide();
     
-  
-    
+    // Gets the initial skills of the player
     getNewOverallSkillLevel(player.skills);
     
-    $("#shooting").html("shooting: " + player.skills.offense.shooting);
-    $("#passing").html("passing: " + player.skills.offense.passing);
-    $("#handling").html("handling: " + player.skills.offense.handling);
-    $("#checking").html("checking: " + player.skills.defense.checking);
-    $("#positioning").html("positioning: " + player.skills.defense.positioning);
-    $("#takeaway").html("takeaway: " + player.skills.defense.takeaway);
-    $("#speed").html("speed: " + player.skills.athletics.speed);
-    $("#strength").html("strength: " + player.skills.athletics.strength);
-    $("#endurance").html("endurance: " + player.skills.athletics.endurance);
-    $("#attributePoints > h3").html("Points: " + attributePoints);
-    $("#averageOffense > h3").html("Offense: " + overallOffense);
-    $("#averageDefense > h3").html("Defense: " + overallDefense);
-    $("#averageAthletics > h3").html("Athlete: " + overallAthletics);
-    $("#averageOverall > h3").html("Player Overall: " + overallSkill);
+    // Array of the skills as they are identified by their IDs
+    var skillsIDs = ["shooting", "passing", "handling", "checking", "positioning", "takeaway", "speed", "strength", "endurance"];
+    
+    // forEach loop that uses the skillsArray with the skillsID array to update player skills
+    skillsIDs.forEach(function(element, index){
+        $("#" + element).html(element + " " + skillsArray[index]); 
+    });
+    
+    
+    var attributeCategoryIDs = ["#attributePoints > h3", "#averageOffense > h3", "#averageDefense > h3", "#averageAthletics > h3", "#averageOverall > h3"];
+    
+    var attributeCategories = ["Points: ", "Offense: ", "Defense: ", "Athlete: ", "Player Overall: "];
+    
+    var attributeOveralls = [attributePoints, overallOffense, overallDefense, overallAthletics, overallSkill];
+    
+    
+    attributeCategoryIDs.forEach(function(element, index){
+        $(element).html(attributeCategories[index] + attributeOveralls[index]);
+    });
+    
     
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     $("#improvePlayerLink").on('click', function(){
