@@ -31,6 +31,7 @@ var skillsArray = [];
 var overallOffense, overallDefense, overallAthletics, overallSkill;
 
 var playGameLinkActive = false, improvePlayerLinkActive = false, playerStatsLinkActive = false;
+var seasonEnd = false;
 
 // Player effect starts at zero but can be increased to directly effect outcome of games as player progresses
 var playerEffect = 0;
@@ -42,7 +43,8 @@ var playButtonClicked = false, statsButtonClicked = false;
 var resetGameArray = ["#period1V", "#period1H", "#period2V", "#period2H", "#period3V", "#period3H", "#periodOTV", "#periodOTH", "#periodFV", "#periodFH"];
 
 var games = 0, seasons = 1;
-var seasonLength = 12;
+var seasonLength = 3;
+var careerLength = 10;
 var wins = 0, losses = 0, lossesOT = 0;
 var goals, assists, points, hits, timeOnIce;
 var seasonGoals = 0, seasonAssists = 0, seasonPoints = 0, seasonHits = 0, seasonTimeOnIce = 0;
@@ -187,12 +189,13 @@ $(document).ready(function() {
                 $("#playGameLink, #playerStatsLink").addClass('gray');
                 improvePlayerLinkActive = true;           
             } else {
-                $("#playGameLink, #playerStatsLink").removeClass('gray');
                 improvePlayerLinkActive = false;
+                $("#playerStatsLink").removeClass('gray');
+                if(seasonEnd === false){
+                    $("#playGameLink").removeClass('gray');
+                }
             }
-        
-            
-            
+    
             $("#improvePlayer").toggle();
             
             // Invokes the function and passes player skills object
@@ -247,7 +250,7 @@ $(document).ready(function() {
         
         // Check to see if improvePlayer link or playerStats link is active
         // If it is, don't allow increase Skill dev to show
-        if(improvePlayerLinkActive === false && playerStatsLinkActive === false && playButtonClicked === false){
+        if(improvePlayerLinkActive === false && playerStatsLinkActive === false && playButtonClicked === false && seasonEnd === false){
         
             if (playGameLinkActive === false){
                 $("#improvePlayer, #playerStats").hide();
@@ -366,6 +369,11 @@ $(document).ready(function() {
         attributePoints++;
         $("#attributePoints > h3").html("Points: " + attributePoints);
         games++;
+        
+        if(games >= seasonLength){
+            seasonEnd = true;
+            $("#playGameLink").addClass('gray');
+        }
     });
     
     
@@ -382,8 +390,11 @@ $(document).ready(function() {
                 $("#improvePlayerLink, #playGameLink").addClass('gray');
                 playerStatsLinkActive = true;           
             } else {
-                $("#improvePlayerLink, #playGameLink").removeClass('gray');
                 playerStatsLinkActive = false;
+                $("#improvePlayerLink").removeClass('gray');
+                if (seasonEnd === false){
+                    $("#playGameLink").removeClass('gray');
+                }
             }
         
             updateStats();
