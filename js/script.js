@@ -4,21 +4,23 @@ var player = {
     firstName: 'Jeff',
     lastName: 'Tabachnick',
     position: 'Left Wing',
+    team: 'Canadiens',
+    pick: 5,
     skills: {
         offense: {
-            Shooting: Math.floor(Math.random()*10+60),
-            Passing : Math.floor(Math.random()*10+60),
-            Handling : Math.floor(Math.random()*10+60)
+            shooting: Math.floor(Math.random()*10+60),
+            passing : Math.floor(Math.random()*10+60),
+            handling : Math.floor(Math.random()*10+60)
         },
         defense: {
-            Checking : Math.floor(Math.random()*10+60),
-            Positioning : Math.floor(Math.random()*10+60),
-            Takeaway : Math.floor(Math.random()*10+60)
+            checking : Math.floor(Math.random()*10+60),
+            positioning : Math.floor(Math.random()*10+60),
+            takeaway : Math.floor(Math.random()*10+60)
         },
         athletics: {
-            Speed : Math.floor(Math.random()*10+60),
-            Strength : Math.floor(Math.random()*10+60),
-            Endurance : Math.floor(Math.random()*10+60)
+            speed : Math.floor(Math.random()*10+60),
+            strength : Math.floor(Math.random()*10+60),
+            endurance : Math.floor(Math.random()*10+60)
         }
     }
 };
@@ -29,6 +31,30 @@ var skillsArray = [];
 var overallOffense, overallDefense, overallAthletics, overallSkill;
 
 var playGameLinkActive = false, improvePlayerLinkActive = false, playerStatsLinkActive = false;
+var welcomed = false;
+
+// Player effect starts at zero but can be increased to directly effect outcome of games as player progresses
+var playerEffect = 0;
+// Declares variables for playGame
+var period1H, period2H, period3H, periodOTH, periodRegH, periodFH;
+var period1V, period2V, period3V, periodOTV, periodRegV, periodFV;
+var playButtonClicked = false, statsButtonClicked = false;
+
+var resetGameArray = ["#period1V", "#period1H", "#period2V", "#period2H", "#period3V", "#period3H", "#periodOTV", "#periodOTH", "#periodFV", "#periodFH"];
+
+var games = 0, seasons = 1;
+var seasonLength = 12;
+var wins = 0, losses = 0, lossesOT = 0;
+var goals, assists, points, hits, timeOnIce;
+var seasonGoals = 0, seasonAssists = 0, seasonPoints = 0, seasonHits = 0, seasonTimeOnIce = 0;
+var careerGoals = 0, careerAssists = 0, careerPoints = 0, careerHits = 0, careerTimeOnIce = 0;
+
+var goalChance, assistChance, hitChance, timeOnIceAverage;
+var teamGoalsLeft, maxPlayerPoints;
+var goalAbility, assistAbility, hitAbility, timeOnIceAbility;
+var timeOnIceMin, timeOnIceSec, totalTimeOnIceMin = 0, totalTimeOnIceSec = 0;
+var lowImpactAbility = 0.05, medImpactAbility = 0.1, highImpactAbility = 0.25;
+
 
 // Gets the overall skill level of the player
 function getNewOverallSkillLevel (obj) {
@@ -72,66 +98,140 @@ function addSkillPoint (attribute, target) {
     player.skills[target][attribute]++;
 }
 
+
+
+
+
 $(document).ready(function() {
     
+    // Invokes the welcome screen
+    
+    $("#playerInfoLink, #playGameLink, #improvePlayerLink, #playoffGameLink, #playerStatsLink, #teamRecordLink, #pick, #draft, #submitGames").hide();
+    
+    
+    // When next button is clicked, player it taken into the NHL draft
+    $("#welcomeNext").on('click', function(){
+        $("#draft").show();
+        $("#welcome").remove();
+        return false;
+    });
+    
+    $("#submit").click(function(event){
+        event.preventDefault();
+        player.firstName = $("#firstName").val();
+        player.lastName = $("#lastName").val();
+        player.position = $("input[type='radio'][name='position']:checked").val();
+        $("#welcome, #draft").hide();
+        //Sets the proper name and position
+        $("#playerInfoLink h3").html(player.firstName + " " + player.lastName  + " - " +
+                                    player.position);
+        $("#pick").show();
+        return false;
+    });
+    
+    
+    
+    
+    $("#beginDraft").on('click', function(){
+        $("p").append("<br><br><h2>With the number " + player.pick + " of the NHL draft, the " +
+                     player.team + " select " + player.position + ", " + player.firstName + 
+                     " " + player.lastName + ".</h2><br><br><form id='seasonLengthForm'>" + 
+                    "12 Games (Recommended)<input type='radio' id='12' name='length' value='12'>" +
+                    "32 Games<input type='radio' id='32' name='length' value='32'>" +
+                    "82 Games<input type='radio' id='82' name='length' value='82'>" +
+                    "<div class='clear'></div>" +
+                    "</form>");
+        $("#submitGames").show();
+    
+    });
+    
+    $("#submitGames").on('click', function(){
+//        seasonLength = $("input[type='radio'][name='length']:checked").val();
+//        alert(seasonLength);
+        $("#welcome, #draft, #pick").hide();
+        $("#playerInfoLink, #playGameLink, #improvePlayerLink, #playoffGameLink, #playerStatsLink, #teamRecordLink").show();
+    });
+    
+//    
+    
+    
     // Hides the divs for the playGame link when the page loads
-    $("#playGame, #gameNumber, #scoreLine, #teamWins, #statLine, #attributesEarned, #seeStats, #seeAttributes").hide();
+    $("#playGame, #gameNumber, #scoreLine, #teamWins, #statLine, #attributesEarned, #playerStats, #improvePlayer, #pick, #draft").hide();
     
+  
     
+    getNewOverallSkillLevel(player.skills);
+    
+    $("#shooting").html("shooting: " + player.skills.offense.shooting);
+    $("#passing").html("passing: " + player.skills.offense.passing);
+    $("#handling").html("handling: " + player.skills.offense.handling);
+    $("#checking").html("checking: " + player.skills.defense.checking);
+    $("#positioning").html("positioning: " + player.skills.defense.positioning);
+    $("#takeaway").html("takeaway: " + player.skills.defense.takeaway);
+    $("#speed").html("speed: " + player.skills.athletics.speed);
+    $("#strength").html("strength: " + player.skills.athletics.strength);
+    $("#endurance").html("endurance: " + player.skills.athletics.endurance);
+    $("#attributePoints > h3").html("Points: " + attributePoints);
+    $("#averageOffense > h3").html("Offense: " + overallOffense);
+    $("#averageDefense > h3").html("Defense: " + overallDefense);
+    $("#averageAthletics > h3").html("Athlete: " + overallAthletics);
+    $("#averageOverall > h3").html("Player Overall: " + overallSkill);
     
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    $("#increaseSkill").on('click', function(){
+    $("#improvePlayerLink").on('click', function(){
     
         // Check to see if playGame link or playerStats link is active
         // If it is, don't allow increase Skill dev to show
         if(playGameLinkActive === false && playerStatsLinkActive === false){
         
             if (improvePlayerLinkActive === false){
-                $("#playGame, #seeStats").hide();
-                $("#playGameLink, #statsLink").addClass('gray');
+                $("#playGame, #playerStats").hide();
+                $("#playGameLink, #playerStatsLink").addClass('gray');
                 improvePlayerLinkActive = true;           
             } else {
-                $("#playGameLink, #statsLink").removeClass('gray');
+                $("#playGameLink, #playerStatsLink").removeClass('gray');
                 improvePlayerLinkActive = false;
             }
         
             
+            
+            $("#improvePlayer").toggle();
+            
             // Invokes the function and passes player skills object
             getNewOverallSkillLevel(player.skills);
 
-            $("#seeAttributes").toggle();
 
 
-            // Click function on an attribute
-            $('.skill').on('click', function(){
-
-                // Checks to see if any attributes points are available and subtracts from the total
-                if (attributePoints > 0){
-                    attributePoints--;
-
-                    /* Invokes a callback fuction and passes the button Id, 
-                    the button attribute area, and the function addSkillPoint */
-                    getSkillType(this.id, $(this).attr("area"), addSkillPoint);
-//                    editButtonHTML(this.id, $(this).attr("area"), editButtonHTML, $(this));
-
-                    getNewOverallSkillLevel(player.skills);
-
-                    // Checks which skill has been selected, adds an attribute point, and changes the HTML
-                    $(this).html(this.id + " " + player.skills[$(this).attr("area")][this.id]);
-
-
-                    // Changes the HTML of attribute points left
-                    $("#attributePoints > h3").html("Points: " + attributePoints);
-                    $("#averageOffense > h3").html("Offense: " + overallOffense);
-                    $("#averageDefense > h3").html("Defense: " + overallDefense);
-                    $("#averageAthletics > h3").html("Athlete: " + overallAthletics);
-                    $("#averageOverall > h3").html("Player Overall: " + overallSkill);
-                }
-            });
+            
         }
     });
        
-    
+    // Click function on an attribute
+    $('.skill').on('click', function(){
+
+        // Checks to see if any attributes points are available and subtracts from the total
+        if (attributePoints > 0){
+            attributePoints--;
+
+            /* Invokes a callback fuction and passes the button Id, 
+            the button attribute area, and the function addSkillPoint */
+            getSkillType(this.id, $(this).attr("area"), addSkillPoint);
+//                    editButtonHTML(this.id, $(this).attr("area"), editButtonHTML, $(this));
+
+            getNewOverallSkillLevel(player.skills);
+
+            // Checks which skill has been selected, adds an attribute point, and changes the HTML
+            $(this).html(this.id + " " + player.skills[$(this).attr("area")][this.id]);
+
+
+            // Changes the HTML of attribute points left
+            $("#attributePoints > h3").html("Points: " + attributePoints);
+            $("#averageOffense > h3").html("Offense: " + overallOffense);
+            $("#averageDefense > h3").html("Defense: " + overallDefense);
+            $("#averageAthletics > h3").html("Athlete: " + overallAthletics);
+            $("#averageOverall > h3").html("Player Overall: " + overallSkill);
+        }
+    });
     
     
     
@@ -139,7 +239,7 @@ $(document).ready(function() {
     
     
     // Hides the divs for the playGame link when the page loads
-    $("#playGame, #gameNumber, #scoreLine, #teamWins, #statLine, #attributesEarned, #seeStats").hide();
+    $("#playGame, #gameNumber, #scoreLine, #teamWins, #statLine, #attributesEarned, #playerStats").hide();
 
     
     
@@ -149,15 +249,18 @@ $(document).ready(function() {
         
         // Check to see if improvePlayer link or playerStats link is active
         // If it is, don't allow increase Skill dev to show
-        if(improvePlayerLinkActive === false && playerStatsLinkActive === false){
+        if(improvePlayerLinkActive === false && playerStatsLinkActive === false && playButtonClicked === false){
         
             if (playGameLinkActive === false){
-                $("#seeAttributes, #seeStats").hide();
-                $("#increaseSkill, #statsLink").addClass('gray');
+                $("#improvePlayer, #playerStats").hide();
+                $("#improvePlayerLink, #playerStatsLink").addClass('gray');
                 playGameLinkActive = true;           
-            } 
+            } else {
+                $("#improvePlayerLink, #playerStatsLink").removeClass('gray');
+                playGameLinkActive = false;
+            }
         
-            $("#playGame, #gameNumber, #scoreLine").show();
+            $("#playGame, #gameNumber, #scoreLine").toggle();
 
             //Updates the game number and changes the html
             $("#gameNumber h2").html("Regular Season Game #" + (games+1));
@@ -168,8 +271,9 @@ $(document).ready(function() {
     $('#play').on('click', function(){
         
         $("#playGameLink").addClass('gray');
-        $("#increaseSkill").addClass('gray');
-        $("#statsLink").addClass('gray');
+        $("#improvePlayerLink").addClass('gray');
+        $("#playerStatsLink").addClass('gray');
+        playGameLinkActive = true;
 
         // Checks to see if the play button has been clicked
         if (playButtonClicked === false){
@@ -177,7 +281,7 @@ $(document).ready(function() {
             /* Changes the playButtonClicked to true to avoid multiple calls
             to the setTimeout method during a single game*/
             playButtonClicked = true;
-            games++;
+            
             
             // Invokes the simulationGame callback function and passes goalsByPeriod and playerGameStats
             simulateGame(goalsByPeriod, playerGameStats);
@@ -208,15 +312,15 @@ $(document).ready(function() {
                                 $("#periodOTH").html(periodOTH);
                                 $("#periodFV").html(period1V + period2V + period3V + periodOTV);
                                 $("#periodFH").html(period1H + period2H + period3H + periodOTH);
-                            }, 1000);
+                            }, 500);
                         }
                         // Displays if your team wins or loses
                         setTimeout(function(){
                             $("#teamWins").show();
-                        }, 1000);
-                    }, 1000);
-                }, 1000);
-            }, 1000); 
+                        }, 500);
+                    }, 500);
+                }, 500);
+            }, 500); 
         }   
     });
     
@@ -257,33 +361,35 @@ $(document).ready(function() {
         playButtonClicked = false;
         statsButtonClicked = false;
         
-        $("#playGameLink, #increaseSkill, #statsLink").removeClass('gray');
+        $("#playGameLink, #improvePlayerLink, #playerStatsLink").removeClass('gray');
         playGameLinkActive = false;
         
         // Adds attribute point for completion of game
         attributePoints++;
+        $("#attributePoints > h3").html("Points: " + attributePoints);
+        games++;
     });
     
     
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
-    $("#statsLink").on('click', function(){
+    $("#playerStatsLink").on('click', function(){
         
         // Check to see if playGame link or improvePlayer link is active
         // If it is, don't allow seeStats dev to show
         if(improvePlayerLinkActive === false && playGameLinkActive === false){
         
             if (playerStatsLinkActive === false){
-                $("#seeAttributes, #playGame").hide();
-                $("#increaseSkill, #playGameLink").addClass('gray');
+                $("#improvePlayer, #playGame").hide();
+                $("#improvePlayerLink, #playGameLink").addClass('gray');
                 playerStatsLinkActive = true;           
             } else {
-                $("#increaseSkill, #playGameLink").removeClass('gray');
+                $("#improvePlayerLink, #playGameLink").removeClass('gray');
                 playerStatsLinkActive = false;
             }
         
             updateStats();
-            $("#seeStats").toggle();
+            $("#playerStats").toggle();
         }
         
     });
@@ -292,14 +398,6 @@ $(document).ready(function() {
     
 });
     
-// Player effect starts at zero but can be increased to directly effect outcome of games as player progresses
-var playerEffect = 0;
-// Declares variables for playGame
-var period1H, period2H, period3H, periodOTH, periodRegH, periodFH;
-var period1V, period2V, period3V, periodOTV, periodRegV, periodFV;
-var playButtonClicked = false, statsButtonClicked = false;
-
-var resetGameArray = ["#period1V", "#period1H", "#period2V", "#period2H", "#period3V", "#period3H", "#periodOTV", "#periodOTH", "#periodFV", "#periodFH"];
 
 // Callback function that takes two functions as parameters
 function simulateGame(callback1, callback2) {
@@ -350,32 +448,22 @@ function playerGameStats(teamGoals, callback){
     
 }
 
-var games = 0, seasons = 1;
-var wins = 0, losses = 0, lossesOT = 0;
-var goals, assists, points, hits, timeOnIce;
-var seasonGoals = 0, seasonAssists = 0, seasonPoints = 0, seasonHits = 0, seasonTimeOnIce = 0;
-var careerGoals = 0, careerAssists = 0, careerPoints = 0, careerHits = 0, careerTimeOnIce = 0;
 
-var goalChance, assistChance, hitChance, timeOnIceAverage;
-var teamGoalsLeft, maxPlayerPoints;
-var goalAbility, assistAbility, hitAbility, timeOnIceAbility;
-var timeOnIceMin, timeOnIceSec, totalTimeOnIceMin = 0, totalTimeOnIceSec = 0;
-var lowImpactAbility = 0.05, medImpactAbility = 0.1, highImpactAbility = 0.25;
 
 // Function that determines how many assists your player gets in a given game
 function goalsThisGame(teamGoals, callback) {
     // Radomizes a number between 1 and 200
     goalChance = Math.random() * 200;
     // Determines your players ability to record a goal based on your player attributes
-    goalAbility = highImpactAbility * player.skills.offense.Shooting +
-        lowImpactAbility * player.skills.offense.Passing +
-        highImpactAbility * player.skills.offense.Handling +
-        lowImpactAbility * player.skills.defense.Checking +
-        lowImpactAbility * player.skills.defense.Positioning +
-        lowImpactAbility * player.skills.defense.Takeaway +
-        highImpactAbility * player.skills.athletics.Speed +
-        medImpactAbility * player.skills.athletics.Strength +
-        lowImpactAbility * player.skills.athletics.Endurance;
+    goalAbility = highImpactAbility * player.skills.offense.shooting +
+        lowImpactAbility * player.skills.offense.passing +
+        highImpactAbility * player.skills.offense.handling +
+        lowImpactAbility * player.skills.defense.checking +
+        lowImpactAbility * player.skills.defense.positioning +
+        lowImpactAbility * player.skills.defense.takeaway +
+        highImpactAbility * player.skills.athletics.speed +
+        medImpactAbility * player.skills.athletics.strength +
+        lowImpactAbility * player.skills.athletics.endurance;
     
     /* Uses the assistAbility of your player to determine the likeliness
     of your player recording one or more goals in a game.
@@ -410,19 +498,18 @@ function assistsThisGame(teamGoals, goals, callback) {
     // Radomizes a number between 1 and 200
     assistChance = Math.random() * 200;
     // Determines your players ability to get an assist based on your player attributes
-    assistAbility = lowImpactAbility * player.skills.offense.Shooting +
-        highImpactAbility * player.skills.offense.Passing +
-        medImpactAbility * player.skills.offense.Handling +
-        lowImpactAbility * player.skills.defense.Checking +
-        lowImpactAbility * player.skills.defense.Positioning +
-        lowImpactAbility * player.skills.defense.Takeaway +
-        highImpactAbility * player.skills.athletics.Speed +
-        medImpactAbility * player.skills.athletics.Strength +
-        lowImpactAbility * player.skills.athletics.Endurance;
+    assistAbility = lowImpactAbility * player.skills.offense.shooting +
+        highImpactAbility * player.skills.offense.passing +
+        medImpactAbility * player.skills.offense.handling +
+        lowImpactAbility * player.skills.defense.checking +
+        lowImpactAbility * player.skills.defense.positioning +
+        lowImpactAbility * player.skills.defense.takeaway +
+        highImpactAbility * player.skills.athletics.speed +
+        medImpactAbility * player.skills.athletics.strength +
+        lowImpactAbility * player.skills.athletics.endurance;
     
     // Find how many goals were scored by your team, not including your player
     teamGoalsLeft = teamGoals - goals;
-    console.log(teamGoalsLeft);
     
     /* Uses the assistAbility of your player to determine the likeliness
     of your player recording one or more assists in a game.
@@ -459,15 +546,15 @@ function hitsThisGame(callback) {
     // Radomizes a number between 1 and 100
     hitChance = Math.random() * 80;
     // Determines your players ability to record a hit based on your player attributes
-    hitAbility = lowImpactAbility * player.skills.offense.Shooting +
-        lowImpactAbility * player.skills.offense.Passing +
-        lowImpactAbility * player.skills.offense.Handling +
-        highImpactAbility * player.skills.defense.Checking +
-        highImpactAbility * player.skills.defense.Positioning +
-        lowImpactAbility * player.skills.defense.Takeaway +
-        medImpactAbility * player.skills.athletics.Speed +
-        highImpactAbility * player.skills.athletics.Strength +
-        lowImpactAbility * player.skills.athletics.Endurance;
+    hitAbility = lowImpactAbility * player.skills.offense.shooting +
+        lowImpactAbility * player.skills.offense.passing +
+        lowImpactAbility * player.skills.offense.handling +
+        highImpactAbility * player.skills.defense.checking +
+        highImpactAbility * player.skills.defense.positioning +
+        lowImpactAbility * player.skills.defense.takeaway +
+        medImpactAbility * player.skills.athletics.speed +
+        highImpactAbility * player.skills.athletics.strength +
+        lowImpactAbility * player.skills.athletics.endurance;
     
     if(hitAbility > (hitChance * 15)){
         hits = 5;
@@ -494,15 +581,15 @@ function timeOnIceThisGame() {
     var timeOnIceRand = Math.round(Math.random() * 180);
     timeOnIceAverage = Math.random() * 200;
     
-    timeOnIceAbility = lowImpactAbility * player.skills.offense.Shooting +
-        lowImpactAbility * player.skills.offense.Passing +
-        lowImpactAbility * player.skills.offense.Handling +
-        medImpactAbility * player.skills.defense.Checking +
-        highImpactAbility * player.skills.defense.Positioning +
-        highImpactAbility * player.skills.defense.Takeaway +
-        highImpactAbility * player.skills.athletics.Speed +
-        highImpactAbility * player.skills.athletics.Strength +
-        highImpactAbility * player.skills.athletics.Endurance;
+    timeOnIceAbility = lowImpactAbility * player.skills.offense.shooting +
+        lowImpactAbility * player.skills.offense.passing +
+        lowImpactAbility * player.skills.offense.handling +
+        medImpactAbility * player.skills.defense.checking +
+        highImpactAbility * player.skills.defense.positioning +
+        highImpactAbility * player.skills.defense.takeaway +
+        highImpactAbility * player.skills.athletics.speed +
+        highImpactAbility * player.skills.athletics.strength +
+        highImpactAbility * player.skills.athletics.endurance;
 
     if(timeOnIceAbility > (timeOnIceAverage * 15)){
         timeOnIce += 600 + timeOnIceRand;
@@ -527,8 +614,8 @@ function timeOnIceThisGame() {
     }
     timeOnIce = timeOnIceMin + ":" + timeOnIceSec;
     
-    seasonTimeOnIce = Math.floor(totalTimeOnIceMin/games) + ":" + 
-        Math.floor(totalTimeOnIceSec/games);
+    seasonTimeOnIce = Math.floor(totalTimeOnIceMin/(games+1)) + ":" + 
+        Math.floor(totalTimeOnIceSec/(games+1));
 }
 
 function determineWinner() {

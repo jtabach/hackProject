@@ -11,10 +11,10 @@
     <body>
         
         <div id="wrapper">
-            <div id="playerInfo"> 
-                <h3 id="basics">Jeff Tabachnick - Left Wing - Age:25</h3>
+            <div id="playerInfoLink"> 
+                <h3 id="basics">Jeff Tabachnick - Left Wing</h3>
             </div>
-            <div id="teamRecord">
+            <div id="teamRecordLink">
                 <h3 id="record">Team Record: 0-0-0</h3>
             </div>
 
@@ -27,7 +27,7 @@
                 </button>
             </a>
 
-            <a id="increaseSkill">
+            <a id="improvePlayerLink">
                 <button>
                     <h1>Improve Player</h1>
                     <img src="img/attributes.jpeg" height="160px" width="300px">
@@ -41,13 +41,56 @@
                 </button>
             </a>
 
-            <a id="statsLink">
+            <a id="playerStatsLink">
                 <button>
                     <h1>Player Stats</h1>
                     <img src="img/stats.jpg" height="160px" width="300px">
                 </button>
             </a>
 
+            
+            <div id="welcome">
+                <h1>Welcome to NHL Career Mode</h1>
+                <div class="clear"></div>
+                <p>Lorem ipsum dolor sit amet, donec magna tempor, integer mollis wisi consectetuer suscipit sem. Orci ut, molestie nec odio molestie, lectus tellus, nunc dolore, fermentum eget eu eu erat mauris. Justo quisque vel congue, turpis turpis. Massa proin aliquam ut curabitur maecenas, lorem euismod wisi amet enim lacus in. Ultricies orci tristique nec, suspendisse in provident. At pellentesque eget semper sodales, urna turpis fringilla cum et, est auctor nisi scelerisque elit, sem mauris condimentum nec ullamcorper sapien nec.</p>
+                <div class="clear"></div>
+                <button id="welcomeNext">Enter NHL Draft</button>
+            </div>
+            
+            
+            
+            <div id="draft">
+                <h1>NHL Draft</h1>
+                <div class="clear"></div>
+                <p>Lorem ipsum dolor sit amet, donec magna tempor, integer mollis wisi consectetuer suscipit sem. Orci ut, molestie nec odio molestie, lectus tellus, nunc dolore, fermentum eget eu eu erat mauris. Justo quisque vel congue, turpis turpis.</p><br>
+                <div class="clear"></div>
+                <form id="draftForm">
+                    First Name
+                    <input type="text" id="firstName" name="firstName" placeholder="first">
+                    Last Name
+                    <input type="text" id="lastName" name="lastName" placeholder="last">
+                    <div class="clear"></div>
+                    Left Wing
+                    <input type="radio" id="leftWing" name="position" value="Left Wing">
+                    Center
+                    <input type="radio" id="center" name="position" value="Center">
+                    Right Wing
+                    <input type="radio" id="rightWing" name="position" value="Right Wing">
+                    <div class="clear"></div>
+                    <input id="submit" type="submit" value="Continue to Draft">
+                </form>
+            </div>
+            
+            
+            <div id="pick">
+                <h1>Draft Day</h1>
+                <button id="beginDraft">Begin Draft</button>
+                <div class="clear"></div><br>
+                <p>Lorem ipsum dolor sit amet, donec magna tempor, integer mollis wisi consectetuer suscipit sem. Orci ut, molestie nec odio molestie, lectus tellus, nunc dolore, fermentum eget eu eu erat mauris. Justo quisque vel congue, turpis turpis.</p>
+                <button id='submitGames'>Lets Start Playing</button>
+            </div>
+            
+            
             <div class="clear"></div>
             <div id="playGame">
                 <div id="gameNumber">
@@ -108,30 +151,30 @@
             
             
             
-            <div id="seeAttributes">
+            <div id="improvePlayer">
                 <div id="attributePoints">
                     <h2>Player Attributes</h2>
                     <h3>Points: NA</h3>
                 </div>
                 <div class="clear"><br>
                 </div>
-                <button class="skill" area="offense" id="Shooting">Shooting: NA</button>
-                <button class="skill" area="offense" id="Passing">Passing: NA</button>
-                <button class="skill" area="offense" id="Handling">Handling: NA</button>
+                <button class="skill" area="offense" id="shooting">Shooting: NA</button>
+                <button class="skill" area="offense" id="passing">Passing: NA</button>
+                <button class="skill" area="offense" id="handling">Handling: NA</button>
                 <div class="average" id="averageOffense">
                     <h3>Offense: NA</h3>
                 </div>
                 <div class="clear"></div>
-                <button class="skill" area="defense" id="Checking">Checking: NA</button>
-                <button class="skill" area="defense" id="Positioning">Positioning: NA</button>
-                <button class="skill" area="defense" id="Takeaway">Takeaway: NA</button>
+                <button class="skill" area="defense" id="checking">Checking: NA</button>
+                <button class="skill" area="defense" id="positioning">Positioning: NA</button>
+                <button class="skill" area="defense" id="takeaway">Takeaway: NA</button>
                 <div class="average" id="averageDefense">
                     <h3>Defense: NA</h3>
                 </div>
                 <div class="clear"></div>
-                <button class="skill" area="athletics" id="Speed">Speed: NA</button>
-                <button class="skill" area="athletics" id="Strength">Strength: NA</button>
-                <button class="skill" area="athletics" id="Endurance">Endurance: NA</button>
+                <button class="skill" area="athletics" id="speed">Speed: NA</button>
+                <button class="skill" area="athletics" id="strength">Strength: NA</button>
+                <button class="skill" area="athletics" id="endurance">Endurance: NA</button>
                 <div class="average" id="averageAthletics">
                     <h3>Athlete: NA</h3>
                 </div>
@@ -146,11 +189,11 @@
 
             
             
-            <div id="seeStats">
+            <div id="playerStats">
                 <div id="myPlayerStats">
                     <h2>Player Stats</h2>
                 </div>
-                <div id="playerStats" >
+                <div id="seeStats" >
                     <div class="clear"></div>
                     <h4 class="stats">Season</h4>
                     <h4 class="stats">Games</h4>

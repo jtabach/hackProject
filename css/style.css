@@ -19,15 +19,15 @@ button:focus {
     background: #cbcbcb;
 }
 
-#playerInfo, #teamRecord{
+#playerInfoLink, #teamRecordLink {
     margin: 5px 15px 0px 15px;
 }
 
-#playerInfo {
+#playerInfoLink {
     float: left;
 }
 
-#teamRecord {
+#teamRecordLink {
     float: right;
 }
 
@@ -35,9 +35,30 @@ button:focus {
     background: #cbcbcb;
 }
 
-#playGameLink, #playoffGameLink, #increaseSkill, #statsLink {
+#playGameLink, #playoffGameLink, #improvePlayerLink, #playerStatsLink, #welcome, #draft, #pick {
     float: left;
     margin: 5px 10px;
+}
+
+
+#welcome h1, #draft h1 {
+    text-align: center;
+}
+
+#welcome button {
+    float: right;
+}
+
+#submit {
+    float: right;
+}
+
+#pick h1 {
+    float: left;
+}
+
+#pick button {
+    float: right;
 }
 
 .skill {
@@ -85,7 +106,7 @@ button:focus {
     text-align: center;
 }
 
-#playGame, #seeStats, #seeAttributes{
+#playGame, #playerStats, #improvePlayer{
     padding: 10px;
     margin: 5px auto;
     border: 3px solid gray;
@@ -95,11 +116,11 @@ button:focus {
     margin-bottom: 10px;
 }
 
-#seeStats {
+#playerStats {
     height: 100px;
 }
 
-#seeAttributes {
+#improvePlayer {
     height: 250px;
 }
 
