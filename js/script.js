@@ -44,6 +44,7 @@ var resetGameArray = ["#period1V", "#period1H", "#period2V", "#period2H", "#peri
 
 var games = 0, seasons = 1;
 var seasonLength = 3;
+var winsToQualify = 4;
 var careerLength = 10;
 var wins = 0, losses = 0, lossesOT = 0;
 var goals, assists, points, hits, timeOnIce;
@@ -371,8 +372,57 @@ $(document).ready(function() {
         games++;
         
         if(games >= seasonLength){
-            seasonEnd = true;
-            $("#playGameLink").addClass('gray');
+            
+            updateStats();
+            
+            $('#seasonNum').attr('id','seasonNumPast');
+            $("#seasonGames").attr('id','seasonGamesPast');
+            $("#seasonGoals").attr('id','seasonGoalsPast');
+            $("#seasonAssists").attr('id','seasonAssistsPast');
+            $("#seasonPoints").attr('id','seasonPointsPast');
+            $("#seasonHits").attr('id','seasonHitsPast');
+            $("#seasonTOI").attr('id','seasonTOIPast');
+            
+            $("#seeStats").append("<div class='clear'></div>" +
+                    "<h4 class='stats' id='seasonNum'>1</h4>" +
+                    "<h4 class='stats' id='seasonGames'>0</h4>" +
+                    "<h4 class='stats' id='seasonGoals'>0</h4>" +
+                    "<h4 class='stats' id='seasonAssists'>0</h4>" +
+                    "<h4 class='stats' id='seasonPoints'>0</h4>" +
+                    "<h4 class='stats' id='seasonHits'>0</h4>" +
+                    "<h4 class='stats endOfStats' id='seasonTOI'>0</h4>");
+            
+            var statHeight = $('#playerStats').height();
+            
+            alert("End of season");
+            
+            $('#playerStats').height(statHeight+26);
+            
+            if(wins >= winsToQualify){
+                $("#playGameLink").addClass('gray');
+                $("#playoffGameLink").removeClass('gray');
+                seasonEnd = true;
+                // playoffs
+            }
+            seasons++;
+            games = 0;
+            goals = 0;
+            assists = 0;
+            points = 0;
+            hits = 0;
+            timeOnIce = 0;
+            wins = 0;
+            losses = 0;
+            lossesOT = 0;
+            seasonGoals = 0; 
+            seasonAssists = 0; 
+            seasonPoints = 0; 
+            seasonHits = 0; 
+            seasonTimeOnIce = 0;
+            totalTimeOnIceMin = 0;
+            totalTimeOnIceSec = 0;
+
+            
         }
     });
     
