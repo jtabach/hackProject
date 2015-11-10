@@ -42,14 +42,27 @@ var playButtonClicked = false, statsButtonClicked = false;
 
 var resetGameArray = ["#period1V", "#period1H", "#period2V", "#period2H", "#period3V", "#period3H", "#periodOTV", "#periodOTH", "#periodFV", "#periodFH"];
 
-var games = 0, seasons = 1;
+var seasonStatIDs = ["#seasonNum", "#seasonGames", "#seasonGoals", "#seasonAssists", "#seasonPoints", "#seasonHits", "#seasonTOI"];
+
+var playoffStatIDs = ["#playoffNum", "#playoffGames", "#playoffGoals", "#playoffAssists", "#playoffPoints", "#playoffHits", "#playoffTOI"];
+
+
+
+var games = 0, seasons = 1, playoffs = 1;
 var seasonLength = 3;
 var winsToQualify = 4;
 var careerLength = 10;
 var wins = 0, losses = 0, lossesOT = 0;
 var goals, assists, points, hits, timeOnIce;
 var seasonGoals = 0, seasonAssists = 0, seasonPoints = 0, seasonHits = 0, seasonTimeOnIce = 0;
+
+var playoffGoals = 0, playoffAssists = 0, playoffPoints = 0, playoffHits = 0, playoffTimeOnIce = 0;
+
 var careerGoals = 0, careerAssists = 0, careerPoints = 0, careerHits = 0, careerTimeOnIce = 0;
+
+var seasonStats = [seasons, games, seasonGoals, seasonAssists, seasonPoints, seasonHits, seasonTimeOnIce];
+
+var playoffStats = [playoffs, games, playoffGoals, playoffAssists, playoffPoints, playoffHits, playoffTimeOnIce];
 
 var goalChance, assistChance, hitChance, timeOnIceAverage;
 var teamGoalsLeft, maxPlayerPoints;
@@ -373,30 +386,12 @@ $(document).ready(function() {
         
         if(games >= seasonLength){
             
-            updateStats();
+            updateStatsArray();
+            updateStats(seasonStatIDs, seasonStats);
+            //updateStats(playoffStatIDS, playoffStats);
+            appendStatLine(seasonStatIDs, playoffStatIDs);
             
-            $('#seasonNum').attr('id','seasonNumPast');
-            $("#seasonGames").attr('id','seasonGamesPast');
-            $("#seasonGoals").attr('id','seasonGoalsPast');
-            $("#seasonAssists").attr('id','seasonAssistsPast');
-            $("#seasonPoints").attr('id','seasonPointsPast');
-            $("#seasonHits").attr('id','seasonHitsPast');
-            $("#seasonTOI").attr('id','seasonTOIPast');
             
-            $("#seeStats").append("<div class='clear'></div>" +
-                    "<h4 class='stats' id='seasonNum'>1</h4>" +
-                    "<h4 class='stats' id='seasonGames'>0</h4>" +
-                    "<h4 class='stats' id='seasonGoals'>0</h4>" +
-                    "<h4 class='stats' id='seasonAssists'>0</h4>" +
-                    "<h4 class='stats' id='seasonPoints'>0</h4>" +
-                    "<h4 class='stats' id='seasonHits'>0</h4>" +
-                    "<h4 class='stats endOfStats' id='seasonTOI'>0</h4>");
-            
-            var statHeight = $('#playerStats').height();
-            
-            alert("End of season");
-            
-            $('#playerStats').height(statHeight+26);
             
             if(wins >= winsToQualify){
                 $("#playGameLink").addClass('gray');
@@ -405,6 +400,7 @@ $(document).ready(function() {
                 // playoffs
             }
             seasons++;
+            playoffs++; //Move to playoffs when created
             games = 0;
             goals = 0;
             assists = 0;
@@ -447,7 +443,9 @@ $(document).ready(function() {
                 }
             }
         
-            updateStats();
+            updateStatsArray();
+            updateStats(seasonStatIDs, seasonStats);
+            //updateStats();
             $("#playerStats").toggle();
         }
         
@@ -696,16 +694,64 @@ function determineWinner() {
 }    
 
 // Function updates the html to reflect the new player stats
-function updateStats() {
+function updateStats(preOrPostIDs, preOrPostStats) {
     
-    $("#seasonNum").html(seasons);
-    $("#seasonGames").html(games);
-    $("#seasonGoals").html(seasonGoals);
-    $("#seasonAssists").html(seasonAssists);
-    $("#seasonPoints").html(seasonPoints);
-    $("#seasonHits").html(seasonHits);
-    $("#seasonTOI").html(seasonTimeOnIce);
+    preOrPostIDs.forEach(function(element, index){
+        $(element).html(preOrPostStats[index]);
+    });
 
+}
+
+function updateStatsArray () {
+
+    seasonStats = [seasons, games, seasonGoals, seasonAssists, seasonPoints, seasonHits, seasonTimeOnIce];
+
+    playoffStats = [playoffs, games, playoffGoals, playoffAssists, playoffPoints, playoffHits, playoffTimeOnIce]; 
+    
+}
+
+function appendStatLine(preOrPostIDs1, preOrPostIDs2) {
+    
+    preOrPostIDs1.forEach(function(element, index){
+        $(element).attr('id', ''+element+'Past');
+    });
+    
+    preOrPostIDs2.forEach(function(element, index){
+        $(element).attr('id', ''+element+'Past');
+    });
+    
+    
+//    $('#seasonNum').attr('id','seasonNumPast');
+//    $("#seasonGames").attr('id','seasonGamesPast');
+//    $("#seasonGoals").attr('id','seasonGoalsPast');
+//    $("#seasonAssists").attr('id','seasonAssistsPast');
+//    $("#seasonPoints").attr('id','seasonPointsPast');
+//    $("#seasonHits").attr('id','seasonHitsPast');
+//    $("#seasonTOI").attr('id','seasonTOIPast');
+            
+    $("#seeseasonStats").append("<div class='clear'></div>" +
+            "<h4 class='stats' id='seasonNum'>1</h4>" +
+            "<h4 class='stats' id='seasonGames'>0</h4>" +
+            "<h4 class='stats' id='seasonGoals'>0</h4>" +
+            "<h4 class='stats' id='seasonAssists'>0</h4>" +
+            "<h4 class='stats' id='seasonPoints'>0</h4>" +
+            "<h4 class='stats' id='seasonHits'>0</h4>" +
+            "<h4 class='stats endOfStats' id='seasonTOI'>0</h4>");
+    
+    $("#seeplayoffStats").append("<div class='clear'></div>" +
+            "<h4 class='stats' id='playoffNum'>1</h4>" +
+            "<h4 class='stats' id='playoffGames'>0</h4>" +
+            "<h4 class='stats' id='playoffGoals'>0</h4>" +
+            "<h4 class='stats' id='playoffAssists'>0</h4>" +
+            "<h4 class='stats' id='playoffPoints'>0</h4>" +
+            "<h4 class='stats' id='playoffHits'>0</h4>" +
+            "<h4 class='stats endOfStats' id='playoffTOI'>0</h4>");
+            
+            var statHeight = $('#playerStats').height();
+            
+            alert("End of season");
+            
+            $('#playerStats').height(statHeight+52);
 }
 
 // Receives an array as a parameter and passes it to a for which changes the html to the pregame settings

@@ -117,7 +117,7 @@ button:focus {
 }
 
 #playerStats {
-    height: 100px;
+    height: 170px;
 }
 
 #improvePlayer {
@@ -156,8 +156,8 @@ button:focus {
     width: 81px;
 }
 
-#seasonTOIC, #seasonTOI, #seasonTOIPast {
-    width: 98px;
+#seasonTOIC, #seasonTOI, #seasonTOIPast, #playoffTOIC, #playoffTOI, #playoffTOIPast {
+    width: 98px !important;
 }
 
 #close, #xGame {
