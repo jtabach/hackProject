@@ -25,6 +25,8 @@ var player = {
     }
 };
 
+var opponents = ["Senators", "Lightning", "Bruins", "Red Wings", "Panthers", "Sabres", "Maple Leafs", "Rangers", "Capitals", "Penguins", "Devils", "Islanders", "Flyers", "Hurricanes", "Jackets", "Stars", "Blues", "Wild", "Predators", "Jets", "Blackhawks", "Avalanche", "Kings", "Canucks", "Coyotes", "Ducks", "Flames", "Oilers"];
+
 var attributePoints = 9;
 var areasArray = [];
 var skillsArray = [];
@@ -158,8 +160,10 @@ $(document).ready(function() {
     });
     
     $("#submitGames").on('click', function(){
-//        seasonLength = $("input[type='radio'][name='length']:checked").val();
-//        alert(seasonLength);
+        seasonLength = Number($("input[type='radio'][name='length']:checked").val());
+        winsToQualify = seasonLength/2;
+        alert(seasonLength);
+        alert(winsToQualify);
         $("#welcome, #draft, #pick").hide();
         $("#playerInfoLink, #playGameLink, #improvePlayerLink, #playoffGameLink, #playerStatsLink, #teamRecordLink").show();
     });
@@ -278,7 +282,10 @@ $(document).ready(function() {
             $("#playGame, #gameNumber, #scoreLine").toggle();
 
             //Updates the game number and changes the html
-            $("#gameNumber h2").html("Regular Season Game #" + (games+1));
+            $("#gameNumber h2").html("Season " + seasons + " - Game #" + (games+1));
+            $("#teamV").html(opponents[Math.floor(Math.random()*opponents.length)]);
+            $("#teamH").html(player.team);
+            
         }
     });
        
@@ -349,6 +356,8 @@ $(document).ready(function() {
             // Sets statsButtonClicked to true to avoid multiple clicks of the stats button
             statsButtonClicked = true;
             
+            
+            $("#playerName").html(player.firstName);
             $("#gameGoals").html(goals);
             $("#gameAssists").html(assists);
             $("#gamePoints").html(points);
@@ -677,17 +686,17 @@ function timeOnIceThisGame() {
 
 function determineWinner() {
     if (periodRegH > periodRegV){
-        $("#teamWins h2").html("Team Wins");
+        $("#teamWins h2").html("" + player.team + " Win");
             wins++;
     } else if (periodRegH < periodRegV){
-        $("#teamWins h2").html("Team Loses");
+        $("#teamWins h2").html("" + player.team + " Lose");
         losses++;
     } else {
         if (periodOTH > periodOTV){
-            $("#teamWins h2").html("Team Wins in Overtime");
+            $("#teamWins h2").html("" + player.team + " Win in Overtime");
             wins++;
         } else {
-            $("#teamWins h2").html("Team Loses in Overtime");
+            $("#teamWins h2").html("" + player.team + " Lose in Overtime");
             lossesOT++;
         }
     }

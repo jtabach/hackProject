@@ -152,6 +152,10 @@ button:focus {
     padding: 3px 0px;
 }
 
+.home {
+    color: #a30505;
+}
+
 .stats {
     width: 81px;
 }
