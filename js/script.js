@@ -47,6 +47,7 @@ var period1V, period2V, period3V, periodOTV, periodRegV, periodFV;
 var playButtonClicked = false, statsButtonClicked = false;
 
 var formValidated = true;
+var opponentPicked = false;
 
 var resetGameArray = ["#period1V", "#period1H", "#period2V", "#period2H", "#period3V",
                       "#period3H", "#periodOTV", "#periodOTH", "#periodFV", "#periodFH"];
@@ -190,8 +191,6 @@ $(document).ready(function() {
     $("#submitGames").on('click', function(){
         seasonLength = Number($("input[type='radio'][name='length']:checked").val());
         winsToQualify = seasonLength/2;
-        alert(seasonLength);
-        alert(winsToQualify);
         $("#welcome, #draft, #pick").hide();
         $("#playerInfoLink, #playGameLink, #improvePlayerLink, #playoffGameLink, #playerStatsLink, #teamRecordLink").show();
     });
@@ -311,8 +310,11 @@ $(document).ready(function() {
 
             //Updates the game number and changes the html
             $("#gameNumber h2").html("Season " + seasons + " - Game #" + (games+1));
-            $("#teamV").html(opponents[Math.floor(Math.random()*opponents.length)]);
             $("#teamH").html(player.team);
+            if (opponentPicked === false){
+                $("#teamV").html(opponents[Math.floor(Math.random()*opponents.length)]);
+            }
+            opponentPicked = true;
             
         }
     });
@@ -324,6 +326,7 @@ $(document).ready(function() {
         $("#improvePlayerLink").addClass('gray');
         $("#playerStatsLink").addClass('gray');
         playGameLinkActive = true;
+        opponentPicked = false;
 
         // Checks to see if the play button has been clicked
         if (playButtonClicked === false){
