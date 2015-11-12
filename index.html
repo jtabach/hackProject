@@ -51,33 +51,33 @@
             
             <div id="welcome">
                 <h1>Welcome to NHL Career Mode</h1>
-                <div class="clear"></div>
-                <p>Lorem ipsum dolor sit amet, donec magna tempor, integer mollis wisi consectetuer suscipit sem. Orci ut, molestie nec odio molestie, lectus tellus, nunc dolore, fermentum eget eu eu erat mauris. Justo quisque vel congue, turpis turpis. Massa proin aliquam ut curabitur maecenas, lorem euismod wisi amet enim lacus in. Ultricies orci tristique nec, suspendisse in provident. At pellentesque eget semper sodales, urna turpis fringilla cum et, est auctor nisi scelerisque elit, sem mauris condimentum nec ullamcorper sapien nec.</p>
-                <div class="clear"></div>
-                <button id="welcomeNext">Enter NHL Draft</button>
+                <div class="clear"></div><br>
+                <p>You have just declared for the NHL draft. Scouts have estimated that your current skill set will have you drafted in the first round as a forward. Once drafted you will able to see your player skill ratings and improve categories that you believe will help your player become a top forward in the league. Throughout your career you can play games, keep track of your stats, improve your player, and hopefully win a Stanley Cup or two. Good Luck, and remember, speed kills. Click on Continue to Draft Form when ready.</p>
+                <div class="clear"></div><br>
+                <button id="welcomeNext">Continue to Draft Form</button>
             </div>
             
             
             
             <div id="draft">
-                <h1>NHL Draft</h1>
-                <div class="clear"></div>
-                <p>Lorem ipsum dolor sit amet, donec magna tempor, integer mollis wisi consectetuer suscipit sem. Orci ut, molestie nec odio molestie, lectus tellus, nunc dolore, fermentum eget eu eu erat mauris. Justo quisque vel congue, turpis turpis.</p><br>
+                <h1>2015 NHL Draft Form</h1>
+                <div class="clear"></div><br>
+                <p>Please fill out your information below to become eligible for this year’s draft. Click Continue to Draft Day when ready.</p><br>
                 <div class="clear"></div>
                 <form id="draftForm">
-                    First Name
-                    <input type="text" id="firstName" name="firstName" placeholder="first">
-                    Last Name
-                    <input type="text" id="lastName" name="lastName" placeholder="last">
-                    <div class="clear"></div>
+                    First Name:
+                    <input type="text" class="name" id="firstName" name="firstName" placeholder="type here..">
+                    Last Name:
+                    <input type="text" class="name" id="lastName" name="lastName" placeholder="type here..">
+                    <div class="clear"></div><br>Position: _
                     Left Wing
-                    <input type="radio" id="leftWing" name="position" value="Left Wing">
+                    <input type="radio" id="leftWing" class="position" name="position" value="Left Wing" checked>
                     Center
-                    <input type="radio" id="center" name="position" value="Center">
+                    <input type="radio" id="center" class="position" name="position" value="Center">
                     Right Wing
-                    <input type="radio" id="rightWing" name="position" value="Right Wing">
+                    <input type="radio" id="rightWing" class="position" name="position" value="Right Wing">
                     <div class="clear"></div>
-                    <input id="submit" type="submit" value="Continue to Draft">
+                    <input id="submit" type="submit" value="Continue to Draft Day">
                 </form>
             </div>
             
@@ -86,7 +86,7 @@
                 <h1>Draft Day</h1>
                 <button id="beginDraft">Begin Draft</button>
                 <div class="clear"></div><br>
-                <p>Lorem ipsum dolor sit amet, donec magna tempor, integer mollis wisi consectetuer suscipit sem. Orci ut, molestie nec odio molestie, lectus tellus, nunc dolore, fermentum eget eu eu erat mauris. Justo quisque vel congue, turpis turpis.</p>
+                <p>Today is the big day. All signs point to you being picked in the first round. You will likely be playing for the team that draft’s you for most of your career. Hope it’s a good one. Click 'Begin Draft' when ready.</p>
                 <button id='submitGames'>Lets Start Playing</button>
             </div>
             

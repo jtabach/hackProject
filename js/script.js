@@ -25,7 +25,11 @@ var player = {
     }
 };
 
-var opponents = ["Senators", "Lightning", "Bruins", "Red Wings", "Panthers", "Sabres", "Maple Leafs", "Rangers", "Capitals", "Penguins", "Devils", "Islanders", "Flyers", "Hurricanes", "Jackets", "Stars", "Blues", "Wild", "Predators", "Jets", "Blackhawks", "Avalanche", "Kings", "Canucks", "Coyotes", "Ducks", "Flames", "Oilers"];
+var opponents = ["Senators", "Lightning", "Bruins", "Red Wings", "Panthers", "Sabres",
+                 "Maple Leafs", "Rangers", "Capitals", "Penguins", "Devils", "Islanders",
+                 "Flyers", "Hurricanes", "Jackets", "Stars", "Blues", "Wild", "Predators",
+                 "Jets", "Blackhawks", "Avalanche", "Kings", "Canucks", "Coyotes", "Ducks",
+                 "Flames", "Oilers"];
 
 var attributePoints = 9;
 var areasArray = [];
@@ -42,11 +46,16 @@ var period1H, period2H, period3H, periodOTH, periodRegH, periodFH;
 var period1V, period2V, period3V, periodOTV, periodRegV, periodFV;
 var playButtonClicked = false, statsButtonClicked = false;
 
-var resetGameArray = ["#period1V", "#period1H", "#period2V", "#period2H", "#period3V", "#period3H", "#periodOTV", "#periodOTH", "#periodFV", "#periodFH"];
+var formValidated = true;
 
-var seasonStatIDs = ["#seasonNum", "#seasonGames", "#seasonGoals", "#seasonAssists", "#seasonPoints", "#seasonHits", "#seasonTOI"];
+var resetGameArray = ["#period1V", "#period1H", "#period2V", "#period2H", "#period3V",
+                      "#period3H", "#periodOTV", "#periodOTH", "#periodFV", "#periodFH"];
 
-var playoffStatIDs = ["#playoffNum", "#playoffGames", "#playoffGoals", "#playoffAssists", "#playoffPoints", "#playoffHits", "#playoffTOI"];
+var seasonStatIDs = ["#seasonNum", "#seasonGames", "#seasonGoals", "#seasonAssists",
+                     "#seasonPoints", "#seasonHits", "#seasonTOI"];
+
+var playoffStatIDs = ["#playoffNum", "#playoffGames", "#playoffGoals", "#playoffAssists",
+                      "#playoffPoints", "#playoffHits", "#playoffTOI"];
 
 
 
@@ -115,6 +124,18 @@ function addSkillPoint (attribute, target) {
     player.skills[target][attribute]++;
 }
 
+function validateForm() {
+    var first = document.forms["draftForm"]["firstName"].value;
+    var last = document.forms["draftForm"]["lastName"].value;
+    var regex = /^[a-zA-Z]+$/;
+    if (!first.match(regex) || !last.match(regex)) {
+        alert("Please input a full name. No numbers or special characters");
+        formValidated = false;
+    } else {
+        formValidated = true;
+    }
+}
+
 
 
 // DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //
@@ -136,26 +157,33 @@ $(document).ready(function() {
     
     $("#submit").click(function(event){
         event.preventDefault();
+        validateForm();
         player.firstName = $("#firstName").val();
         player.lastName = $("#lastName").val();
         player.position = $("input[type='radio'][name='position']:checked").val();
-        $("#welcome, #draft").hide();
+        if (formValidated === true) {
+            $("#welcome, #draft").hide();
+            $("#pick").show();
+        } else {
+            $("#draft").show();
+        }
         //Sets the proper name and position
-        $("#playerInfoLink h3").html(player.firstName + " " + player.lastName  + " - " +
-                                    player.position);
-        $("#pick").show();
+        $("#playerInfoLink h3").html(player.firstName + " " + player.lastName  + " - " + player.position);
+        
         return false;
     });
     
     $("#beginDraft").on('click', function(){
+        $("#beginDraft").hide();
         $("p").append("<br><br><h2>With the number " + player.pick + " of the NHL draft, the " +
                      player.team + " select " + player.position + ", " + player.firstName + 
                      " " + player.lastName + ".</h2><br><br><form id='seasonLengthForm'>" + 
-                    "12 Games (Recommended)<input type='radio' id='12' name='length' value='12'>" +
-                    "32 Games<input type='radio' id='32' name='length' value='32'>" +
-                    "82 Games<input type='radio' id='82' name='length' value='82'>" +
-                    "<div class='clear'></div>" +
-                    "</form>");
+                     "<h4>How many games would you like to play each season?</h4><br>" +
+                     "12 Games (Recommended)<input type='radio' class='games' id='12' name='length' value='12' checked>" +
+                     "32 Games<input type='radio' class='games' id='32' name='length' value='32'>" +
+                     "82 Games<input type='radio' class='games' id='82' name='length' value='82'>" +
+                     "<div class='clear'></div>" +
+                     "</form>");
         $("#submitGames").show();
     });
     
@@ -728,15 +756,6 @@ function appendStatLine(preOrPostIDs1, preOrPostIDs2) {
     preOrPostIDs2.forEach(function(element, index){
         $(element).attr('id', ''+element+'Past');
     });
-    
-    
-//    $('#seasonNum').attr('id','seasonNumPast');
-//    $("#seasonGames").attr('id','seasonGamesPast');
-//    $("#seasonGoals").attr('id','seasonGoalsPast');
-//    $("#seasonAssists").attr('id','seasonAssistsPast');
-//    $("#seasonPoints").attr('id','seasonPointsPast');
-//    $("#seasonHits").attr('id','seasonHitsPast');
-//    $("#seasonTOI").attr('id','seasonTOIPast');
             
     $("#seeseasonStats").append("<div class='clear'></div>" +
             "<h4 class='stats' id='seasonNum'>1</h4>" +
