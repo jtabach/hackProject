@@ -36,7 +36,7 @@ var areasArray = [];
 var skillsArray = [];
 var overallOffense, overallDefense, overallAthletics, overallSkill;
 
-var playGameLinkActive = false, improvePlayerLinkActive = false, playerStatsLinkActive = false;
+var playGameLinkActive = false, playoffGameLinkActive = false, improvePlayerLinkActive = false, playerStatsLinkActive = false;
 var seasonEnd = false;
 
 // Player effect starts at zero but can be increased to directly effect outcome of games as player progresses
@@ -61,11 +61,15 @@ var playoffStatIDs = ["#playoffNum", "#playoffGames", "#playoffGoals", "#playoff
 
 
 
-var games = 0, seasons = 1, playoffs = 1;
-var seasonLength = 3;
-var winsToQualify = 4;
+var games = 0, playoffGames = 0, seasons = 1, playoffs = 1;
+var playoffRounds = ["Conference Quarterfinals", "Conference Semifinals",
+                     "Conference Finals", "Stanley Cup Finals"];
+var playoffRound = 0;
+var seasonLength, playoffLength;
+var winsToQualify, winsToAdvance;
 var careerLength = 10;
 var wins = 0, losses = 0, lossesOT = 0;
+var playoffWins = 0, playoffLosses = 0;
 var goals, assists, points, hits, timeOnIce;
 var seasonGoals = 0, seasonAssists = 0, seasonPoints = 0, seasonHits = 0, seasonTimeOnIce = 0;
 
@@ -148,7 +152,7 @@ function validateForm() {
 
 $(document).ready(function() {
     
-    $("#playerInfoLink, #playGameLink, #improvePlayerLink, #playoffGameLink, #playerStatsLink, #teamRecordLink, #pick, #draft, #submitGames").hide();
+    $("#playerInfoLink, #playGameLink, #myPlayerLink, #improvePlayerLink, #playoffGameLink, #playerStatsLink, #teamRecordLink, #pick, #draft, #submitGames, #info").hide();
     
     // When next button is clicked, player it taken into the NHL draft
     $("#welcomeNext").on('click', function(){
@@ -181,19 +185,28 @@ $(document).ready(function() {
                      player.team + " select " + player.position + ", " + player.firstName + 
                      " " + player.lastName + ".</h2><br><br><form id='seasonLengthForm'>" + 
                      "<h4>How many games would you like to play each season?</h4><br>" +
-                     "12 Games (Recommended)<input type='radio' class='games' id='12' name='length' value='12' checked>" +
-                     "32 Games<input type='radio' class='games' id='32' name='length' value='32'>" +
-                     "82 Games<input type='radio' class='games' id='82' name='length' value='82'>" +
+                     "12 Games (Recommended)" + " " + "<input type='radio' class='games' id='12' name='length' value='12' checked>" +
+                     "32 Games" + " " + "<input type='radio' class='games' id='32' name='length' value='32'>" +
+                     "82 Games" + " " + "<input type='radio' class='games' id='82' name='length' value='82'>" +
+                     "<div class='clear'></div><br><br>" +
+                      "<h4>How many games would you like to each playoff series to be?</h4><br>" +
+                     "Best of 3" + " " + "<input type='radio' class='series' id='3' name='series' value='3' checked>" +
+                     "Best of 5" + " " + "<input type='radio' class='series' id='5' name='series' value='5'>" +
+                     "Best of 7" + " " + "<input type='radio' class='series' id='7' name='series' value='7'>" +
                      "<div class='clear'></div>" +
                      "</form>");
         $("#submitGames").show();
     });
     
     $("#submitGames").on('click', function(){
-        seasonLength = Number($("input[type='radio'][name='length']:checked").val());
-        winsToQualify = seasonLength/2;
+        //seasonLength = Number($("input[type='radio'][name='length']:checked").val());
+        //winsToQualify = seasonLength/2;
+        seasonLength = 3;
+        winsToQualify = 1;
+        playoffLength = Number($("input[type='radio'][name='series']:checked").val());
+        winsToAdvance = Math.ceil(playoffLength/2);
         $("#welcome, #draft, #pick").hide();
-        $("#playerInfoLink, #playGameLink, #improvePlayerLink, #playoffGameLink, #playerStatsLink, #teamRecordLink").show();
+        $("#playerInfoLink, #playGameLink, #improvePlayerLink, #playoffGameLink, #playerStatsLink, #teamRecordLink, #myPlayerLink, #info").show();
     });
 
     // Hides the divs for the playGame link when the page loads
@@ -228,17 +241,19 @@ $(document).ready(function() {
     
         // Check to see if playGame link or playerStats link is active
         // If it is, don't allow increase Skill dev to show
-        if(playGameLinkActive === false && playerStatsLinkActive === false){
+        if(playGameLinkActive === false && playoffGameLinkActive === false && playerStatsLinkActive === false){
         
             if (improvePlayerLinkActive === false){
                 $("#playGame, #playerStats").hide();
-                $("#playGameLink, #playerStatsLink").addClass('gray');
+                $("#playGameLink, #playoffGameLink, #playerStatsLink").addClass('gray');
                 improvePlayerLinkActive = true;           
             } else {
                 improvePlayerLinkActive = false;
                 $("#playerStatsLink").removeClass('gray');
                 if(seasonEnd === false){
                     $("#playGameLink").removeClass('gray');
+                } else {
+                    $("#playoffGameLink").removeClass('gray');
                 }
             }
     
@@ -292,7 +307,7 @@ $(document).ready(function() {
     
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
-    $("#playGameLink").on('click', function(){
+    $("#playGameLink").on('click', function() {
         
         // Check to see if improvePlayer link or playerStats link is active
         // If it is, don't allow increase Skill dev to show
@@ -319,13 +334,36 @@ $(document).ready(function() {
             
         }
     });
+    
+    $("#playoffGameLink").on('click', function() {
+        if(improvePlayerLinkActive === false && playerStatsLinkActive === false && playButtonClicked === false && seasonEnd === true){
+            if (playoffGameLinkActive === false){
+                $("#improvePlayer, #playerStats").hide();
+                $("#improvePlayerLink, #playerStatsLink").addClass('gray');
+                playoffGameLinkActive = true;           
+            } else {
+                $("#improvePlayerLink, #playerStatsLink").removeClass('gray');
+                playoffGameLinkActive = false;
+            }
+        
+            $("#playGame, #gameNumber, #scoreLine").toggle();
+            
+            
+            $("#gameNumber h2").html(playoffRounds[playoffRound] + " - Game #" + (playoffGames+1));
+            if (opponentPicked === false){
+                $("#teamV").html(opponents[Math.floor(Math.random()*opponents.length)]);
+            }
+            opponentPicked = true;
+        }
+    });
+    
+    
+    
        
     // When play button is clicked, simulation begins showing the score of the game period by period
     $('#play').on('click', function(){
         
-        $("#playGameLink").addClass('gray');
-        $("#improvePlayerLink").addClass('gray');
-        $("#playerStatsLink").addClass('gray');
+        $("#playGameLink, #playoffGameLink, #improvePlayerLink, #playerStatsLink").addClass('gray');
         playGameLinkActive = true;
         opponentPicked = false;
 
@@ -411,19 +449,64 @@ $(document).ready(function() {
         resetGame(resetGameArray);
         
         // Updates the team record
-        $("#record").html("Team Record: " + wins + "-" + losses + "-" + lossesOT);
+        
+        if (seasonEnd === false){
+            $("#record").html("Team Record: " + wins + "-" + losses + "-" + lossesOT);
+        } else {
+            $("#record").html("Playoff Series: " + playoffWins + "-" + playoffLosses);
+        }
         
         // Sets both conditionals back to false to allow buttons to be clicked for the next game
         playButtonClicked = false;
         statsButtonClicked = false;
         
-        $("#playGameLink, #improvePlayerLink, #playerStatsLink").removeClass('gray');
+        $("#improvePlayerLink, #playerStatsLink").removeClass('gray');
+        if (seasonEnd === false){
+            $("#playGameLink").removeClass('gray');
+        } else {
+            $("#playoffGameLink").removeClass('gray');
+        }
         playGameLinkActive = false;
+        playoffGameLinkActive = false;
         
         // Adds attribute point for completion of game
         attributePoints++;
         $("#attributePoints > h3").html("Points: " + attributePoints);
-        games++;
+        if (seasonEnd === false) {
+            games++;
+        } else {
+            playoffGames++;
+        }
+        
+        if (playoffWins === winsToAdvance && playoffRound === 3) {
+            alert("You won the Stanley Cup!");
+            playoffWins = 0;
+            playoffLosses = 0;
+            playoffGames = 0;
+            playoffRound = 0;
+            seasonEnd = false;
+            alert("End of playoffs. Begin Next Season");
+            $('#playGameLink').removeClass('gray');
+            $('#playoffGameLink').addClass('gray');
+            $("#record").html("Team Record: " + 0 + "-" + 0 + "-" + 0);
+        } else if (playoffWins === winsToAdvance) {
+            alert("Congratlations you moved onto the next round of the playoffs!");
+            playoffWins = 0;
+            playoffLosses = 0;
+            playoffGames = 0;
+            playoffRound ++;
+            $("#record").html("Playoff Series: " + playoffWins + "-" + playoffLosses);
+        } else if (playoffLosses === winsToAdvance){
+            alert("You lost in the " + playoffRounds[playoffRound]);
+            playoffWins = 0;
+            playoffLosses = 0;
+            playoffGames = 0;
+            playoffRound = 0;
+            alert("End of playoffs. Begin Next Season");
+            seasonEnd = false;
+            $('#playGameLink').removeClass('gray');
+            $('#playoffGameLink').addClass('gray');
+        }
         
         if(games >= seasonLength){
             
@@ -432,16 +515,15 @@ $(document).ready(function() {
             //updateStats(playoffStatIDS, playoffStats);
             appendStatLine(seasonStatIDs, playoffStatIDs);
             
-            
-            
             if(wins >= winsToQualify){
                 $("#playGameLink").addClass('gray');
                 $("#playoffGameLink").removeClass('gray');
                 seasonEnd = true;
+                $("#record").html("Playoff Series: " + playoffWins + "-" + playoffLosses);
                 // playoffs
             }
+            
             seasons++;
-            playoffs++; //Move to playoffs when created
             games = 0;
             goals = 0;
             assists = 0;
@@ -470,17 +552,19 @@ $(document).ready(function() {
         
         // Check to see if playGame link or improvePlayer link is active
         // If it is, don't allow seeStats dev to show
-        if(improvePlayerLinkActive === false && playGameLinkActive === false){
+        if(improvePlayerLinkActive === false && playGameLinkActive === false && playoffGameLinkActive === false){
         
             if (playerStatsLinkActive === false){
                 $("#improvePlayer, #playGame").hide();
-                $("#improvePlayerLink, #playGameLink").addClass('gray');
+                $("#improvePlayerLink, #playGameLink, #playoffGameLink").addClass('gray');
                 playerStatsLinkActive = true;           
             } else {
                 playerStatsLinkActive = false;
                 $("#improvePlayerLink").removeClass('gray');
                 if (seasonEnd === false){
                     $("#playGameLink").removeClass('gray');
+                } else {
+                    $("#playoffGameLink").removeClass('gray');
                 }
             }
         
@@ -719,17 +803,33 @@ function timeOnIceThisGame() {
 function determineWinner() {
     if (periodRegH > periodRegV){
         $("#teamWins h2").html("" + player.team + " Win");
+        if (seasonEnd === false) {
             wins++;
+        } else {
+            playoffWins++;
+        }
     } else if (periodRegH < periodRegV){
         $("#teamWins h2").html("" + player.team + " Lose");
-        losses++;
+        if (seasonEnd === false) {
+            losses++;
+        } else {
+            playoffLosses++;
+        }
     } else {
         if (periodOTH > periodOTV){
             $("#teamWins h2").html("" + player.team + " Win in Overtime");
-            wins++;
+            if (seasonEnd === false) {
+                wins++;
+            } else {
+                playoffWins++;
+        }
         } else {
             $("#teamWins h2").html("" + player.team + " Lose in Overtime");
-            lossesOT++;
+            if (seasonEnd === false) {
+                losses++;
+            } else {
+                playoffLosses++;
+        }
         }
     }
 }    
