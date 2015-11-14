@@ -48,6 +48,7 @@ var playButtonClicked = false, statsButtonClicked = false;
 
 var formValidated = true;
 var opponentPicked = false;
+var gamespeed = 500;
 
 var resetGameArray = ["#period1V", "#period1H", "#period2V", "#period2H", "#period3V",
                       "#period3H", "#periodOTV", "#periodOTH", "#periodFV", "#periodFH"];
@@ -365,15 +366,15 @@ $(document).ready(function() {
                                 $("#periodOTH").html(periodOTH);
                                 $("#periodFV").html(period1V + period2V + period3V + periodOTV);
                                 $("#periodFH").html(period1H + period2H + period3H + periodOTH);
-                            }, 500);
+                            }, gamespeed);
                         }
                         // Displays if your team wins or loses
                         setTimeout(function(){
                             $("#teamWins").show();
-                        }, 500);
-                    }, 500);
-                }, 500);
-            }, 500); 
+                        }, gamespeed);
+                    }, gamespeed);
+                }, gamespeed);
+            }, gamespeed); 
         }   
     });
     

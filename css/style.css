@@ -14,34 +14,91 @@ button:focus {
 
 #wrapper {
     margin: auto;
-    width: 650px;
+    width: 80%;
+    width: 751px;
     border: solid 1px gray;
     background: #cbcbcb;
 }
 
 #playerInfoLink, #teamRecordLink {
-    margin: 5px 15px 0px 15px;
+    margin: 5px 10px;
 }
 
 #playerInfoLink {
     float: left;
+    background: #efefef;
 }
 
 #teamRecordLink {
     float: right;
+    background: #efefef;
 }
 
 #basics, #record {
-    background: #cbcbcb;
+    background: #efefef;
 }
 
 #playGameLink, #playoffGameLink, #improvePlayerLink, #playerStatsLink, #welcome, #draft, #pick {
+    position: relative;
     float: left;
-    margin: 5px 10px;
+    margin: 10px 15px;
 }
+
+#improvePlayerLink, #playerStatsLink {
+    float:right;
+}
+
+.main button {
+    cursor: pointer;
+}
+
+#myPlayerLink {
+    width:100%;
+    position: relative;
+    float: left;
+    text-align: center;
+    margin: 10px auto;
+    background: #cbcbcb;
+}
+
+#myPlayerLink button {
+    cursor:default;
+}
+
+#myPlayerLink h2 {
+    background: #fcfcfc;
+    padding: 2px 0px;
+    color: black;
+}
+
+#myPlayerLink h1 {
+    color: black;
+}
+
+#info {
+    float: left;
+    margin: 10px 15px 0 15px;
+    width: 96%;
+    border: 1px solid gray;
+}
+
+.main {
+    position: relative;
+    float:left;
+    background: #cbcbcb;
+    width: 33.3333%;
+    min-width: 235px;
+}
+
+.right {
+    float:right;
+}
+
+
 
 #welcome, #draft, #pick {
     padding: 10px;
+    margin: auto;
 }
 
 .position, .name, .games {
@@ -72,11 +129,13 @@ button:focus {
 .skill {
     margin: 0px 19.8px 10px 10px;
     padding: 5px;
-    width: 130px;
+    width: 164px;
     height: 50px;
     float: left;
     border-radius: 5px;
-    font-size: 14px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #6f3c3c;
 }
 
 .skill:hover {
@@ -116,10 +175,10 @@ button:focus {
 
 #playGame, #playerStats, #improvePlayer{
     padding: 10px;
-    margin: 5px auto;
+    margin: 5px auto 10px auto;
     border: 3px solid gray;
     position: relative;
-    width: 600px;
+    width: 92.5%;
     height: 215px;
     margin-bottom: 10px;
 }
@@ -155,7 +214,7 @@ button:focus {
 .game, .stats{
     float: left;
     text-align: center;
-    width: 98px;
+    width: 113.7px;
     border: 1px solid #bfbfbf;
     padding: 3px 0px;
 }
@@ -165,12 +224,10 @@ button:focus {
 }
 
 .stats {
-    width: 81px;
+    width: 97px;
 }
 
-#seasonTOIC, #seasonTOI, #seasonTOIPast, #playoffTOIC, #playoffTOI, #playoffTOIPast {
-    width: 98px !important;
-}
+
 
 #close, #xGame {
     float:right;
