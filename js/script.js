@@ -155,7 +155,7 @@ function validateForm() {
 
 $(document).ready(function() {
     
-    $("#playerInfoLink, #playGameLink, #myPlayerLink, #improvePlayerLink, #playoffGameLink, #playerStatsLink, #teamRecordLink, #pick, #draft, #submitGames, #info").hide();
+    $("#playerInfoLink, #playGameLink, #myPlayerLink, #improvePlayerLink, #playoffGameLink, #playerStatsLink, #teamRecordLink, #pick, #draft, #submitGames, #info, #myPlayer").hide();
     
     // When next button is clicked, player it taken into the NHL draft
     $("#welcomeNext").on('click', function(){
@@ -184,7 +184,7 @@ $(document).ready(function() {
     
     $("#beginDraft").on('click', function(){
         $("#beginDraft").hide();
-        $("p").append("<br><br><h2>With the number " + player.pick + " of the NHL draft, the " +
+        $("#draftDetails").append("<br><br><h2>With the number " + player.pick + " of the NHL draft, the " +
                      player.team + " select " + player.position + ", " + player.firstName + 
                      " " + player.lastName + ".</h2><br><br><form id='seasonLengthForm'>" + 
                      "<h4>How many games would you like to play each season?</h4><br>" +
@@ -310,6 +310,13 @@ $(document).ready(function() {
     
     
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    $("#myPlayerLink").on('click', function() {
+        if(improvePlayerLinkActive === false && playerStatsLinkActive === false && playButtonClicked === false && playGameLinkActive === false && playoffGameLinkActive === false){
+            $("#myPlayer").toggle();
+        }
+    });
+    
+    
     
     $("#playGameLink").on('click', function() {
         

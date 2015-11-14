@@ -9,6 +9,24 @@
     opacity: 0.3;
 }
 
+.locked {
+    opacity: 0.2;
+}
+
+#myPlayer {
+    padding: 0px 10px;
+    margin: 5px auto 10px auto;
+    border: 3px solid gray;
+    position: relative;
+    width: 92.5%;
+    height: 235px;
+    margin-bottom: 10px;
+}
+
+.achievements img{
+    float: left;
+}
+
 button:focus {
     outline: none;
 }
