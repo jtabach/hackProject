@@ -31,6 +31,8 @@ var opponents = ["Senators", "Lightning", "Bruins", "Red Wings", "Panthers", "Sa
                  "Jets", "Blackhawks", "Avalanche", "Kings", "Canucks", "Coyotes", "Ducks",
                  "Flames", "Oilers"];
 
+
+var yearsPro = 1, playoffBirths = 0, allStarGames = 0, stanleyCups = 0;
 var attributePoints = 9;
 var areasArray = [];
 var skillsArray = [];
@@ -61,7 +63,7 @@ var playoffStatIDs = ["#playoffNum", "#playoffGames", "#playoffGoals", "#playoff
 
 
 
-var games = 0, playoffGames = 0, seasons = 1, playoffs = 1;
+var games = 0, playoffGames = 0, postGames = 0, seasons = 1, playoffs = 1;
 var playoffRounds = ["Conference Quarterfinals", "Conference Semifinals",
                      "Conference Finals", "Stanley Cup Finals"];
 var playoffRound = 0;
@@ -70,9 +72,10 @@ var winsToQualify, winsToAdvance;
 var careerLength = 10;
 var wins = 0, losses = 0, lossesOT = 0;
 var playoffWins = 0, playoffLosses = 0;
-var goals, assists, points, hits, timeOnIce;
-var seasonGoals = 0, seasonAssists = 0, seasonPoints = 0, seasonHits = 0, seasonTimeOnIce = 0;
 
+var goals, assists, points, hits, timeOnIce;
+var postGoals, postAssits, postPoints, postHits, postTimeOnIce;
+var seasonGoals = 0, seasonAssists = 0, seasonPoints = 0, seasonHits = 0, seasonTimeOnIce = 0;
 var playoffGoals = 0, playoffAssists = 0, playoffPoints = 0, playoffHits = 0, playoffTimeOnIce = 0;
 
 var careerGoals = 0, careerAssists = 0, careerPoints = 0, careerHits = 0, careerTimeOnIce = 0;
@@ -135,7 +138,7 @@ function validateForm() {
     var last = document.forms["draftForm"]["lastName"].value;
     var regex = /^[a-zA-Z]+$/;
     if (!first.match(regex) || !last.match(regex)) {
-        alert("Please input a full name. No numbers or special characters");
+        alert("Please input a full name. No numbers, special characters, or spaces");
         formValidated = false;
     } else {
         formValidated = true;
@@ -185,9 +188,10 @@ $(document).ready(function() {
                      player.team + " select " + player.position + ", " + player.firstName + 
                      " " + player.lastName + ".</h2><br><br><form id='seasonLengthForm'>" + 
                      "<h4>How many games would you like to play each season?</h4><br>" +
-                     "12 Games (Recommended)" + " " + "<input type='radio' class='games' id='12' name='length' value='12' checked>" +
+                     "12 Games (Recommended)" + " " + "<input type='radio' class='games' id='12' name='length' value='12'>" +
                      "32 Games" + " " + "<input type='radio' class='games' id='32' name='length' value='32'>" +
                      "82 Games" + " " + "<input type='radio' class='games' id='82' name='length' value='82'>" +
+                     "4 Games (I just want to see if this works)" + " " + "<input type='radio' class='games' id='4' name='length' value='4' checked>" +
                      "<div class='clear'></div><br><br>" +
                       "<h4>How many games would you like to each playoff series to be?</h4><br>" +
                      "Best of 3" + " " + "<input type='radio' class='series' id='3' name='series' value='3' checked>" +
@@ -198,11 +202,10 @@ $(document).ready(function() {
         $("#submitGames").show();
     });
     
-    $("#submitGames").on('click', function(){
-        //seasonLength = Number($("input[type='radio'][name='length']:checked").val());
-        //winsToQualify = seasonLength/2;
-        seasonLength = 3;
-        winsToQualify = 1;
+    $("#submitGames").click(function(event){
+        event.preventDefault();
+        seasonLength = Number($("input[type='radio'][name='length']:checked").val());
+        winsToQualify = seasonLength/2;
         playoffLength = Number($("input[type='radio'][name='series']:checked").val());
         winsToAdvance = Math.ceil(playoffLength/2);
         $("#welcome, #draft, #pick").hide();
@@ -222,7 +225,7 @@ $(document).ready(function() {
     skillsIDs.forEach(function(element, index){
         $("#" + element).html(element + " " + skillsArray[index]); 
     });
-    
+    $("#mpo").html("Overall: " + overallSkill); 
     
     var attributeCategoryIDs = ["#attributePoints > h3", "#averageOffense > h3", "#averageDefense > h3", "#averageAthletics > h3", "#averageOverall > h3"];
     
@@ -292,6 +295,7 @@ $(document).ready(function() {
             $("#averageDefense > h3").html("Defense: " + overallDefense);
             $("#averageAthletics > h3").html("Athlete: " + overallAthletics);
             $("#averageOverall > h3").html("Player Overall: " + overallSkill);
+            $("#mpo").html("Overall: " + overallSkill); 
         }
     });
     
@@ -349,7 +353,7 @@ $(document).ready(function() {
             $("#playGame, #gameNumber, #scoreLine").toggle();
             
             
-            $("#gameNumber h2").html(playoffRounds[playoffRound] + " - Game #" + (playoffGames+1));
+            $("#gameNumber h2").html(playoffRounds[playoffRound] + " - Game #" + (postGames+1));
             if (opponentPicked === false){
                 $("#teamV").html(opponents[Math.floor(Math.random()*opponents.length)]);
             }
@@ -476,70 +480,74 @@ $(document).ready(function() {
             games++;
         } else {
             playoffGames++;
+            postGames++;
         }
         
         if (playoffWins === winsToAdvance && playoffRound === 3) {
+            stanleyCups++;
+            playoffBirths++;
+            $('#pb').html("Playoff Births: " + playoffBirths);
             alert("You won the Stanley Cup!");
-            playoffWins = 0;
-            playoffLosses = 0;
-            playoffGames = 0;
-            playoffRound = 0;
-            seasonEnd = false;
             alert("End of playoffs. Begin Next Season");
             $('#playGameLink').removeClass('gray');
             $('#playoffGameLink').addClass('gray');
             $("#record").html("Team Record: " + 0 + "-" + 0 + "-" + 0);
+            updateStatsArray();
+            updateStats(seasonStatIDs, seasonStats);
+            updateStats(playoffStatIDs, playoffStats);
+            resetSeason();
+            resetPlayoffs();
+            appendStatLine(seasonStatIDs);
+            seasonEnd = false;
+            appendStatLine(playoffStatIDs);
         } else if (playoffWins === winsToAdvance) {
-            alert("Congratlations you moved onto the next round of the playoffs!");
             playoffWins = 0;
             playoffLosses = 0;
-            playoffGames = 0;
+            postGames = 0;
             playoffRound ++;
+            alert("Congratulations you moved to the " +playoffRounds[playoffRound] + "!");
             $("#record").html("Playoff Series: " + playoffWins + "-" + playoffLosses);
         } else if (playoffLosses === winsToAdvance){
+            playoffBirths++;
+            $('#pb').html("Playoff Births: " + playoffBirths);
             alert("You lost in the " + playoffRounds[playoffRound]);
-            playoffWins = 0;
-            playoffLosses = 0;
-            playoffGames = 0;
-            playoffRound = 0;
             alert("End of playoffs. Begin Next Season");
-            seasonEnd = false;
             $('#playGameLink').removeClass('gray');
             $('#playoffGameLink').addClass('gray');
+            $("#record").html("Team Record: " + 0 + "-" + 0 + "-" + 0);
+            updateStatsArray();
+            updateStats(seasonStatIDs, seasonStats);
+            updateStats(playoffStatIDs, playoffStats);
+            resetSeason();
+            resetPlayoffs();
+            appendStatLine(seasonStatIDs);
+            seasonEnd = false;
+            appendStatLine(playoffStatIDs);
+            
         }
         
         if(games >= seasonLength){
-            
-            updateStatsArray();
-            updateStats(seasonStatIDs, seasonStats);
-            //updateStats(playoffStatIDS, playoffStats);
-            appendStatLine(seasonStatIDs, playoffStatIDs);
+            seasonEnd = true;
             
             if(wins >= winsToQualify){
                 $("#playGameLink").addClass('gray');
                 $("#playoffGameLink").removeClass('gray');
-                seasonEnd = true;
                 $("#record").html("Playoff Series: " + playoffWins + "-" + playoffLosses);
-                // playoffs
+            } else {
+                alert("You did not qaulify for te playoffs. You only won + "
+                     + wins + " of the needed " + winsToQualify + ".\n\n"
+                     + "Better luck next year. Next season has begun.");
+                updateStatsArray();
+                updateStats(seasonStatIDs, seasonStats);
+                updateStats(playoffStatIDs, playoffStats);
+                resetSeason();
+                resetPlayoffs();
+                appendStatLine(seasonStatIDs);
+                seasonEnd = false;
+                appendStatLine(playoffStatIDs);
             }
             
-            seasons++;
-            games = 0;
-            goals = 0;
-            assists = 0;
-            points = 0;
-            hits = 0;
-            timeOnIce = 0;
-            wins = 0;
-            losses = 0;
-            lossesOT = 0;
-            seasonGoals = 0; 
-            seasonAssists = 0; 
-            seasonPoints = 0; 
-            seasonHits = 0; 
-            seasonTimeOnIce = 0;
-            totalTimeOnIceMin = 0;
-            totalTimeOnIceSec = 0;
+            
 
             
         }
@@ -570,7 +578,7 @@ $(document).ready(function() {
         
             updateStatsArray();
             updateStats(seasonStatIDs, seasonStats);
-            //updateStats();
+            updateStats(playoffStatIDs, playoffStats);
             $("#playerStats").toggle();
         }
         
@@ -670,7 +678,13 @@ function goalsThisGame(teamGoals, callback) {
         goals = 0;
     }
     
-    seasonGoals += goals;
+    if (seasonEnd === true){
+        postGoals = goals;
+        playoffGoals += postGoals;
+    } else {
+        seasonGoals += goals;
+    }
+    
     careerGoals += goals;
     callback(teamGoals, goals, hitsThisGame);
 }
@@ -716,10 +730,19 @@ function assistsThisGame(teamGoals, goals, callback) {
         assists = 0;
     }
     
-    seasonAssists += assists;
-    careerAssists += assists;
     points = goals + assists;
-    seasonPoints += points;
+    
+    if (seasonEnd === true){
+        postAssists = assists;
+        playoffAssists += postAssists;
+        postPoints = points;
+        playoffPoints += postPoints;
+    } else {
+        seasonAssists += assists;
+        seasonPoints += points;
+    }
+    
+    careerAssists += assists;
     careerPoints += points;
     callback(timeOnIceThisGame);
 }
@@ -752,7 +775,13 @@ function hitsThisGame(callback) {
         hits = 0;
     }
     
-    seasonHits += hits;
+    if (seasonEnd === true){
+        postHits = hits;
+        playoffHits += postHits;
+    } else {
+        seasonHits += hits;
+    }
+    
     careerHits += hits;
     callback();
 }
@@ -796,8 +825,14 @@ function timeOnIceThisGame() {
     }
     timeOnIce = timeOnIceMin + ":" + timeOnIceSec;
     
-    seasonTimeOnIce = Math.floor(totalTimeOnIceMin/(games+1)) + ":" + 
-        Math.floor(totalTimeOnIceSec/(games+1));
+    if (seasonEnd === true){
+        postTimeOnIce = timeOnIce;
+        playoffTimeOnIce = Math.floor(totalTimeOnIceMin/(playoffGames+1)) + ":" + 
+            Math.floor(totalTimeOnIceSec/(playoffGames+1));
+    } else {
+        seasonTimeOnIce = Math.floor(totalTimeOnIceMin/(games+1)) + ":" + 
+            Math.floor(totalTimeOnIceSec/(games+1));
+    }
 }
 
 function determineWinner() {
@@ -847,21 +882,18 @@ function updateStatsArray () {
 
     seasonStats = [seasons, games, seasonGoals, seasonAssists, seasonPoints, seasonHits, seasonTimeOnIce];
 
-    playoffStats = [playoffs, games, playoffGoals, playoffAssists, playoffPoints, playoffHits, playoffTimeOnIce]; 
+    playoffStats = [playoffs, playoffGames, playoffGoals, playoffAssists, playoffPoints, playoffHits, playoffTimeOnIce]; 
     
 }
 
-function appendStatLine(preOrPostIDs1, preOrPostIDs2) {
+function appendStatLine(preOrPostIDs) {
     
-    preOrPostIDs1.forEach(function(element, index){
-        $(element).attr('id', ''+element+'Past');
-    });
-    
-    preOrPostIDs2.forEach(function(element, index){
+    preOrPostIDs.forEach(function(element, index){
         $(element).attr('id', ''+element+'Past');
     });
             
-    $("#seeseasonStats").append("<div class='clear'></div>" +
+    if (seasonEnd === true) {
+        $("#seeseasonStats").append("<div class='clear'></div>" +
             "<h4 class='stats' id='seasonNum'>1</h4>" +
             "<h4 class='stats' id='seasonGames'>0</h4>" +
             "<h4 class='stats' id='seasonGoals'>0</h4>" +
@@ -869,8 +901,8 @@ function appendStatLine(preOrPostIDs1, preOrPostIDs2) {
             "<h4 class='stats' id='seasonPoints'>0</h4>" +
             "<h4 class='stats' id='seasonHits'>0</h4>" +
             "<h4 class='stats endOfStats' id='seasonTOI'>0</h4>");
-    
-    $("#seeplayoffStats").append("<div class='clear'></div>" +
+    } else {
+        $("#seeplayoffStats").append("<div class='clear'></div>" +
             "<h4 class='stats' id='playoffNum'>1</h4>" +
             "<h4 class='stats' id='playoffGames'>0</h4>" +
             "<h4 class='stats' id='playoffGoals'>0</h4>" +
@@ -878,12 +910,10 @@ function appendStatLine(preOrPostIDs1, preOrPostIDs2) {
             "<h4 class='stats' id='playoffPoints'>0</h4>" +
             "<h4 class='stats' id='playoffHits'>0</h4>" +
             "<h4 class='stats endOfStats' id='playoffTOI'>0</h4>");
-            
-            var statHeight = $('#playerStats').height();
-            
-            alert("End of season");
-            
-            $('#playerStats').height(statHeight+52);
+    }
+        
+    var statHeight = $('#playerStats').height();
+    $('#playerStats').height(statHeight+26);
 }
 
 // Receives an array as a parameter and passes it to a for which changes the html to the pregame settings
@@ -893,5 +923,39 @@ function resetGame(arr){
     }
 }
     
-
+function resetSeason() {
+    seasons++;
+    yearsPro++;
+    games = 0;
+    goals = 0;
+    assists = 0;
+    points = 0;
+    hits = 0;
+    timeOnIce = 0;
+    wins = 0;
+    losses = 0;
+    lossesOT = 0;
+    seasonGoals = 0; 
+    seasonAssists = 0; 
+    seasonPoints = 0; 
+    seasonHits = 0; 
+    seasonTimeOnIce = 0;
+    totalTimeOnIceMin = 0;
+    totalTimeOnIceSec = 0;
+    $('#yp').html("Years Pro: " + yearsPro);
+    $('#sc').html("Stanley Cups: " + stanleyCups);
+}
  
+function resetPlayoffs() {
+    playoffs++;
+    playoffWins = 0;
+    playoffLosses = 0;
+    playoffGames = 0;
+    postGames = 0;
+    playoffRound = 0;
+    playoffGoals = 0; 
+    playoffAssists = 0; 
+    playoffPoints = 0; 
+    playoffHits = 0; 
+    playoffTimeOnIce = 0;
+}
