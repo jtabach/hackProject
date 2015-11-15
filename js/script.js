@@ -53,6 +53,7 @@ var playButtonClicked = false, statsButtonClicked = false;
 var formValidated = true;
 var opponentPicked = false;
 var gamespeed = 500;
+var increaseGameSpeed = false, askIncreaseGameSpeed = false;
 
 var resetGameArray = ["#period1V", "#period1H", "#period2V", "#period2H", "#period3V",
                       "#period3H", "#periodOTV", "#periodOTH", "#periodFV", "#periodFH"];
@@ -470,7 +471,16 @@ $(document).ready(function() {
                     }, gamespeed);
                 }, gamespeed);
             }, gamespeed); 
-        }   
+        }
+        
+        if (games === 3 && askIncreaseGameSpeed === false) {
+            increaseGameSpeed = confirm("Would like to greatly increase the game speed?");
+            if (increaseGameSpeed) {
+                gamespeed = 100;
+                askIncreaseGameSpeed = true;
+            }
+        }
+        
     });
     
         
@@ -557,6 +567,9 @@ $(document).ready(function() {
                 
                 // Invokes function to award user for being selected as an Allstar.
                 checkAchievementAllStar();
+                
+                // Check the if user has reached legendary status as allstar games is a requirement.
+                preChecklegend();
             }
         }
         
@@ -570,9 +583,21 @@ $(document).ready(function() {
             stanleyCups++;
             playoffBirths++;
             
-            if (playoffPoints => playoffGames) {
-                pointPerGamePlayoff = true;
+            /** Conditional to check if user has averaged at least one point per game
+            * throughout the Stanley Cup Playoffs.
+            */
+            if (playoffPoints >= playoffGames) {
+                
+                // Alerts user that their player has been selected as the finals MVP.
+                alert("You have been selected as an Conn Smythe Winner as the " +
+                      "Stanley Cup Finals MVP!");
+                
+                // Invokes function to award user for being selected as the finals MVP.
+                checkAchievementfinalsMVP();
             }
+            
+            // Check the if user has reached legendary status as Stanley Cups is a requirement.
+            preChecklegend();
             
             $('#pb').html("Playoff Births: " + playoffBirths);
             alert("You won the Stanley Cup!");
@@ -620,11 +645,35 @@ $(document).ready(function() {
         if(games >= seasonLength){
             seasonEnd = true;
             
-            if (seasonPoints => seasonLength){
-                pointPerGameSeason = true;
+            /** Conditional that checks if the user scored at least as many goals
+            * as games played in the season.
+            */
+            if (seasonGoals >= seasonLength && playoffGames === 0) {
+                
+                // Alert the user that they have won the Rocket Richard Trophy this season.
+//                alert("You have been awarded the Rocket Richard Trophy for " +
+//                      "the most goals by any player this season with " + seasonGoals + " goals!");
+                
+                // Invokes fuction for winning the Rocket Richard Trophy
+                checkAchievementRocket();
+            }
+            
+            /** Conditional that checks if the user recorded at least as many points
+            * as games played in the season and qualified for the playoffs.
+            */
+            if (seasonPoints >= seasonLength && wins >= winsToQualify && playoffGames === 0){
+                
+                // Alert the user that they have won the Hart Memorial Trophy this season.
+                alert("You have been awarded the Hart Memorial Trophy for " +
+                      "being selected the league's the most valuable player " + 
+                      "in the regular season with " + seasonPoints + " points!");
+                
+                // Invokes fuction for winning the Hart Memorial Trophy.
+                checkAchievementMVP();
             }
             
             if(wins >= winsToQualify){
+//                alert("You have qualified for the playoffs!");
                 $("#playGameLink").addClass('gray');
                 $("#playoffGameLink").removeClass('gray');
                 $("#record").html("Playoff Series: " + playoffWins + "-" + playoffLosses);
@@ -838,6 +887,16 @@ function assistsThisGame(teamGoals, goals, callback) {
     
     careerAssists += assists;
     careerPoints += points;
+    
+    /** Conditional to verify if user has reached 500 career points. Is linked
+    * to the legendary Achievement but not invoked until 500 to avoid multple calls.
+    */
+    if (careerPoints >= 500) { 
+    
+        // Check the if user has reached legendary status as career points is a requirement.
+        preChecklegend();
+    }
+    
     callback(timeOnIceThisGame);
 }
 
@@ -1056,6 +1115,19 @@ function resetSeason() {
     $('#yp').html("Years Pro: " + yearsPro);
     $('#sc').html("Stanley Cups: " + stanleyCups);
     pointPerGameSeason = false;
+    
+    // Conditional that checks to see if the user has reached their 7th seaon.
+    if (seasons === 8) {
+        
+        // Alerts the user that they have been made Captain.
+        alert("You have just finished your 7th season with the " + player.team +
+             "./n/nYour teammates have voted and you have been named Captain!");
+        
+        /** Invoked function to award the user for finishing their 7th
+        * season and being named captain.
+        */
+        checkAchievementCaptain();
+    }
 }
  
 function resetPlayoffs() {
@@ -1233,20 +1305,133 @@ function checkAchievementAllStar() {
     }
 }
 
-function checkAchievementCaptain() {}
+/** checkAchievementCaptain() receives no parameters.
+* Passes a conditional prior to being invoked.
+* Called once the user has finished their 7th season.
+*/ 
+function checkAchievementCaptain() {
 
-function checkAchievementRocket() {}
-
-function checkAchievementMVP() {}
-
-function checkAchievementfinalsMVP() {}
-
-function checkAchievementLegend() {}
-    
+    //Checks to see if achievement has been unlocked previously.
+    if (achieveCaptain === false){
         
-//var achievePlayoffs = false, achieveStanleyCup = false, achieve50Wins = false;
-//var achieve100Wins = false, achieve85Overall = false, achieve99Overall = false;
-//var achieveAllStar = false, achieveCaptain = false, achieveRocket = false;
-//var achieveMVP = false, achieveFinalsMVP = false, achieveLegend = false;
+        // Alerts user that they have unlocked the achievement.
+        alert("You have unlocked the Captain Achievement!");
+        
+        /** Removes the locked class which removes the
+        * gray filter on the myPlayer achievement.
+        */
+        $("#achieveCaptain").removeClass('locked');
+        
+        // Achievement set to true to eliminate multiple notifications.
+        achieveCaptain = true;
+    }
+}
 
+/** checkAchievementRocket() receives no parameters.
+* Passes a conditional prior to being invoked.
+* Called if the user has scored at least a goal per game during regular season.
+*/ 
+function checkAchievementRocket() {
 
+    //Checks to see if achievement has been unlocked previously.
+    if (achieveRocket === false){
+        
+        // Alerts user that they have unlocked the achievement.
+        alert("You have unlocked the Rocket Richard Achievement!");
+        
+        /** Removes the locked class which removes the
+        * gray filter on the myPlayer achievement.
+        */
+        $("#achieveRocket").removeClass('locked');
+        
+        // Achievement set to true to eliminate multiple notifications.
+        achieveRocket = true;
+    }
+
+}
+
+/** checkAchievementMVP() receives no parameters.
+* Passes a conditional prior to being invoked.
+* Called if the user has qualified for the playoffs while averaging
+* over a point per game for the regular season.
+*/ 
+function checkAchievementMVP() {
+
+    //Checks to see if achievement has been unlocked previously.
+    if (achieveMVP === false){
+        
+        // Alerts user that they have unlocked the achievement.
+        alert("You have unlocked the MVP Achievement!");
+        
+        /** Removes the locked class which removes the
+        * gray filter on the myPlayer achievement.
+        */
+        $("#achieveMVP").removeClass('locked');
+        
+        // Achievement set to true to eliminate multiple notifications.
+        achieveMVP = true;
+    }
+}
+
+/** checkAchievementFinalsMVP() receives no parameters.
+* Passes a conditional prior to being invoked.
+* Called if the user has won the Stanley Cup while averaging
+* over a point per game for the playoffs.
+*/ 
+function checkAchievementfinalsMVP() {
+
+    //Checks to see if achievement has been unlocked previously.
+    if (achieveFinalsMVP === false){
+        
+        // Alerts user that they have unlocked the achievement.
+        alert("You have unlocked the MVP Achievement!");
+        
+        /** Removes the locked class which removes the
+        * gray filter on the myPlayer achievement.
+        */
+        $("#achieveFinalsMVP").removeClass('locked');
+        
+        // Achievement set to true to eliminate multiple notifications.
+        achieveFinalsMVP = true;
+    }
+}
+
+/** checkAchievementLegend() receives no parameters.
+* Passes 3 conditional prior to being invoked.
+* Called if the user has won the Stanley Cup at least 3 times, has been
+* selected to 7 allstar games and has accumulated at least 500 career points.
+*/ 
+function checkAchievementLegend() {
+
+    //Checks to see if achievement has been unlocked previously.
+    if (achieveFinalsMVP === false){
+        
+        // Alerts user that they have unlocked the achievement.
+        alert("You have unlocked the Legend Achievement! This achievement " +
+              "is awarded for scoring 500 career points, being selected to " +
+              "7 allstar games, and winning 3 Stanley Cups!");
+        
+        /** Removes the locked class which removes the
+        * gray filter on the myPlayer achievement.
+        */
+        $("#achieveFinalsMVP").removeClass('locked');
+        
+        // Achievement set to true to eliminate multiple notifications.
+        achieveFinalsMVP = true;
+    }
+}
+
+/** preCheckLegend() recieves no parameters. It is called in 3 different locations
+* as the conditional requires three variables to result to true.
+*/
+function preChecklegend() {
+    
+    /** Conditional that checks legendary requirements for career points,
+    * allstar games, and Stanley Cups.
+    */
+    if (careerPoints >= 500 && allStarGames >= 7 && stanleyCups >= 3) {
+        
+        // Invokes function awarding the user for being a legend of the NHL.
+        checkAchievementLegend();
+    }
+}
