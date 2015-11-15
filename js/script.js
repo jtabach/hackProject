@@ -73,6 +73,7 @@ var seasonLength, playoffLength;
 var winsToQualify, winsToAdvance;
 var careerLength = 10;
 var wins = 0, losses = 0, lossesOT = 0;
+var careerWins = 0;
 var playoffWins = 0, playoffLosses = 0;
 
 var goals, assists, points, hits, timeOnIce;
@@ -302,6 +303,32 @@ $(document).ready(function() {
             $("#averageAthletics > h3").html("Athlete: " + overallAthletics);
             $("#averageOverall > h3").html("Player Overall: " + overallSkill);
             $("#mpo").html("Overall: " + overallSkill); 
+            
+            // Checks to see if overallSkill has reached 99.
+            if (overallSkill => 99) {
+                
+                // Invokes function to award user for reaching 99 overall.
+                checkAchievement99Overall();
+                
+                /** User's overall has reached an ability to directly effect outcome of games.
+                * User's team has a max goals potential 2 higher than the opponent.
+                * This will result in the user have a greater chance of winning.
+                */
+                playerEffect = 2;
+                
+            // Checks to see if overallSkill has reached 85.
+            } else if (overallSkill => 85) {
+                
+                // Invokes function to award user for reaching 85 overall.
+                checkAchievement85Overall();
+                
+                /** User's overall has reached an ability to directly effect outcome of games.
+                * User's team has a max goals potential 1 higher than the opponent.
+                * This will result in the user have a greater chance of winning.
+                */
+                playerEffect = 1;
+            }
+           
         }
     });
     
@@ -457,7 +484,7 @@ $(document).ready(function() {
             statsButtonClicked = true;
             
             
-            $("#playerName").html(player.firstName);
+            $("#playerName").html(player.lastName);
             $("#gameGoals").html(goals);
             $("#gameAssists").html(assists);
             $("#gamePoints").html(points);
@@ -510,9 +537,19 @@ $(document).ready(function() {
         }
         
         if (playoffWins === winsToAdvance && playoffRound === 3) {
+            
+            // Invokes function to award user for qualifying for the playoffs.
+            checkAchievementPlayoffs();
+            
+            // Invokes function to award user for winning the Stanley Cup.
+            checkAchievementStanleyCup();
             stanleyCups++;
             playoffBirths++;
-            checkAchievements();
+            
+            if (playoffPoints => playoffGames) {
+                pointPerGamePlayoff = true;
+            }
+            
             $('#pb').html("Playoff Births: " + playoffBirths);
             alert("You won the Stanley Cup!");
             alert("End of playoffs. Begin Next Season");
@@ -535,8 +572,10 @@ $(document).ready(function() {
             alert("Congratulations you moved to the " +playoffRounds[playoffRound] + "!");
             $("#record").html("Playoff Series: " + playoffWins + "-" + playoffLosses);
         } else if (playoffLosses === winsToAdvance){
+            
+            // Invokes the function to award user for qualifying for the playoffs.
+            checkAchievementPlayoffs();
             playoffBirths++;
-            checkAchievements();
             $('#pb').html("Playoff Births: " + playoffBirths);
             alert("You lost in the " + playoffRounds[playoffRound]);
             alert("End of playoffs. Begin Next Season");
@@ -556,6 +595,10 @@ $(document).ready(function() {
         
         if(games >= seasonLength){
             seasonEnd = true;
+            
+            if (seasonPoints => seasonLength){
+                pointPerGameSeason = true;
+            }
             
             if(wins >= winsToQualify){
                 $("#playGameLink").addClass('gray');
@@ -867,8 +910,10 @@ function determineWinner() {
         $("#teamWins h2").html("" + player.team + " Win");
         if (seasonEnd === false) {
             wins++;
+            careerWins++;
         } else {
             playoffWins++;
+            careerWins++;
         }
     } else if (periodRegH < periodRegV){
         $("#teamWins h2").html("" + player.team + " Lose");
@@ -882,8 +927,10 @@ function determineWinner() {
             $("#teamWins h2").html("" + player.team + " Win in Overtime");
             if (seasonEnd === false) {
                 wins++;
+                careerWins++;
             } else {
                 playoffWins++;
+                careerWins++;
         }
         } else {
             $("#teamWins h2").html("" + player.team + " Lose in Overtime");
@@ -971,6 +1018,7 @@ function resetSeason() {
     totalTimeOnIceSec = 0;
     $('#yp').html("Years Pro: " + yearsPro);
     $('#sc').html("Stanley Cups: " + stanleyCups);
+    pointPerGameSeason = false;
 }
  
 function resetPlayoffs() {
@@ -985,16 +1033,112 @@ function resetPlayoffs() {
     playoffPoints = 0; 
     playoffHits = 0; 
     playoffTimeOnIce = 0;
+    pointPerGamePlayoff = false;
 }
 
-function checkAchievements() {
+/** The following 12 functions check for player achievements. 
+* Achievements are shown by clicking on the myPlayer Button.
+* Any achievements that have not been unlocked have a gray filter.
+* Hovering over an achievement will notify the user what tasks
+* must be accomplished to unlock that achievement.
+**/
     
-    if (achievePlayoffs === false && playoffBirths === 1){
-        achievePlayoffs = true;
-        alertAchievement();
+/** checkAchievementPlayoffs() receives no parameters.
+* Called at end of season if user qualified for playoffs.
+*/
+function checkAchievementPlayoffs() {
+
+    //Checks to see if achievement has been unlocked previously.
+    if (achievePlayoffs === false){
+        
+        // Alerts user that they have unlucked the achievement.
+        alert("You have unlocked the Playoffs Achievement!");
+        
+        /** Removes the locked class which removes the
+        * gray filter on the myPlayer achievement.
+        */
         $("#achievePlayoffs").removeClass('locked');
+        
+        // Achievement set to true to eliminate multiple notifications.
+        achievePlayoffs = true;
+    }
+}
+
+/** checkAchievementStanleyCup() receives no parameters.
+* Called at end of playoffs if user won the Stanley Cup.
+*/    
+function checkAchievementStanleyCup() {   
+    
+    //Checks to see if achievement has been unlocked previously.
+    if (achieveStanleyCup === false){
+        
+        // Alerts user that they have unlocked the achievement.
+        alert("You have unlocked the Stanley Cup Winner Achievement!");
+        
+        /** Removes the locked class which removes the
+        * gray filter on the myPlayer achievement.
+        */
+        $("#achieveStanleyCup").removeClass('locked');
+        
+        // Achievement set to true to eliminate multiple notifications.
+        achieveStanleyCup = true;
+    }
+}
+
+function checkAchievement50Wins() {}
+
+function checkAchievement100Wins() {}
+
+function checkAchievement85Overall() {}
+
+function checkAchievement99Overall() {}
+
+function checkAchievementAllStar() {}
+
+function checkAchievementCaptain() {}
+
+function checkAchievementRocket() {}
+
+function checkAchievementMVP() {}
+
+function checkAchievementfinalsMVP() {}
+
+function checkAchievementLegend() {}
+    /* 50 Career Wins Acheivement. Locked class removed and player
+    alerted if player has won 50 career games. 
+    **/
+    if (achieve50Wins === false && careerWins >= 50){
+        achieve50Wins = true;
+        alert("You have unlocked the 50 Career Wins Achievement!");
+        $("#achieve50Wins").removeClass('locked');
     }
     
+    /* 100 Career Wins Acheivement. Locked class removed and player
+    alerted if player has won 100 career games. 
+    **/
+    if (achieve100Wins === false && careerWins >= 100){
+        achieve100Wins = true;
+        alert("You have unlocked the 100 Career Wins Achievement!");
+        $("#achieve100Wins").removeClass('locked');
+    }
+    
+    /* 85 Player Overall Acheivement. Locked class removed and player
+    alerted if player has acheived an 85 overall rating. 
+    **/
+    if (achieve85Overall === false && overallSkill >= 85){
+        achieve85Overall = true;
+        alert("You have unlocked the 85 Player Overall Achievement!");
+        $("#achieve85Overall").removeClass('locked');
+    }
+    
+    /* 85 Player Overall Acheivement. Locked class removed and player
+    alerted if player has acheived an 99 overall rating. 
+    **/
+    if (achieve99Overall === false && overallSkill >= 99){
+        achieve99Overall = true;
+        alert("You have unlocked the 99 Player Overall Achievement!");
+        $("#achieve99Overall").removeClass('locked');
+    }
         
 //        var achievePlayoffs = false, achieveStanleyCup = false, achieve50Wins = false;
 //var achieve100Wins = false, achieve85Overall = false, achieve99Overall = false;
@@ -1002,6 +1146,3 @@ function checkAchievements() {
 //var achieveMVP = false, achieveFinalsMVP = false, achieveLegend = false;
 }
 
-function alertAchievement() {
-    alert("You unlocked an achievement! Click on your player to view your progress.");
-}
