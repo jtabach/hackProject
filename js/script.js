@@ -305,26 +305,26 @@ $(document).ready(function() {
             $("#mpo").html("Overall: " + overallSkill); 
             
             // Checks to see if overallSkill has reached 99.
-            if (overallSkill => 99) {
+            if (overallSkill >= 99) {
                 
                 // Invokes function to award user for reaching 99 overall.
                 checkAchievement99Overall();
                 
                 /** User's overall has reached an ability to directly effect outcome of games.
                 * User's team has a max goals potential 2 higher than the opponent.
-                * This will result in the user have a greater chance of winning.
+                * This will result in the user having a much greater chance of winning.
                 */
                 playerEffect = 2;
                 
             // Checks to see if overallSkill has reached 85.
-            } else if (overallSkill => 85) {
+            } else if (overallSkill >= 85) {
                 
                 // Invokes function to award user for reaching 85 overall.
                 checkAchievement85Overall();
                 
                 /** User's overall has reached an ability to directly effect outcome of games.
                 * User's team has a max goals potential 1 higher than the opponent.
-                * This will result in the user have a greater chance of winning.
+                * This will result in the user having a slightly greater chance of winning.
                 */
                 playerEffect = 1;
             }
@@ -534,6 +534,30 @@ $(document).ready(function() {
         } else {
             playoffGames++;
             postGames++;
+        }
+        
+        /** Conditional that is used to check if player has qualified as an allstar
+        * at the halfway point of the season.
+        */
+        if (seasonLength/2 === games) {
+            
+            /** Conditional to check if user has averaged at least one point per game
+            * at the half way point of the season. If so, they are selected as an allstar.
+            */
+            if (seasonPoints >= games) {
+                
+                // Increases the number of times user has been an allstar.
+                allStarGames++;
+                
+                // Appends the myPlayer Button to reflect number or allstar appearances
+                $("#ag").html("Allstar Games: " + allStarGames);
+                
+                // Alerts user that their player has been selected as an allstar.
+                alert("You have been selected as an allstar this season!");
+                
+                // Invokes function to award user for being selected as an Allstar.
+                checkAchievementAllStar();
+            }
         }
         
         if (playoffWins === winsToAdvance && playoffRound === 3) {
@@ -941,6 +965,19 @@ function determineWinner() {
         }
         }
     }
+    
+    // Checks to see if user has reached 100 career wins.
+    if (careerWins >= 100) {
+        
+        // Invokes function to award user for reaching 100 career wins.
+        checkAchievement100Wins();
+        
+    // Checks to see if user has reached 50 career wins.    
+    } else if (careerWins >= 50) {
+        
+        // Invokes function to award user for reaching 100 career wins.
+        checkAchievement50Wins();
+    }
 }    
 
 // Function updates the html to reflect the new player stats
@@ -1085,15 +1122,116 @@ function checkAchievementStanleyCup() {
     }
 }
 
-function checkAchievement50Wins() {}
+/** checkAchievement50Wins() receives no parameters.
+* Passes a conditional prior to being invoked.
+* Called once the user has won 50 games.
+*/  
+function checkAchievement50Wins() {
 
-function checkAchievement100Wins() {}
+    //Checks to see if achievement has been unlocked previously.
+    if (achieve50Wins === false){
+        
+        // Alerts user that they have unlocked the achievement.
+        alert("You have unlocked the 50 Wins Achievement!");
+        
+        /** Removes the locked class which removes the
+        * gray filter on the myPlayer achievement.
+        */
+        $("#achieve50Wins").removeClass('locked');
+        
+        // Achievement set to true to eliminate multiple notifications.
+        achieve50Wins = true;
+    }
+}
 
-function checkAchievement85Overall() {}
+/** checkAchievement100Wins() receives no parameters.
+* Passes a conditional prior to being invoked.
+* Called once the user has won 100 games.
+*/  
+function checkAchievement100Wins() {
 
-function checkAchievement99Overall() {}
+    //Checks to see if achievement has been unlocked previously.
+    if (achieve100Wins === false){
+        
+        // Alerts user that they have unlocked the achievement.
+        alert("You have unlocked the 100 Wins Achievement!");
+        
+        /** Removes the locked class which removes the
+        * gray filter on the myPlayer achievement.
+        */
+        $("#achieve100Wins").removeClass('locked');
+        
+        // Achievement set to true to eliminate multiple notifications.
+        achieve100Wins = true;
+    }
+}
 
-function checkAchievementAllStar() {}
+/** checkAchievement85Overall() receives no parameters.
+* Passes a conditional prior to being invoked.
+* Called once the user's player has reached an 85 overall rating.
+*/  
+function checkAchievement85Overall() {
+
+    //Checks to see if achievement has been unlocked previously.
+    if (achieve85Overall === false){
+        
+        // Alerts user that they have unlocked the achievement.
+        alert("You have unlocked the 85 Overall Rating Achievement!");
+        
+        /** Removes the locked class which removes the
+        * gray filter on the myPlayer achievement.
+        */
+        $("#achieve85Overall").removeClass('locked');
+        
+        // Achievement set to true to eliminate multiple notifications.
+        achieve85Overall = true;
+    }
+}
+
+/** checkAchievement99Overall() receives no parameters.
+* Passes a conditional prior to being invoked.
+* Called once the user's player has reached an 99 overall rating.
+*/  
+function checkAchievement99Overall() {
+
+    //Checks to see if achievement has been unlocked previously.
+    if (achieve99Overall === false){
+        
+        // Alerts user that they have unlocked the achievement.
+        alert("You have unlocked the 99 Overall Rating Achievement!");
+        
+        /** Removes the locked class which removes the
+        * gray filter on the myPlayer achievement.
+        */
+        $("#achieve99Overall").removeClass('locked');
+        
+        // Achievement set to true to eliminate multiple notifications.
+        achieve99Overall = true;
+    }
+}
+
+/** checkAchievementAllStar() receives no parameters.
+* Passes a conditional prior to being invoked.
+* Called once the user has reached the halfway point of the season and
+* has averaged at least a one point per game average.
+*/ 
+function checkAchievementAllStar() {
+
+    //Checks to see if achievement has been unlocked previously.
+    if (achieveAllStar === false){
+        
+        // Alerts user that they have unlocked the achievement.
+        alert("You have unlocked the Allstar Achievement!");
+        
+        /** Removes the locked class which removes the
+        * gray filter on the myPlayer achievement.
+        */
+        $("#achieveAllStar").removeClass('locked');
+        
+        // Achievement set to true to eliminate multiple notifications.
+        achieveAllStar = true;
+    }
+}
 
 function checkAchievementCaptain() {}
 
@@ -1104,45 +1242,11 @@ function checkAchievementMVP() {}
 function checkAchievementfinalsMVP() {}
 
 function checkAchievementLegend() {}
-    /* 50 Career Wins Acheivement. Locked class removed and player
-    alerted if player has won 50 career games. 
-    **/
-    if (achieve50Wins === false && careerWins >= 50){
-        achieve50Wins = true;
-        alert("You have unlocked the 50 Career Wins Achievement!");
-        $("#achieve50Wins").removeClass('locked');
-    }
     
-    /* 100 Career Wins Acheivement. Locked class removed and player
-    alerted if player has won 100 career games. 
-    **/
-    if (achieve100Wins === false && careerWins >= 100){
-        achieve100Wins = true;
-        alert("You have unlocked the 100 Career Wins Achievement!");
-        $("#achieve100Wins").removeClass('locked');
-    }
-    
-    /* 85 Player Overall Acheivement. Locked class removed and player
-    alerted if player has acheived an 85 overall rating. 
-    **/
-    if (achieve85Overall === false && overallSkill >= 85){
-        achieve85Overall = true;
-        alert("You have unlocked the 85 Player Overall Achievement!");
-        $("#achieve85Overall").removeClass('locked');
-    }
-    
-    /* 85 Player Overall Acheivement. Locked class removed and player
-    alerted if player has acheived an 99 overall rating. 
-    **/
-    if (achieve99Overall === false && overallSkill >= 99){
-        achieve99Overall = true;
-        alert("You have unlocked the 99 Player Overall Achievement!");
-        $("#achieve99Overall").removeClass('locked');
-    }
         
-//        var achievePlayoffs = false, achieveStanleyCup = false, achieve50Wins = false;
+//var achievePlayoffs = false, achieveStanleyCup = false, achieve50Wins = false;
 //var achieve100Wins = false, achieve85Overall = false, achieve99Overall = false;
 //var achieveAllStar = false, achieveCaptain = false, achieveRocket = false;
 //var achieveMVP = false, achieveFinalsMVP = false, achieveLegend = false;
-}
+
 
