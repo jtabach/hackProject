@@ -23,10 +23,10 @@
             <div class="clear"></div>
 
             <div class="main">
-                <a id="playGameLink" >
+                <a id="playerStatsLink">
                     <button>
-                        <h1>Play Season Game</h1>
-                        <img src="img/hockeyRink.jpeg" height="152px" width="225px">
+                        <h1>Player Stats</h1>
+                        <img src="img/stats.jpg" height="152px" width="225px">
                     </button>
                 </a>
 
@@ -62,12 +62,13 @@
                     </a>
 
                 <div class="clear"></div>
-                <a id="playerStatsLink">
+                <a id="playGameLink" >
                     <button>
-                        <h1>Player Stats</h1>
-                        <img src="img/stats.jpg" height="152px" width="225px">
+                        <h1>Play Season Game</h1>
+                        <img src="img/hockeyRink.jpeg" height="152px" width="225px">
                     </button>
                 </a>
+                
             </div>
 
             
@@ -109,7 +110,8 @@
                 <button id="beginDraft">Begin Draft</button>
                 <div class="clear"></div><br>
                 <p id="draftDetails">Today is the big day. All signs point to you being picked in the first round. You will likely be playing for the team that draft’s you for most of your career. Hope it’s a good one. Click 'Begin Draft' when ready.</p>
-                <button id='submitGames'>Lets Start Playing</button>
+                <input id="submitGames" type="button" value="Lets Start Playing"></button>
+            </form>
             </div>
             
             
@@ -118,6 +120,8 @@
                 <div id="gameNumber">
                     <h2>Regular Season Game #</h2>
                     <button class="pGame" id="play">Play</button>
+                    <button class="pGame" id="gameStats">Stats</button>
+                    <button class="pGame" id="xGame">Close</button>
                 </div>
                 <div class="clear"></div>
                 <div id="scoreLine" >
@@ -145,7 +149,6 @@
                 <div class="clear"></div>
                 <div id="teamWins">
                     <h2>Team Wins</h2>
-                    <button class = "pGame" id="gameStats">Stats</button>
                 </div>
                 <div class="clear"></div>
                 <div id="statLine" >
@@ -165,8 +168,6 @@
                 </div>
                 <div id="attributesEarned">
                     <h2>Attribute Points Earned</h2>
-                    <button class="x" id="xGame">X</button>
-                    <h3 id="close">CLOSE --></h3>
                 </div>
             </div>
 
@@ -283,7 +284,6 @@
                     <h4 class="stats" id="playoffHits">0</h4>
                     <h4 class="stats" id="playoffTOI">0</h4>
                  </div>
-                
             </div>
             
             

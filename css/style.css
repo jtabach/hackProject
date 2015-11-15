@@ -63,7 +63,7 @@ button:focus {
     margin: 10px 15px;
 }
 
-#improvePlayerLink, #playerStatsLink {
+#improvePlayerLink, #playGameLink {
     float:right;
 }
 
@@ -247,19 +247,3 @@ button:focus {
     width: 97px;
 }
 
-
-
-#close, #xGame {
-    float:right;
-    margin-top: 13px;
-}
-
-.x {
-    float: right;
-    margin: 0px 0px 0px 0px;
-    padding: 0px 5px 0px 5px;
-    font-size: 10px;
-    height: 20px;
-    background: #33334e;
-    color: #ffffff;
-}

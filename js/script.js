@@ -92,6 +92,7 @@ var goalChance, assistChance, hitChance, timeOnIceAverage;
 var teamGoalsLeft, maxPlayerPoints;
 var goalAbility, assistAbility, hitAbility, timeOnIceAbility;
 var timeOnIceMin, timeOnIceSec, totalTimeOnIceMin = 0, totalTimeOnIceSec = 0;
+var playoffTotalTimeOnIceSec = 0, playoffTotalTimeOnIceMin = 0;
 var lowImpactAbility = 0.05, medImpactAbility = 0.1, highImpactAbility = 0.25;
 
 // Achievements
@@ -197,17 +198,16 @@ $(document).ready(function() {
                      player.team + " select " + player.position + ", " + player.firstName + 
                      " " + player.lastName + ".</h2><br><br><form id='seasonLengthForm'>" + 
                      "<h4>How many games would you like to play each season?</h4><br>" +
-                     "12 Games (Recommended)" + " " + "<input type='radio' class='games' id='12' name='length' value='12'>" +
+                     "12 Games (Recommended)" + " " + "<input type='radio' class='games' id='12' name='length' value='12' checked>" +
                      "32 Games" + " " + "<input type='radio' class='games' id='32' name='length' value='32'>" +
                      "82 Games" + " " + "<input type='radio' class='games' id='82' name='length' value='82'>" +
-                     "4 Games (I just want to see if this works)" + " " + "<input type='radio' class='games' id='4' name='length' value='4' checked>" +
+                     "4 Games (I just want to see if this works)" + " " + "<input type='radio' class='games' id='4' name='length' value='4'>" +
                      "<div class='clear'></div><br><br>" +
                       "<h4>How many games would you like to each playoff series to be?</h4><br>" +
                      "Best of 3" + " " + "<input type='radio' class='series' id='3' name='series' value='3' checked>" +
                      "Best of 5" + " " + "<input type='radio' class='series' id='5' name='series' value='5'>" +
                      "Best of 7" + " " + "<input type='radio' class='series' id='7' name='series' value='7'>" +
-                     "<div class='clear'></div>" +
-                     "</form>");
+                     "<div class='clear'></div>");
         $("#submitGames").show();
     });
     
@@ -374,6 +374,7 @@ $(document).ready(function() {
         if(improvePlayerLinkActive === false && playerStatsLinkActive === false && playButtonClicked === false && seasonEnd === false && myPlayerLinkActive === false){
         
             if (playGameLinkActive === false){
+                $("#gameStats, #xGame").hide();
                 $("#improvePlayerLink, #playerStatsLink, #myPlayerLink").addClass('gray');
                 playGameLinkActive = true;           
             } else {
@@ -396,7 +397,9 @@ $(document).ready(function() {
     
     $("#playoffGameLink").on('click', function() {
         if(improvePlayerLinkActive === false && playerStatsLinkActive === false && playButtonClicked === false && seasonEnd === true && myPlayerLinkActive === false){
+            
             if (playoffGameLinkActive === false){
+                $("#gameStats, #xGame").hide();
                 $("#improvePlayerLink, #playerStatsLink, #myPlayerLink").addClass('gray');
                 playoffGameLinkActive = true;           
             } else {
@@ -428,6 +431,7 @@ $(document).ready(function() {
         // Checks to see if the play button has been clicked
         if (playButtonClicked === false){
             
+            $("#play").hide();
             /* Changes the playButtonClicked to true to avoid multiple calls
             to the setTimeout method during a single game*/
             playButtonClicked = true;
@@ -466,7 +470,7 @@ $(document).ready(function() {
                         }
                         // Displays if your team wins or loses
                         setTimeout(function(){
-                            $("#teamWins").show();
+                            $("#teamWins, #gameStats").show();
                         }, gamespeed);
                     }, gamespeed);
                 }, gamespeed);
@@ -490,6 +494,7 @@ $(document).ready(function() {
         // Checks to see if the stats button has previously been clicked for the game
         if (statsButtonClicked === false){
             
+            $("#gameStats").hide();
             // Sets statsButtonClicked to true to avoid multiple clicks of the stats button
             statsButtonClicked = true;
             
@@ -502,7 +507,7 @@ $(document).ready(function() {
             $("#gameTOI").html(timeOnIce);
             
             // shows the player stats and attribute points earned
-            $("#statLine, #attributesEarned").show();
+            $("#statLine, #attributesEarned, #xGame").show();
             
         }
         
@@ -514,6 +519,9 @@ $(document).ready(function() {
         
         // Invokes resestGame which resets the html for the next game
         resetGame(resetGameArray);
+        
+        $("#xGame").hide();
+        $("#play").show();
         
         // Updates the team record
         
@@ -568,7 +576,7 @@ $(document).ready(function() {
                 // Invokes function to award user for being selected as an Allstar.
                 checkAchievementAllStar();
                 
-                // Check the if user has reached legendary status as allstar games is a requirement.
+                // Check if the user has reached legendary status as allstar games is a requirement.
                 preChecklegend();
             }
         }
@@ -651,8 +659,8 @@ $(document).ready(function() {
             if (seasonGoals >= seasonLength && playoffGames === 0) {
                 
                 // Alert the user that they have won the Rocket Richard Trophy this season.
-//                alert("You have been awarded the Rocket Richard Trophy for " +
-//                      "the most goals by any player this season with " + seasonGoals + " goals!");
+                alert("You have been awarded the Rocket Richard Trophy for " +
+                      "the most goals by any player this season with " + seasonGoals + " goals!");
                 
                 // Invokes fuction for winning the Rocket Richard Trophy
                 checkAchievementRocket();
@@ -673,10 +681,12 @@ $(document).ready(function() {
             }
             
             if(wins >= winsToQualify){
-//                alert("You have qualified for the playoffs!");
                 $("#playGameLink").addClass('gray');
                 $("#playoffGameLink").removeClass('gray');
                 $("#record").html("Playoff Series: " + playoffWins + "-" + playoffLosses);
+                if (playoffGames === 0) {
+                    alert("You have qualified for the playoffs!");
+                }
             } else {
                 alert("You did not qaulify for te playoffs. You only won "
                      + wins + " of the needed " + winsToQualify + ".\n\n"
@@ -979,9 +989,10 @@ function timeOnIceThisGame() {
     timeOnIce = timeOnIceMin + ":" + timeOnIceSec;
     
     if (seasonEnd === true){
-        postTimeOnIce = timeOnIce;
-        playoffTimeOnIce = Math.floor(totalTimeOnIceMin/(playoffGames+1)) + ":" + 
-            Math.floor(totalTimeOnIceSec/(playoffGames+1));
+        playoffTotalTimeOnIceMin += timeOnIceMin;
+        playoffTotalTimeOnIceSec += timeOnIceSec;
+        playoffTimeOnIce = Math.floor(playoffTotalTimeOnIceMin/(playoffGames+1)) + ":" + 
+            Math.floor(playoffTotalTimeOnIceSec/(playoffGames+1));
     } else {
         seasonTimeOnIce = Math.floor(totalTimeOnIceMin/(games+1)) + ":" + 
             Math.floor(totalTimeOnIceSec/(games+1));
@@ -1110,6 +1121,8 @@ function resetSeason() {
     seasonPoints = 0; 
     seasonHits = 0; 
     seasonTimeOnIce = 0;
+    timeOnIceSec = 0;
+    timeOnIceMin = 0;
     totalTimeOnIceMin = 0;
     totalTimeOnIceSec = 0;
     $('#yp').html("Years Pro: " + yearsPro);
@@ -1142,6 +1155,8 @@ function resetPlayoffs() {
     playoffPoints = 0; 
     playoffHits = 0; 
     playoffTimeOnIce = 0;
+    playoffTotalTimeOnIceMin = 0;
+    playoffTotalTimeOnIceSec = 0;
     pointPerGamePlayoff = false;
 }
 
