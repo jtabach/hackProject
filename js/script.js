@@ -249,35 +249,17 @@ $(document).ready(function() {
     
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     $("#improvePlayerLink").on('click', function(){
-    
-        // Check to see if playGame link or playerStats link is active
-        // If it is, don't allow increase Skill dev to show
-        if(playGameLinkActive === false && playoffGameLinkActive === false && playerStatsLinkActive === false && myPlayerLinkActive === false){
-        
-            if (improvePlayerLinkActive === false){
-                $("#playGameLink, #playoffGameLink, #playerStatsLink, #myPlayerLink").addClass('gray');
-                improvePlayerLinkActive = true;           
-            } else {
-                improvePlayerLinkActive = false;
-                $("#playerStatsLink, #myPlayerLink").removeClass('gray');
-                if(seasonEnd === false){
-                    $("#playGameLink").removeClass('gray');
-                } else {
-                    $("#playoffGameLink").removeClass('gray');
-                }
-            }
-    
+        if (!$(this).hasClass('gray')) {
+            getLeaveGrayID(seasonEnd, links.improvePlayer, links, toggleLinksGray);
             $("#improvePlayer").toggle();
             
             // Invokes the function and passes player skills object
             getNewOverallSkillLevel(player.skills);
-
-
-
-            
         }
     });
        
+    
+    
     // Click function on an attribute
     $('.skill').on('click', function(){
 
@@ -344,22 +326,8 @@ $(document).ready(function() {
     
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     $("#myPlayerLink").on('click', function() {
-        if(improvePlayerLinkActive === false && playerStatsLinkActive === false && playButtonClicked === false && playGameLinkActive === false && playoffGameLinkActive === false){
-            
-            if (myPlayerLinkActive === false){
-                $("#playGameLink, #playoffGameLink, #playerStatsLink, #improvePlayerLink").addClass('gray');
-                myPlayerLinkActive = true;           
-            } else {
-                myPlayerLinkActive = false;
-                $("#playerStatsLink, #improvePlayerLink").removeClass('gray');
-                if(seasonEnd === false){
-                    $("#playGameLink").removeClass('gray');
-                } else {
-                    $("#playoffGameLink").removeClass('gray');
-                }
-            }
-            
-            
+        if (!$(this).hasClass('gray')) {
+            getLeaveGrayID(seasonEnd, links.myPlayer, links, toggleLinksGray);
             $("#myPlayer").toggle();
         }
     });
@@ -378,19 +346,10 @@ $(document).ready(function() {
     
     $("#playGameLink").on('click', function() {
         
-        // Check to see if improvePlayer link or playerStats link is active
-        // If it is, don't allow increase Skill dev to show
-        if(improvePlayerLinkActive === false && playerStatsLinkActive === false && playButtonClicked === false && seasonEnd === false && myPlayerLinkActive === false){
+        if (!$(this).hasClass('gray')) {
+            getLeaveGrayID(seasonEnd, links.playGame, links, toggleLinksGray);
         
-            if (playGameLinkActive === false){
-                $("#gameStats, #xGame").hide();
-                $("#improvePlayerLink, #playerStatsLink, #myPlayerLink").addClass('gray');
-                playGameLinkActive = true;           
-            } else {
-                $("#improvePlayerLink, #playerStatsLink, #myPlayerLink").removeClass('gray');
-                playGameLinkActive = false;
-            }
-        
+            $("#gameStats, #xGame").hide();
             $("#playGame, #gameNumber, #scoreLine").toggle();
 
             //Updates the game number and changes the html
@@ -405,17 +364,11 @@ $(document).ready(function() {
     });
     
     $("#playoffGameLink").on('click', function() {
-        if(improvePlayerLinkActive === false && playerStatsLinkActive === false && playButtonClicked === false && seasonEnd === true && myPlayerLinkActive === false){
-            
-            if (playoffGameLinkActive === false){
-                $("#gameStats, #xGame").hide();
-                $("#improvePlayerLink, #playerStatsLink, #myPlayerLink").addClass('gray');
-                playoffGameLinkActive = true;           
-            } else {
-                $("#improvePlayerLink, #playerStatsLink, #myPlayerLink").removeClass('gray');
-                playoffGameLinkActive = false;
-            }
         
+        if (!$(this).hasClass('gray')) {
+            getLeaveGrayID(seasonEnd, links.playoffGame, links, toggleLinksGray);
+            
+            $("#gameStats, #xGame").hide();
             $("#playGame, #gameNumber, #scoreLine").toggle();
             
             
@@ -740,7 +693,7 @@ $(document).ready(function() {
 var links = {
     playerStats: {
         active: false,
-        id: "#playerStatsLink",
+        id: "#playerStatsLink"
 //        clickHandler: pizzaria
     },
     improvePlayer: {
@@ -790,37 +743,7 @@ function toggleLinksGray(leaveGray, clickedLink, linksObj) {
         }
     }
 }
-
-
-
-//var linkIDs = ["#playerStatsLink", "#improvePlayerLink", "#myPlayerLink", 
-//               "#playGameLink", "#playoffGameLink"];
-//
-//
-//function getLeaveGrayID(seasonEnd, linkClicked, linkID, callbackLinks) {
-//    var leaveGray;
-//    leaveGray = (seasonEnd) ? "#playGameLink" : "#playoffGameLink";
-//    return callbackLinks(linkClicked, linkID, leaveGray);
-//}
-//
-//function toggleLinksGray(linkClicked, linkID, leaveGray) {
-//    if (!linkClicked) {
-//        linkIDs.forEach(function(element, index){
-//            if (element !== linkID) {
-//                $(element).addClass('gray');
-//            }
-//        });
-//    } else {
-//        linkClicked = false;
-//        linkIDs.forEach(function(element, index){
-//            if (element !== linkID && element !== leaveGray) {
-//                $(element).removeClass('gray');
-//            }
-//        });
-//    }
-//}
     
-
 // Callback function that takes two functions as parameters
 function simulateGame(callback1, callback2) {
     
@@ -1238,6 +1161,72 @@ function resetPlayoffs() {
     playoffTotalTimeOnIceSec = 0;
     pointPerGamePlayoff = false;
 }
+
+
+// Achievements Object.
+var achievements = {
+    playoffs: {
+        unlocked: false,
+        alert: "You have unlocked the Playoffs Achievement!",
+        id: "#achievePlayoffs"
+    },
+    stanleyCup: {
+        unlocked: false,
+        alert: "You have unlocked the Stanley Cup Winner Achievement!",
+        id: "#achieveStanleyCup"
+    },
+    wins50: {
+        unlocked: false,
+        alert: "You have unlocked the 50 Wins Achievement!",
+        id: "#achieve50Wins"
+    },
+    wins100: {
+        unlocked: false,
+        alert: "You have unlocked the 100 Wins Achievement!",
+        id: "#achieve100Wins"
+    },
+    overall85: {
+        unlocked: false,
+        alert: "You have unlocked the 85 Overall Rating Achievement!",
+        id: "#achieve85Overall"
+    },
+    overall99: {
+        unlocked: false,
+        alert: "You have unlocked the 99 Overall Rating Achievement!",
+        id: "#achieve99Overall"
+    },
+    allStar: {
+        unlocked: false,
+        alert: "You have unlocked the All Star Achievement!",
+        id: "#achieveAllStar"
+    },
+    captain: {
+        unlocked: false,
+        alert: "You have unlocked the Captain Achievement!",
+        id: "#achieveCaptain"
+    },
+    rocket: {
+        unlocked: false,
+        alert: "You have unlocked the Rocket Richard Achievement!",
+        id: "#achieveRocket"
+    },
+    mvp: {
+        unlocked: false,
+        alert: "You have unlocked the MVP Achievement!",
+        id: "#achieveMVP"
+    },
+    finalsMVP: {
+        unlocked: false,
+        alert: "You have unlocked the Finals MVP Achievement!",
+        id: "#achieveFinalsMVP"
+    },
+    legend: {
+        unlocked: false,
+        alert: "You have unlocked the Legend Achievement!",
+        id: "#achieveLegend"
+    }
+}
+
 
 /** The following 12 functions check for player achievements. 
 * Achievements are shown by clicking on the myPlayer Button.
