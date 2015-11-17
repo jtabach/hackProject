@@ -1,9 +1,6 @@
 
 // Created player object literal
 var player = {
-    firstName: 'Jeff',
-    lastName: 'Tabachnick',
-    position: 'Left Wing',
     team: 'Canadiens',
     pick: 5,
     skills: {
@@ -25,6 +22,8 @@ var player = {
     }
 };
 
+// @desc - hold all possible oppenent's user may play (or be drafted to).
+// @array - contains strings.
 var opponents = ["Senators", "Lightning", "Bruins", "Red Wings", "Panthers", "Sabres",
                  "Maple Leafs", "Rangers", "Capitals", "Penguins", "Devils", "Islanders",
                  "Flyers", "Hurricanes", "Jackets", "Stars", "Blues", "Wild", "Predators",
@@ -364,6 +363,16 @@ $(document).ready(function() {
             $("#myPlayer").toggle();
         }
     });
+    
+    
+    
+    function pizzaria() {}
+    
+//    function getClickHandler() {
+//        for (var item in links) {
+//            $(links[item].id).on('click', links[item].clickHandler);
+//        }
+//    }
     
     
     
@@ -712,23 +721,10 @@ $(document).ready(function() {
     
     $("#playerStatsLink").on('click', function(){
         
-        // Check to see if playGame link or improvePlayer link is active
-        // If it is, don't allow seeStats dev to show
-        if(improvePlayerLinkActive === false && playGameLinkActive === false && playoffGameLinkActive === false && myPlayerLinkActive === false){
+        if (!$(this).hasClass('gray')) { 
         
-            if (playerStatsLinkActive === false){
-                $("#improvePlayerLink, #playGameLink, #playoffGameLink, #myPlayerLink").addClass('gray');
-                playerStatsLinkActive = true;           
-            } else {
-                playerStatsLinkActive = false;
-                $("#improvePlayerLink, #myPlayerLink").removeClass('gray');
-                if (seasonEnd === false){
-                    $("#playGameLink").removeClass('gray');
-                } else {
-                    $("#playoffGameLink").removeClass('gray');
-                }
-            }
-        
+            getLeaveGrayID(seasonEnd, links.playerStats, links, toggleLinksGray);
+            
             updateStatsArray();
             updateStats(seasonStatIDs, seasonStats);
             updateStats(playoffStatIDs, playoffStats);
@@ -740,6 +736,89 @@ $(document).ready(function() {
     
     
 });
+
+var links = {
+    playerStats: {
+        active: false,
+        id: "#playerStatsLink",
+//        clickHandler: pizzaria
+    },
+    improvePlayer: {
+        active: false,
+        id: "#improvePlayerLink"
+    },
+    myPlayer: {
+        active: false,
+        id: "#myPlayerLink"
+    },
+    playGame: {
+        active: false,
+        id: "#playGameLink"
+    },
+    playoffGame: {
+        active: false,
+        id: "#playoffGameLink"
+    }
+};
+
+
+/**
+  * @seasonEnd - Boolean 
+  *
+*/
+
+function getLeaveGrayID(seasonEnd, clickedLink, linksObj, callbackLinks) {
+    var leaveGray;
+    leaveGray = (seasonEnd) ? "#playGameLink" : "#playoffGameLink";
+    return callbackLinks(leaveGray, clickedLink, linksObj);
+}
+
+function toggleLinksGray(leaveGray, clickedLink, linksObj) {
+    if (!clickedLink.active) {
+        clickedLink.active = true;
+        for (var item in linksObj) {
+            if (linksObj[item].id !== clickedLink.id) {
+                $(linksObj[item].id).addClass('gray');
+            }
+        }
+    } else {
+        clickedLink.active = false;
+        for (var item in linksObj) {
+            if (linksObj[item].id !== clickedLink.id && linksObj[item].id !== leaveGray) {
+                $(linksObj[item].id).removeClass('gray');
+            }
+        }
+    }
+}
+
+
+
+//var linkIDs = ["#playerStatsLink", "#improvePlayerLink", "#myPlayerLink", 
+//               "#playGameLink", "#playoffGameLink"];
+//
+//
+//function getLeaveGrayID(seasonEnd, linkClicked, linkID, callbackLinks) {
+//    var leaveGray;
+//    leaveGray = (seasonEnd) ? "#playGameLink" : "#playoffGameLink";
+//    return callbackLinks(linkClicked, linkID, leaveGray);
+//}
+//
+//function toggleLinksGray(linkClicked, linkID, leaveGray) {
+//    if (!linkClicked) {
+//        linkIDs.forEach(function(element, index){
+//            if (element !== linkID) {
+//                $(element).addClass('gray');
+//            }
+//        });
+//    } else {
+//        linkClicked = false;
+//        linkIDs.forEach(function(element, index){
+//            if (element !== linkID && element !== leaveGray) {
+//                $(element).removeClass('gray');
+//            }
+//        });
+//    }
+//}
     
 
 // Callback function that takes two functions as parameters
@@ -1412,14 +1491,14 @@ function checkAchievementfinalsMVP() {
 }
 
 /** checkAchievementLegend() receives no parameters.
-* Passes 3 conditional prior to being invoked.
-* Called if the user has won the Stanley Cup at least 3 times, has been
-* selected to 7 allstar games and has accumulated at least 500 career points.
+  * Passes 3 conditional prior to being invoked.
+  * Called if the user has won the Stanley Cup at least 3 times, has been
+  * selected to 7 allstar games and has accumulated at least 500 career points.
 */ 
 function checkAchievementLegend() {
 
     //Checks to see if achievement has been unlocked previously.
-    if (achieveFinalsMVP === false){
+    if (achieveLegend === false){
         
         // Alerts user that they have unlocked the achievement.
         alert("You have unlocked the Legend Achievement! This achievement " +
@@ -1429,20 +1508,20 @@ function checkAchievementLegend() {
         /** Removes the locked class which removes the
         * gray filter on the myPlayer achievement.
         */
-        $("#achieveFinalsMVP").removeClass('locked');
+        $("#achieveLegend").removeClass('locked');
         
         // Achievement set to true to eliminate multiple notifications.
-        achieveFinalsMVP = true;
+        achieveLegend = true;
     }
 }
 
 /** preCheckLegend() recieves no parameters. It is called in 3 different locations
-* as the conditional requires three variables to result to true.
+  * as the conditional requires three variables to result to true.
 */
 function preChecklegend() {
     
     /** Conditional that checks legendary requirements for career points,
-    * allstar games, and Stanley Cups.
+      * allstar games, and Stanley Cups.
     */
     if (careerPoints >= 500 && allStarGames >= 7 && stanleyCups >= 3) {
         
