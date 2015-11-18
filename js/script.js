@@ -1,26 +1,200 @@
 
 // Created player object literal
 var player = {
-  team: 'Canadiens',
-  pick: 5,
-  skills: {
+    team: 'Canadiens',
+    pick: 5,
+};
+
+var ratingStart = 60, ratingFlux = 10;
+
+var offense = "offense", defense = "defense", athletics = "athletics";
+
+var skills = {
+    shooting: { 
+        rating: Math.floor(Math.random() * ratingFlux + ratingStart),
+        id: "#shooting",
+        label: "Shooting: ",
+        type: offense,
+        clickHandler: function() {
+            addSkillPoint(skills.shooting);
+        }
+    },
+    passing: {
+        rating: Math.floor(Math.random() * ratingFlux + ratingStart),
+        id: "#passing",
+        label: "Passing: ",
+        type: offense,
+        clickHandler: function() {
+            addSkillPoint(skills.passing);
+        }
+    },
+    handling: {
+        rating: Math.floor(Math.random() * ratingFlux + ratingStart),
+        id: "#handling",
+        label: "Handling: ",
+        type: offense,
+        clickHandler: function() {
+            addSkillPoint(skills.handling);
+        }
+    },
+    checking: {
+        rating: Math.floor(Math.random() * ratingFlux + ratingStart),
+        id: "#checking",
+        label: "Checking: ",
+        type: defense,
+        clickHandler: function() {
+            addSkillPoint(skills.checking);
+        }
+    },
+    positioning: {
+        rating: Math.floor(Math.random() * ratingFlux + ratingStart),
+        id: "#positioning",
+        label: "Positioning: ",
+        type: defense,
+        clickHandler: function() {
+            addSkillPoint(skills.positioning);
+        }
+    },
+    takeaway: {
+        rating: Math.floor(Math.random() * ratingFlux + ratingStart),
+        id: "#takeaway",
+        label: "Takeaway: ",
+        type: defense,
+        clickHandler: function() {
+            addSkillPoint(skills.takeaway);
+        }
+    },
+    speed: {
+        rating: Math.floor(Math.random() * ratingFlux + ratingStart),
+        id: "#speed",
+        label: "Speed: ",
+        type: athletics,
+        clickHandler: function() {
+            addSkillPoint(skills.speed);
+        }
+    },
+    strength: {
+        rating: Math.floor(Math.random() * ratingFlux + ratingStart),
+        id: "#strength",
+        label: "Strength: ",
+        type: athletics,
+        clickHandler: function() {
+            addSkillPoint(skills.strength);
+        }
+    },
+    endurance: {
+        rating: Math.floor(Math.random() * ratingFlux + ratingStart),
+        id: "#endurance",
+        label: "Endurance: ",
+        type: athletics,
+        clickHandler: function() {
+            addSkillPoint(skills.endurance);
+        }
+    }
+};
+
+var overallSkills = {
     offense: {
-        shooting: Math.floor(Math.random()*10+60),
-        passing : Math.floor(Math.random()*10+60),
-        handling : Math.floor(Math.random()*10+60)
+        rating: 0,
+        id: "#overallOffense",
+        label: "Offense: "
     },
     defense: {
-        checking : Math.floor(Math.random()*10+60),
-        positioning : Math.floor(Math.random()*10+60),
-        takeaway : Math.floor(Math.random()*10+60)
+        rating: 0,
+        id: "#overallDefense",
+        label: "Defense: "
     },
     athletics: {
-        speed : Math.floor(Math.random()*10+60),
-        strength : Math.floor(Math.random()*10+60),
-        endurance : Math.floor(Math.random()*10+60)
+        rating: 0,
+        id: "#overallAthletics",
+        label: "Athlete: "
+    },
+    overall: {
+        rating: 0,
+        id: "#playerOverall",
+        label: "Player Overall: "
     }
-  }
-};
+}
+
+function skillClickHandler() {
+    for (var attr in skills) {
+        $(skills[attr].id).on('click', skills[attr].clickHandler);
+    }
+}
+
+function addSkillPoint(skill) {
+    if (attributePoints > 0){
+        skill.rating++;
+        attributePoints--;
+        getNewSkillsRating(overallSkills);
+    }
+}
+
+function resetOveralls(ovr) {
+    for (var type in ovr) {
+        ovr[type].rating = 0;
+    }
+}
+
+function getNewSkillsRating(ovr) {
+    
+    resetOveralls(ovr);
+    
+    for (var attr in skills) {
+        if (skills[attr].type === offense) {
+            ovr.offense.rating += skills[attr].rating;
+        }
+        if (skills[attr].type === defense) {
+            ovr.defense.rating += skills[attr].rating;
+        }
+        if (skills[attr].type === athletics) {
+            ovr.athletics.rating += skills[attr].rating;
+        }
+    }
+    ovr.offense.rating = Math.floor(ovr.offense.rating / 3);
+    ovr.defense.rating = Math.floor(ovr.defense.rating / 3);
+    ovr.athletics.rating = Math.floor(ovr.athletics.rating / 3);
+    ovr.overall.rating = Math
+        .floor((ovr.offense.rating + ovr.defense.rating + ovr.athletics.rating) / 3);
+    
+    if (ovr.overall.rating >= 99) {
+                
+        // Invokes function to award user for reaching 99 overall.
+        unlockAchievement(achievements.overall99);
+
+        /** User's overall has reached an ability to directly effect outcome of games.
+        * User's team has a max goals potential 2 higher than the opponent.
+        * This will result in the user having a much greater chance of winning.
+        */
+        playerEffect = 2;
+
+    // Checks to see if overallSkill has reached 85.
+    } else if (ovr.overall.rating >= 85) {
+
+        // Invokes function to award user for reaching 85 overall.
+        unlockAchievement(achievements.overall85);
+
+        /** User's overall has reached an ability to directly effect outcome of games.
+        * User's team has a max goals potential 1 higher than the opponent.
+        * This will result in the user having a slightly greater chance of winning.
+        */
+        playerEffect = 1;
+    }
+    
+    appendPlayerAttributesDiv(overallSkills);
+}
+
+function appendPlayerAttributesDiv(ovr) {
+    for (var attr in skills) {
+        $(skills[attr].id).html(skills[attr].label + skills[attr].rating);
+    }
+    for (var type in ovr) {
+        $(ovr[type].id).html(ovr[type].label + ovr[type].rating);
+    }
+    $("#attributePoints > h3").html("Points: " + attributePoints);
+}
+
+
 
 // @desc - hold all possible oppenent's user may play (or be drafted to).
 // @array - contains strings.
@@ -35,7 +209,7 @@ var yearsPro = 1, playoffBirths = 0, allStarGames = 0, stanleyCups = 0;
 var attributePoints = 9;
 var areasArray = [];
 var skillsArray = [];
-var overallOffense, overallDefense, overallAthletics, overallSkill;
+
 
 // Player effect starts at zero but can be increased to directly effect outcome of games as player progresses
 var playerEffect = 0;
@@ -90,55 +264,6 @@ var timeOnIceMin, timeOnIceSec, totalTimeOnIceMin = 0, totalTimeOnIceSec = 0;
 var playoffTotalTimeOnIceSec = 0, playoffTotalTimeOnIceMin = 0;
 var lowImpactAbility = 0.05, medImpactAbility = 0.1, highImpactAbility = 0.25;
 
-// Achievements
-var achievePlayoffs = false, achieveStanleyCup = false, achieve50Wins = false;
-var achieve100Wins = false, achieve85Overall = false, achieve99Overall = false;
-var achieveAllStar = false, achieveCaptain = false, achieveRocket = false;
-var achieveMVP = false, achieveFinalsMVP = false, achieveLegend = false;
-
-
-// Gets the overall skill level of the player
-function getNewOverallSkillLevel (obj) {
-
-    var i = 0;
-    // For in loop puts each of the child objects of the parent object in an array
-    for (var areas in obj) {
-        // Chose not to use .push() to avoid creating a long array after multiple invocations of the function
-        areasArray[i] = obj[areas];
-        i++;
-    }
-    i = 0;
-    // ForEach loops through the new array
-    areasArray.forEach(function(element, index){
-        // For..in loops through each property of each object and places each property's value in a skills array
-        for (var skills in element) {
-            skillsArray[i] = element[skills];
-            i++;
-        }
-    });
-    
-    // Averages the skills of each skill area as well as averages each area for the overall skill
-    overallOffense = Math.floor((skillsArray[0] + skillsArray[1] + skillsArray[2])/3);
-    overallDefense = Math.floor((skillsArray[3] + skillsArray[4] + skillsArray[5])/3);
-    overallAthletics = Math.floor((skillsArray[6] + skillsArray[7] + skillsArray[8])/3);
-    overallSkill = Math.round((overallAthletics + overallDefense + overallOffense)/3)
-}
-
-// Edits the attribute value associated with the button clicked
-//function editButtonHTML (attribute, target, button) {
-//    button.html(attribute + " " + player.skills[target][attribute]);
-//}
-
-// Gets Skill type from Id of button clicked and performs a callback function
-function getSkillType(attribute, target, callback) {
-     return callback(attribute, target);
-}
-
-// Adds a skill point to the appropriate skill
-function addSkillPoint (attribute, target) {
-    player.skills[target][attribute]++;
-}
-
 function validateForm() {
     var first = document.forms["draftForm"]["firstName"].value;
     var last = document.forms["draftForm"]["lastName"].value;
@@ -150,8 +275,6 @@ function validateForm() {
         formValidated = true;
     }
 }
-
-
 
 // DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //
 // DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //
@@ -219,9 +342,6 @@ $(document).ready(function() {
     // Hides the divs for the playGame link when the page loads
     $("#playGame, #gameNumber, #scoreLine, #teamWins, #statLine, #attributesEarned, #playerStats, #improvePlayer, #pick, #draft").hide();
     
-    // Gets the initial skills of the player
-    getNewOverallSkillLevel(player.skills);
-    
     // Array of the skills as they are identified by their IDs
     var skillsIDs = ["shooting", "passing", "handling", "checking", "positioning", "takeaway", "speed", "strength", "endurance"];
     
@@ -229,74 +349,12 @@ $(document).ready(function() {
     skillsIDs.forEach(function(element, index){
         $("#" + element).html(element + " " + skillsArray[index]); 
     });
-    $("#mpo").html("Overall: " + overallSkill); 
+//    $("#mpo").html("Overall: " + overallSkill); 
     
     var attributeCategoryIDs = ["#attributePoints > h3", "#averageOffense > h3", "#averageDefense > h3", "#averageAthletics > h3", "#averageOverall > h3"];
     
-    var attributeCategories = ["Points: ", "Offense: ", "Defense: ", "Athlete: ", "Player Overall: "];
+   
     
-    var attributeOveralls = [attributePoints, overallOffense, overallDefense, overallAthletics, overallSkill];
-    
-    
-    attributeCategoryIDs.forEach(function(element, index){
-        $(element).html(attributeCategories[index] + attributeOveralls[index]);
-    });
-    
-
-    
-    // Click function on an attribute
-    $('.skill').on('click', function(){
-
-        // Checks to see if any attributes points are available and subtracts from the total
-        if (attributePoints > 0){
-            attributePoints--;
-
-            /* Invokes a callback fuction and passes the button Id, 
-            the button attribute area, and the function addSkillPoint */
-            getSkillType(this.id, $(this).attr("area"), addSkillPoint);
-//                    editButtonHTML(this.id, $(this).attr("area"), editButtonHTML, $(this));
-
-            getNewOverallSkillLevel(player.skills);
-
-            // Checks which skill has been selected, adds an attribute point, and changes the HTML
-            $(this).html(this.id + " " + player.skills[$(this).attr("area")][this.id]);
-
-
-            // Changes the HTML of attribute points left
-            $("#attributePoints > h3").html("Points: " + attributePoints);
-            $("#averageOffense > h3").html("Offense: " + overallOffense);
-            $("#averageDefense > h3").html("Defense: " + overallDefense);
-            $("#averageAthletics > h3").html("Athlete: " + overallAthletics);
-            $("#averageOverall > h3").html("Player Overall: " + overallSkill);
-            $("#mpo").html("Overall: " + overallSkill); 
-            
-            // Checks to see if overallSkill has reached 99.
-            if (overallSkill >= 99) {
-                
-                // Invokes function to award user for reaching 99 overall.
-                checkAchievement99Overall();
-                
-                /** User's overall has reached an ability to directly effect outcome of games.
-                * User's team has a max goals potential 2 higher than the opponent.
-                * This will result in the user having a much greater chance of winning.
-                */
-                playerEffect = 2;
-                
-            // Checks to see if overallSkill has reached 85.
-            } else if (overallSkill >= 85) {
-                
-                // Invokes function to award user for reaching 85 overall.
-                checkAchievement85Overall();
-                
-                /** User's overall has reached an ability to directly effect outcome of games.
-                * User's team has a max goals potential 1 higher than the opponent.
-                * This will result in the user having a slightly greater chance of winning.
-                */
-                playerEffect = 1;
-            }
-           
-        }
-    });
     
 
     // Hides the divs for the playGame link when the page loads
@@ -455,17 +513,19 @@ $(document).ready(function() {
                 alert("You have been selected as an allstar this season!");
                 
                 // Invokes function to award user for being selected as an Allstar.
-                checkAchievementAllStar();
+                unlockAchievement(achievements.allStar);
                 
                 // Check if the user has reached legendary status as allstar games is a requirement.
-                preChecklegend();
+                if (careerPoints >= 500 && allStarGames >= 7 && stanleyCups >= 3) {
+                    unlockAchievement(achievements.legend);
+                }
             }
         }
         
         if (playoffWins === winsToAdvance && playoffRound === 3) {
             
             // Invokes function to award user for winning the Stanley Cup.
-            checkAchievementStanleyCup();
+            unlockAchievement(achievements.stanleyCup);
             stanleyCups++;
             playoffBirths++;
             
@@ -479,11 +539,13 @@ $(document).ready(function() {
                       "Stanley Cup Finals MVP!");
                 
                 // Invokes function to award user for being selected as the finals MVP.
-                checkAchievementfinalsMVP();
+                unlockAchievement(achievements.finalsMVP);
             }
             
             // Check the if user has reached legendary status as Stanley Cups is a requirement.
-            preChecklegend();
+            if (careerPoints >= 500 && allStarGames >= 7 && stanleyCups >= 3){
+                unlockAchievement(achievements.legend);
+            }
             
             $('#pb').html("Playoff Births: " + playoffBirths);
             alert("You won the Stanley Cup!");
@@ -539,7 +601,7 @@ $(document).ready(function() {
                       "the most goals by any player this season with " + seasonGoals + " goals!");
                 
                 // Invokes fuction for winning the Rocket Richard Trophy
-                checkAchievementRocket();
+                unlockAchievement(achivements.rocket);
             }
             
             /** Conditional that checks if the user recorded at least as many points
@@ -553,7 +615,7 @@ $(document).ready(function() {
                       "in the regular season with " + seasonPoints + " points!");
                 
                 // Invokes fuction for winning the Hart Memorial Trophy.
-                checkAchievementMVP();
+                unlockAchievement(achievements.mvp);
             }
             
             if(wins >= winsToQualify){
@@ -580,31 +642,22 @@ $(document).ready(function() {
                 appendStatLine(seasonStatIDs);
                 seasonEnd = false;
                 appendStatLine(playoffStatIDs);
-            }
-            
-            
-
-            
+            } 
         }
     });
     
-    
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    
-//    $("#playerStatsLink").on('click', function(){
-//        
-//            
-//    }); 
-    getClickHandler();
-    
-    function getClickHandler() {
-        for (var item in links) {
-            $(links[item].id).on('click', links[item].clickHandler);
-        }
-    }
-    
+    getNewSkillsRating(overallSkills);
+    skillClickHandler();
+    linkClickHandler();
+     
 });
 
+
+function linkClickHandler() {
+    for (var item in links) {
+        $(links[item].id).on('click', links[item].clickHandler);
+    }
+}
 
 var links = {
     playerStats: {
@@ -647,9 +700,7 @@ var links = {
 function togglePlayerStats() {
     
     if (!$(links.playerStats.id).hasClass('gray')) { 
-
         getLeaveGrayID(seasonEnd, links.playerStats, links, toggleLinksGray);
-
         updateStatsArray();
         updateStats(seasonStatIDs, seasonStats);
         updateStats(playoffStatIDs, playoffStats);
@@ -664,8 +715,7 @@ function toggleImprovePlayer(){
         getLeaveGrayID(seasonEnd, links.improvePlayer, links, toggleLinksGray);
 
         // Invokes the function and passes player skills object
-        getNewOverallSkillLevel(player.skills);
-
+//        getNewOverallSkillLevel(player.skills);
         $("#improvePlayer").toggle();
     }
 }
@@ -675,7 +725,6 @@ function toggleMyPlayer() {
     
     if (!$(links.myPlayer.id).hasClass('gray')) {
         getLeaveGrayID(seasonEnd, links.myPlayer, links, toggleLinksGray);
-        
         $("#myPlayer").toggle();
     }
 }
@@ -708,7 +757,6 @@ function togglePlayoffGame() {
 
         $("#gameStats, #xGame").hide();
         $("#playGame, #gameNumber, #scoreLine").toggle();
-
 
         $("#gameNumber h2").html(playoffRounds[playoffRound] + " - Game #" + (postGames+1));
         if (opponentPicked === false){
@@ -747,6 +795,9 @@ function toggleLinksGray(leaveGray, clickedLink, linksObj) {
     }
 }
     
+
+
+
 // Callback function that takes two functions as parameters
 function simulateGame(callback1, callback2) {
     
@@ -909,7 +960,9 @@ function assistsThisGame(teamGoals, goals, callback) {
     if (careerPoints >= 500) { 
     
         // Check the if user has reached legendary status as career points is a requirement.
-        preChecklegend();
+        if (careerPoints >= 500 && allStarGames >= 7 && stanleyCups >= 3){
+            unlockAchievement(achievements.legend);
+        }
     }
     
     callback(timeOnIceThisGame);
@@ -1045,13 +1098,13 @@ function determineWinner() {
     if (careerWins >= 100) {
         
         // Invokes function to award user for reaching 100 career wins.
-        checkAchievement100Wins();
+        unlockAchievement(achievements.wins100);
         
     // Checks to see if user has reached 50 career wins.    
     } else if (careerWins >= 50) {
         
         // Invokes function to award user for reaching 100 career wins.
-        checkAchievement50Wins();
+        unlockAchievement(achievements.wins50);
     }
 }    
 
@@ -1144,7 +1197,7 @@ function resetSeason() {
         /** Invoked function to award the user for finishing their 7th
         * season and being named captain.
         */
-        checkAchievementCaptain();
+        unlockAchievement(achievements.captain);
     }
 }
  
@@ -1165,67 +1218,68 @@ function resetPlayoffs() {
     pointPerGamePlayoff = false;
 }
 
-
+var unlockAlert = "You have unlocked the ";
+    
 // Achievements Object.
 var achievements = {
     playoffs: {
         unlocked: false,
-        alert: "You have unlocked the Playoffs Achievement!",
+        alert: unlockAlert + "Playoffs Achievement!",
         id: "#achievePlayoffs"
     },
     stanleyCup: {
         unlocked: false,
-        alert: "You have unlocked the Stanley Cup Winner Achievement!",
+        alert: unlockAlert + "Stanley Cup Winner Achievement!",
         id: "#achieveStanleyCup"
     },
     wins50: {
         unlocked: false,
-        alert: "You have unlocked the 50 Wins Achievement!",
+        alert: unlockAlert + "50 Wins Achievement!",
         id: "#achieve50Wins"
     },
     wins100: {
         unlocked: false,
-        alert: "You have unlocked the 100 Wins Achievement!",
+        alert: unlockAlert + "100 Wins Achievement!",
         id: "#achieve100Wins"
     },
     overall85: {
         unlocked: false,
-        alert: "You have unlocked the 85 Overall Rating Achievement!",
+        alert: unlockAlert + "85 Overall Rating Achievement!",
         id: "#achieve85Overall"
     },
     overall99: {
         unlocked: false,
-        alert: "You have unlocked the 99 Overall Rating Achievement!",
+        alert: unlockAlert + "99 Overall Rating Achievement!",
         id: "#achieve99Overall"
     },
     allStar: {
         unlocked: false,
-        alert: "You have unlocked the All Star Achievement!",
+        alert: unlockAlert + "All Star Achievement!",
         id: "#achieveAllStar"
     },
     captain: {
         unlocked: false,
-        alert: "You have unlocked the Captain Achievement!",
+        alert: unlockAlert + "Captain Achievement!",
         id: "#achieveCaptain"
     },
     rocket: {
         unlocked: false,
-        alert: "You have unlocked the Rocket Richard Achievement!",
+        alert: unlockAlert + "Rocket Richard Achievement!",
         id: "#achieveRocket"
     },
     mvp: {
         unlocked: false,
-        alert: "You have unlocked the MVP Achievement!",
+        alert: unlockAlert + "MVP Achievement!",
         id: "#achieveMVP"
     },
     finalsMVP: {
         unlocked: false,
-        alert: "You have unlocked the Finals MVP Achievement!",
+        alert: unlockAlert + "Finals MVP Achievement!",
         id: "#achieveFinalsMVP"
     },
     legend: {
         unlocked: false,
-        alert: "You have unlocked the Legend Achievement!",
+        alert: unlockAlert + "Legend Achievement!",
         id: "#achieveLegend"
     }
 }
@@ -1243,290 +1297,5 @@ function unlockAchievement(type) {
         alert(type.alert);
         $(type.id).removeClass('locked');
         type.unlocked = true;
-    }
-}
-
-
-/** checkAchievementPlayoffs() receives no parameters.
-* Called at end of season if user qualified for playoffs.
-*/
-function checkAchievementPlayoffs() {
-
-    //Checks to see if achievement has been unlocked previously.
-    if (achievePlayoffs === false){
-        
-        // Alerts user that they have unlucked the achievement.
-        alert("You have unlocked the Playoffs Achievement!");
-        
-        /** Removes the locked class which removes the
-        * gray filter on the myPlayer achievement.
-        */
-        $("#achievePlayoffs").removeClass('locked');
-        
-        // Achievement set to true to eliminate multiple notifications.
-        achievePlayoffs = true;
-    }
-}
-
-/** checkAchievementStanleyCup() receives no parameters.
-* Called at end of playoffs if user won the Stanley Cup.
-*/    
-function checkAchievementStanleyCup() {   
-    
-    //Checks to see if achievement has been unlocked previously.
-    if (achieveStanleyCup === false){
-        
-        // Alerts user that they have unlocked the achievement.
-        alert("You have unlocked the Stanley Cup Winner Achievement!");
-        
-        /** Removes the locked class which removes the
-        * gray filter on the myPlayer achievement.
-        */
-        $("#achieveStanleyCup").removeClass('locked');
-        
-        // Achievement set to true to eliminate multiple notifications.
-        achieveStanleyCup = true;
-    }
-}
-
-/** checkAchievement50Wins() receives no parameters.
-* Passes a conditional prior to being invoked.
-* Called once the user has won 50 games.
-*/  
-function checkAchievement50Wins() {
-
-    //Checks to see if achievement has been unlocked previously.
-    if (achieve50Wins === false){
-        
-        // Alerts user that they have unlocked the achievement.
-        alert("You have unlocked the 50 Wins Achievement!");
-        
-        /** Removes the locked class which removes the
-        * gray filter on the myPlayer achievement.
-        */
-        $("#achieve50Wins").removeClass('locked');
-        
-        // Achievement set to true to eliminate multiple notifications.
-        achieve50Wins = true;
-    }
-}
-
-/** checkAchievement100Wins() receives no parameters.
-* Passes a conditional prior to being invoked.
-* Called once the user has won 100 games.
-*/  
-function checkAchievement100Wins() {
-
-    //Checks to see if achievement has been unlocked previously.
-    if (achieve100Wins === false){
-        
-        // Alerts user that they have unlocked the achievement.
-        alert("You have unlocked the 100 Wins Achievement!");
-        
-        /** Removes the locked class which removes the
-        * gray filter on the myPlayer achievement.
-        */
-        $("#achieve100Wins").removeClass('locked');
-        
-        // Achievement set to true to eliminate multiple notifications.
-        achieve100Wins = true;
-    }
-}
-
-/** checkAchievement85Overall() receives no parameters.
-* Passes a conditional prior to being invoked.
-* Called once the user's player has reached an 85 overall rating.
-*/  
-function checkAchievement85Overall() {
-
-    //Checks to see if achievement has been unlocked previously.
-    if (achieve85Overall === false){
-        
-        // Alerts user that they have unlocked the achievement.
-        alert("You have unlocked the 85 Overall Rating Achievement!");
-        
-        /** Removes the locked class which removes the
-        * gray filter on the myPlayer achievement.
-        */
-        $("#achieve85Overall").removeClass('locked');
-        
-        // Achievement set to true to eliminate multiple notifications.
-        achieve85Overall = true;
-    }
-}
-
-/** checkAchievement99Overall() receives no parameters.
-* Passes a conditional prior to being invoked.
-* Called once the user's player has reached an 99 overall rating.
-*/  
-function checkAchievement99Overall() {
-
-    //Checks to see if achievement has been unlocked previously.
-    if (achieve99Overall === false){
-        
-        // Alerts user that they have unlocked the achievement.
-        alert("You have unlocked the 99 Overall Rating Achievement!");
-        
-        /** Removes the locked class which removes the
-        * gray filter on the myPlayer achievement.
-        */
-        $("#achieve99Overall").removeClass('locked');
-        
-        // Achievement set to true to eliminate multiple notifications.
-        achieve99Overall = true;
-    }
-}
-
-/** checkAchievementAllStar() receives no parameters.
-* Passes a conditional prior to being invoked.
-* Called once the user has reached the halfway point of the season and
-* has averaged at least a one point per game average.
-*/ 
-function checkAchievementAllStar() {
-
-    //Checks to see if achievement has been unlocked previously.
-    if (achieveAllStar === false){
-        
-        // Alerts user that they have unlocked the achievement.
-        alert("You have unlocked the Allstar Achievement!");
-        
-        /** Removes the locked class which removes the
-        * gray filter on the myPlayer achievement.
-        */
-        $("#achieveAllStar").removeClass('locked');
-        
-        // Achievement set to true to eliminate multiple notifications.
-        achieveAllStar = true;
-    }
-}
-
-/** checkAchievementCaptain() receives no parameters.
-* Passes a conditional prior to being invoked.
-* Called once the user has finished their 7th season.
-*/ 
-function checkAchievementCaptain() {
-
-    //Checks to see if achievement has been unlocked previously.
-    if (achieveCaptain === false){
-        
-        // Alerts user that they have unlocked the achievement.
-        alert("You have unlocked the Captain Achievement!");
-        
-        /** Removes the locked class which removes the
-        * gray filter on the myPlayer achievement.
-        */
-        $("#achieveCaptain").removeClass('locked');
-        
-        // Achievement set to true to eliminate multiple notifications.
-        achieveCaptain = true;
-    }
-}
-
-/** checkAchievementRocket() receives no parameters.
-* Passes a conditional prior to being invoked.
-* Called if the user has scored at least a goal per game during regular season.
-*/ 
-function checkAchievementRocket() {
-
-    //Checks to see if achievement has been unlocked previously.
-    if (achieveRocket === false){
-        
-        // Alerts user that they have unlocked the achievement.
-        alert("You have unlocked the Rocket Richard Achievement!");
-        
-        /** Removes the locked class which removes the
-        * gray filter on the myPlayer achievement.
-        */
-        $("#achieveRocket").removeClass('locked');
-        
-        // Achievement set to true to eliminate multiple notifications.
-        achieveRocket = true;
-    }
-
-}
-
-/** checkAchievementMVP() receives no parameters.
-* Passes a conditional prior to being invoked.
-* Called if the user has qualified for the playoffs while averaging
-* over a point per game for the regular season.
-*/ 
-function checkAchievementMVP() {
-
-    //Checks to see if achievement has been unlocked previously.
-    if (achieveMVP === false){
-        
-        // Alerts user that they have unlocked the achievement.
-        alert("You have unlocked the MVP Achievement!");
-        
-        /** Removes the locked class which removes the
-        * gray filter on the myPlayer achievement.
-        */
-        $("#achieveMVP").removeClass('locked');
-        
-        // Achievement set to true to eliminate multiple notifications.
-        achieveMVP = true;
-    }
-}
-
-/** checkAchievementFinalsMVP() receives no parameters.
-* Passes a conditional prior to being invoked.
-* Called if the user has won the Stanley Cup while averaging
-* over a point per game for the playoffs.
-*/ 
-function checkAchievementfinalsMVP() {
-
-    //Checks to see if achievement has been unlocked previously.
-    if (achieveFinalsMVP === false){
-        
-        // Alerts user that they have unlocked the achievement.
-        alert("You have unlocked the MVP Achievement!");
-        
-        /** Removes the locked class which removes the
-        * gray filter on the myPlayer achievement.
-        */
-        $("#achieveFinalsMVP").removeClass('locked');
-        
-        // Achievement set to true to eliminate multiple notifications.
-        achieveFinalsMVP = true;
-    }
-}
-
-/** checkAchievementLegend() receives no parameters.
-  * Passes 3 conditional prior to being invoked.
-  * Called if the user has won the Stanley Cup at least 3 times, has been
-  * selected to 7 allstar games and has accumulated at least 500 career points.
-*/ 
-function checkAchievementLegend() {
-
-    //Checks to see if achievement has been unlocked previously.
-    if (achieveLegend === false){
-        
-        // Alerts user that they have unlocked the achievement.
-        alert("You have unlocked the Legend Achievement! This achievement " +
-              "is awarded for scoring 500 career points, being selected to " +
-              "7 allstar games, and winning 3 Stanley Cups!");
-        
-        /** Removes the locked class which removes the
-        * gray filter on the myPlayer achievement.
-        */
-        $("#achieveLegend").removeClass('locked');
-        
-        // Achievement set to true to eliminate multiple notifications.
-        achieveLegend = true;
-    }
-}
-
-/** preCheckLegend() recieves no parameters. It is called in 3 different locations
-  * as the conditional requires three variables to result to true.
-*/
-function preChecklegend() {
-    
-    /** Conditional that checks legendary requirements for career points,
-      * allstar games, and Stanley Cups.
-    */
-    if (careerPoints >= 500 && allStarGames >= 7 && stanleyCups >= 3) {
-        
-        // Invokes function awarding the user for being a legend of the NHL.
-        checkAchievementLegend();
     }
 }
