@@ -37,11 +37,6 @@ var areasArray = [];
 var skillsArray = [];
 var overallOffense, overallDefense, overallAthletics, overallSkill;
 
-var playGameLinkActive = false, playoffGameLinkActive = false;
-var myPlayerLinkActive = false;
-var improvePlayerLinkActive = false, playerStatsLinkActive = false;
-var seasonEnd = false;
-
 // Player effect starts at zero but can be increased to directly effect outcome of games as player progresses
 var playerEffect = 0;
 // Declares variables for playGame
@@ -75,6 +70,7 @@ var careerLength = 10;
 var wins = 0, losses = 0, lossesOT = 0;
 var careerWins = 0;
 var playoffWins = 0, playoffLosses = 0;
+var seasonEnd = false;
 
 var goals, assists, points, hits, timeOnIce;
 var postGoals, postAssits, postPoints, postHits, postTimeOnIce;
@@ -246,19 +242,7 @@ $(document).ready(function() {
         $(element).html(attributeCategories[index] + attributeOveralls[index]);
     });
     
-    
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    $("#improvePlayerLink").on('click', function(){
-        if (!$(this).hasClass('gray')) {
-            getLeaveGrayID(seasonEnd, links.improvePlayer, links, toggleLinksGray);
-            $("#improvePlayer").toggle();
-            
-            // Invokes the function and passes player skills object
-            getNewOverallSkillLevel(player.skills);
-        }
-    });
-       
-    
+
     
     // Click function on an attribute
     $('.skill').on('click', function(){
@@ -325,60 +309,21 @@ $(document).ready(function() {
     
     
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    $("#myPlayerLink").on('click', function() {
-        if (!$(this).hasClass('gray')) {
-            getLeaveGrayID(seasonEnd, links.myPlayer, links, toggleLinksGray);
-            $("#myPlayer").toggle();
-        }
-    });
+    
     
     
     
     function pizzaria() {}
     
-//    function getClickHandler() {
-//        for (var item in links) {
-//            $(links[item].id).on('click', links[item].clickHandler);
-//        }
-//    }
-    
-    
-    
-    $("#playGameLink").on('click', function() {
-        
-        if (!$(this).hasClass('gray')) {
-            getLeaveGrayID(seasonEnd, links.playGame, links, toggleLinksGray);
-        
-            $("#gameStats, #xGame").hide();
-            $("#playGame, #gameNumber, #scoreLine").toggle();
-
-            //Updates the game number and changes the html
-            $("#gameNumber h2").html("Season " + seasons + " - Game #" + (games+1));
-            $("#teamH").html(player.team);
-            if (opponentPicked === false){
-                $("#teamV").html(opponents[Math.floor(Math.random()*opponents.length)]);
-            }
-            opponentPicked = true;
-            
+    function getClickHandler() {
+        for (var item in links) {
+            $(links[item].id).on('click', links[item].clickHandler);
         }
-    });
+    }
     
-    $("#playoffGameLink").on('click', function() {
-        
-        if (!$(this).hasClass('gray')) {
-            getLeaveGrayID(seasonEnd, links.playoffGame, links, toggleLinksGray);
-            
-            $("#gameStats, #xGame").hide();
-            $("#playGame, #gameNumber, #scoreLine").toggle();
-            
-            
-            $("#gameNumber h2").html(playoffRounds[playoffRound] + " - Game #" + (postGames+1));
-            if (opponentPicked === false){
-                $("#teamV").html(opponents[Math.floor(Math.random()*opponents.length)]);
-            }
-            opponentPicked = true;
-        }
-    });
+    
+    
+    
     
     
     
@@ -503,8 +448,8 @@ $(document).ready(function() {
         } else {
             $("#playoffGameLink").removeClass('gray');
         }
-        playGameLinkActive = false;
-        playoffGameLinkActive = false;
+        links.playGame.active = false;
+        links.playoffGame.active = false;
         
         // Adds attribute point for completion of game
         attributePoints++;
@@ -672,48 +617,132 @@ $(document).ready(function() {
     
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
-    $("#playerStatsLink").on('click', function(){
-        
-        if (!$(this).hasClass('gray')) { 
-        
-            getLeaveGrayID(seasonEnd, links.playerStats, links, toggleLinksGray);
-            
-            updateStatsArray();
-            updateStats(seasonStatIDs, seasonStats);
-            updateStats(playoffStatIDs, playoffStats);
-            $("#playerStats").toggle();
+//    $("#playerStatsLink").on('click', function(){
+//        
+//            
+//    }); 
+    getClickHandler();
+    
+    function getClickHandler() {
+        for (var item in links) {
+            $(links[item].id).on('click', links[item].clickHandler);
         }
-        
-    });
-    
-    
+    }
     
 });
+
 
 var links = {
     playerStats: {
         active: false,
-        id: "#playerStatsLink"
-//        clickHandler: pizzaria
+        id: "#playerStatsLink",
+        clickHandler: function() {
+            return togglePlayerStats();
+        }
     },
     improvePlayer: {
         active: false,
-        id: "#improvePlayerLink"
+        id: "#improvePlayerLink",
+        clickHandler: function() {
+            return toggleImprovePlayer();
+        }
     },
     myPlayer: {
         active: false,
-        id: "#myPlayerLink"
+        id: "#myPlayerLink",
+        clickHandler: function() {
+            return toggleMyPlayer();
+        }
     },
     playGame: {
         active: false,
-        id: "#playGameLink"
+        id: "#playGameLink",
+        clickHandler: function() {
+            return togglePlayGame();
+        }
     },
     playoffGame: {
         active: false,
-        id: "#playoffGameLink"
+        id: "#playoffGameLink",
+        clickHandler: function() {
+            return togglePlayoffGame();
+        }
     }
 };
 
+function togglePlayerStats() {
+    
+    if (!$(links.playerStats.id).hasClass('gray')) { 
+
+        getLeaveGrayID(seasonEnd, links.playerStats, links, toggleLinksGray);
+
+        updateStatsArray();
+        updateStats(seasonStatIDs, seasonStats);
+        updateStats(playoffStatIDs, playoffStats);
+        $("#playerStats").toggle();
+    }
+}
+
+
+function toggleImprovePlayer(){
+    
+    if (!$(links.improvePlayer.id).hasClass('gray')) {
+        getLeaveGrayID(seasonEnd, links.improvePlayer, links, toggleLinksGray);
+
+        // Invokes the function and passes player skills object
+        getNewOverallSkillLevel(player.skills);
+
+        $("#improvePlayer").toggle();
+    }
+}
+
+
+function toggleMyPlayer() {
+    
+    if (!$(links.myPlayer.id).hasClass('gray')) {
+        getLeaveGrayID(seasonEnd, links.myPlayer, links, toggleLinksGray);
+        
+        $("#myPlayer").toggle();
+    }
+}
+
+
+function togglePlayGame() {
+        
+    if (!$(links.playGame.id).hasClass('gray')) {
+        getLeaveGrayID(seasonEnd, links.playGame, links, toggleLinksGray);
+
+        $("#gameStats, #xGame").hide();
+        $("#playGame, #gameNumber, #scoreLine").toggle();
+
+        //Updates the game number and changes the html
+        $("#gameNumber h2").html("Season " + seasons + " - Game #" + (games+1));
+        $("#teamH").html(player.team);
+        if (opponentPicked === false){
+            $("#teamV").html(opponents[Math.floor(Math.random()*opponents.length)]);
+        }
+        opponentPicked = true;
+
+    }
+}
+    
+
+function togglePlayoffGame() {
+        
+    if (!$(links.playoffGame.id).hasClass('gray')) {
+        getLeaveGrayID(seasonEnd, links.playoffGame, links, toggleLinksGray);
+
+        $("#gameStats, #xGame").hide();
+        $("#playGame, #gameNumber, #scoreLine").toggle();
+
+
+        $("#gameNumber h2").html(playoffRounds[playoffRound] + " - Game #" + (postGames+1));
+        if (opponentPicked === false){
+            $("#teamV").html(opponents[Math.floor(Math.random()*opponents.length)]);
+        }
+        opponentPicked = true;
+    }
+}
 
 /**
   * @seasonEnd - Boolean 
@@ -723,7 +752,7 @@ var links = {
 function getLeaveGrayID(seasonEnd, clickedLink, linksObj, callbackLinks) {
     var leaveGray;
     leaveGray = (seasonEnd) ? "#playGameLink" : "#playoffGameLink";
-    return callbackLinks(leaveGray, clickedLink, linksObj);
+    callbackLinks(leaveGray, clickedLink, linksObj);
 }
 
 function toggleLinksGray(leaveGray, clickedLink, linksObj) {
