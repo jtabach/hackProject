@@ -1,25 +1,25 @@
 
 // Created player object literal
 var player = {
-    team: 'Canadiens',
-    pick: 5,
-    skills: {
-        offense: {
-            shooting: Math.floor(Math.random()*10+60),
-            passing : Math.floor(Math.random()*10+60),
-            handling : Math.floor(Math.random()*10+60)
-        },
-        defense: {
-            checking : Math.floor(Math.random()*10+60),
-            positioning : Math.floor(Math.random()*10+60),
-            takeaway : Math.floor(Math.random()*10+60)
-        },
-        athletics: {
-            speed : Math.floor(Math.random()*10+60),
-            strength : Math.floor(Math.random()*10+60),
-            endurance : Math.floor(Math.random()*10+60)
-        }
+  team: 'Canadiens',
+  pick: 5,
+  skills: {
+    offense: {
+        shooting: Math.floor(Math.random()*10+60),
+        passing : Math.floor(Math.random()*10+60),
+        handling : Math.floor(Math.random()*10+60)
+    },
+    defense: {
+        checking : Math.floor(Math.random()*10+60),
+        positioning : Math.floor(Math.random()*10+60),
+        takeaway : Math.floor(Math.random()*10+60)
+    },
+    athletics: {
+        speed : Math.floor(Math.random()*10+60),
+        strength : Math.floor(Math.random()*10+60),
+        endurance : Math.floor(Math.random()*10+60)
     }
+  }
 };
 
 // @desc - hold all possible oppenent's user may play (or be drafted to).
@@ -298,36 +298,11 @@ $(document).ready(function() {
         }
     });
     
-    
-    
-    var gameNum = 1;
-    
-    
+
     // Hides the divs for the playGame link when the page loads
     $("#playGame, #gameNumber, #scoreLine, #teamWins, #statLine, #attributesEarned, #playerStats").hide();
 
-    
-    
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    
-    
-    
-    
-    function pizzaria() {}
-    
-    function getClickHandler() {
-        for (var item in links) {
-            $(links[item].id).on('click', links[item].clickHandler);
-        }
-    }
-    
-    
-    
-    
-    
-    
-    
-       
+
     // When play button is clicked, simulation begins showing the score of the game period by period
     $('#play').on('click', function(){
         
@@ -365,7 +340,6 @@ $(document).ready(function() {
                         $("#period3H").html(period3H);
                         $("#periodFV").html(period1V + period2V + period3V);
                         $("#periodFH").html(period1H + period2H + period3H);
-                        gameNum++;
                         // Checks to see if the game requires overtime
                         if ((period1V + period2V + period3V) == (period1H + period2H + period3H)) {
                             setTimeout(function(){
@@ -490,9 +464,6 @@ $(document).ready(function() {
         
         if (playoffWins === winsToAdvance && playoffRound === 3) {
             
-            // Invokes function to award user for qualifying for the playoffs.
-            checkAchievementPlayoffs();
-            
             // Invokes function to award user for winning the Stanley Cup.
             checkAchievementStanleyCup();
             stanleyCups++;
@@ -537,8 +508,6 @@ $(document).ready(function() {
             $("#record").html("Playoff Series: " + playoffWins + "-" + playoffLosses);
         } else if (playoffLosses === winsToAdvance){
             
-            // Invokes the function to award user for qualifying for the playoffs.
-            checkAchievementPlayoffs();
             playoffBirths++;
             $('#pb').html("Playoff Births: " + playoffBirths);
             alert("You lost in the " + playoffRounds[playoffRound]);
@@ -588,12 +557,17 @@ $(document).ready(function() {
             }
             
             if(wins >= winsToQualify){
-                $("#playGameLink").addClass('gray');
-                $("#playoffGameLink").removeClass('gray');
-                $("#record").html("Playoff Series: " + playoffWins + "-" + playoffLosses);
+                
                 if (playoffGames === 0) {
                     alert("You have qualified for the playoffs!");
                 }
+                
+                // Invokes the function to award user for qualifying for the playoffs.
+                unlockAchievement(achievements.playoffs);
+                $("#playGameLink").addClass('gray');
+                $("#playoffGameLink").removeClass('gray');
+                $("#record").html("Playoff Series: " + playoffWins + "-" + playoffLosses);
+                
             } else {
                 alert("You did not qaulify for te playoffs. You only won "
                      + wins + " of the needed " + winsToQualify + ".\n\n"
@@ -1264,6 +1238,15 @@ var achievements = {
 * must be accomplished to unlock that achievement.
 **/
     
+function unlockAchievement(type) {
+    if (type.unlocked === false) {
+        alert(type.alert);
+        $(type.id).removeClass('locked');
+        type.unlocked = true;
+    }
+}
+
+
 /** checkAchievementPlayoffs() receives no parameters.
 * Called at end of season if user qualified for playoffs.
 */
