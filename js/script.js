@@ -355,7 +355,7 @@ var achievements = {
     id: "#achieve50Wins"
   },
   wins100: {
-     unlocked: false,
+    unlocked: false,
     alert: unlockAlert + "100 Wins Achievement!",
     id: "#achieve100Wins"
   },
@@ -442,66 +442,60 @@ function simClickHandler() {
 
 // When play button is clicked, simulation begins showing the score of the game period by period
 function play() {
+  
+  for (var item in links) {
+    $(links[item].id).addClass('gray');
+  }
 
-    $("#playGameLink, #playoffGameLink, #improvePlayerLink, #playerStatsLink, #myPlayerLink").addClass('gray');
-    playGameLinkActive = true;
-    opponentPicked = false;
+  opponentPicked = false;
 
-    // Checks to see if the play button has been clicked
-    if (playButtonClicked === false){
+  $(simButtons.play.id).hide();
 
-        $("#play").hide();
-        /* Changes the playButtonClicked to true to avoid multiple calls
-        to the setTimeout method during a single game*/
-        playButtonClicked = true;
+  // Invokes the simulationGame callback function and passes goalsByPeriod and playerGameStats
+  simulateGame(goalsByPeriod, playerGameStats);
 
+  determineWinner();
 
-        // Invokes the simulationGame callback function and passes goalsByPeriod and playerGameStats
-        simulateGame(goalsByPeriod, playerGameStats);
-
-        determineWinner();
-
-        // Uses jQueary callback function to display the score in a more exciting way.
-        setTimeout(function(){
-            $("#period1V").html(period1V);
-            $("#period1H").html(period1H);
-            $("#periodFV").html(period1V);
-            $("#periodFH").html(period1H);
-            setTimeout(function(){
-                $("#period2V").html(period2V);
-                $("#period2H").html(period2H);
-                $("#periodFV").html(period1V + period2V);
-                $("#periodFH").html(period1H + period2H);
-                setTimeout(function(){
-                    $("#period3V").html(period3V);
-                    $("#period3H").html(period3H);
-                    $("#periodFV").html(period1V + period2V + period3V);
-                    $("#periodFH").html(period1H + period2H + period3H);
-                    // Checks to see if the game requires overtime
-                    if ((period1V + period2V + period3V) == (period1H + period2H + period3H)) {
-                        setTimeout(function(){
-                            $("#periodOTV").html(periodOTV);
-                            $("#periodOTH").html(periodOTH);
-                            $("#periodFV").html(period1V + period2V + period3V + periodOTV);
-                            $("#periodFH").html(period1H + period2H + period3H + periodOTH);
-                        }, gamespeed);
-                    }
-                    // Displays if your team wins or loses
-                    setTimeout(function(){
-                        $("#teamWins, #gameStats").show();
-                    }, gamespeed);
-                }, gamespeed);
-            }, gamespeed);
-        }, gamespeed); 
-    }
-
-    if (games === 3 && askIncreaseGameSpeed === false) {
-        increaseGameSpeed = confirm("Would like to greatly increase the game speed?");
-        if (increaseGameSpeed) {
-            gamespeed = 100;
-            askIncreaseGameSpeed = true;
+  // Uses jQueary callback function to display the score in a more exciting way.
+  setTimeout(function(){
+    $(period.away.one.id).html(period.away.one.score);
+    $(period.home.one.id).html(period.home.one.score);
+    $(period.away.final.id).html(period.away.final.score);
+    $(period.home.final.id).html(period.home.final.score);
+    setTimeout(function(){
+      $(period.away.two.id).html(period.away.two.score);
+      $(period.home.two.id).html(period.home.two.score);
+      $(period.away.final.id).html(period.away.one.score + period.away.two.score);
+      $(period.home.final.id).html(period.home.one.score + period.home.two.score);
+      setTimeout(function(){
+        $(period.away.three.id).html(period.away.three.score);
+        $(period.home.three.id).html(period.home.three.score);
+        $(period.away.final.id).html(period.away.reg.score);
+        $(period.home.final.id).html(period.home.reg.score);
+        // Checks to see if the game requires overtime
+        if (period.away.reg.score === period.home.reg.score) {
+          setTimeout(function(){
+            $(period.away.ot.id).html(period.away.ot.score);
+            $(period.home.ot.id).html(period.home.ot.score);
+            $(period.away.final.id).html(period.away.final.score);
+            $(period.home.final.id).html(period.home.final.score);
+          }, gamespeed);
         }
-    } 
+        // Displays if your team wins or loses
+        setTimeout(function(){
+          $("#teamWins, #gameStats").show();
+        }, gamespeed);
+      }, gamespeed);
+    }, gamespeed);
+  }, gamespeed); 
+
+  if (games === 3 && askIncreaseGameSpeed === false) {
+    increaseGameSpeed = confirm("Would like to greatly increase the game speed?");
+    if (increaseGameSpeed) {
+      gamespeed = 100;
+      askIncreaseGameSpeed = true;
+    }
+  } 
 }         
       
 function gameStats() {
@@ -671,7 +665,7 @@ function close(){
                   "the most goals by any player this season with " + seasonGoals + " goals!");
 
             // Invokes fuction for winning the Rocket Richard Trophy
-            unlockAchievement(achivements.rocket);
+            unlockAchievement(achievements.rocket);
         }
 
         /** Conditional that checks if the user recorded at least as many points
@@ -899,101 +893,63 @@ var resetGameArray = ["#period1V", "#period1H", "#period2V", "#period2H", "#peri
 // Haven't used this object yet
 
 var period = {
-    home: {
-        reg: {
-            score: 0
-        },
-        one: {
-            id: "#period1H",
-            score: 0
-        },
-        two: {
-            id: "#period2H",
-            score: 0
-        },
-        three: {
-            id: "#period3H",
-            score: 0
-        },
-        ot: {
-            id: "#periodOTH",
-            score: 0
-        },
-        final: {
-            id: "#periodFH",
-            score: 0
-        }
-    },
-    away: {
-        reg: {
-            score: 0
-        },
-        one: {
-            id: "#period1V",
-            score: 0
-        },
-        two: {
-            id: "#period2V",
-            score: 0
-        },
-        three: {
-            id: "#period3V",
-            score: 0
-        },
-        ot: {
-            id: "#periodOTV",
-            score: 0
-        },
-        final: {
-            id: "#periodFV",
-            score: 0
-        }
-    }
+  home: {
+    reg: { score: 0 },
+    one: { id: "#period1H", score: 0 },
+    two: { id: "#period2H", score: 0 },
+    three: { id: "#period3H", score: 0 },
+    ot: { id: "#periodOTH", score: 0 },
+    final: { id: "#periodFH", score: 0 }
+  },
+  away: {
+    reg: {score: 0},
+    one: { id: "#period1V", score: 0 },
+    two: { id: "#period2V", score: 0 },
+    three: { id: "#period3V", score: 0 },
+    ot: { id: "#periodOTV", score: 0 },
+    final: { id: "#periodFV", score: 0 }
+  }
 }
     
-
-
-
 // Callback function that takes two functions as parameters
 function simulateGame(callback1, callback2) {
     
-    // Player effect will increase as your player hits milestone skill levels
-    periodRegH = Math.round(Math.random() * (5 + playerEffect));
-    periodRegV = Math.round(Math.random() * 5);
-    
-    // Randomly decides which team will win in overtime
-    if(periodRegH === periodRegV) {
-        if(Math.random() > 0.5) {
-            periodOTH = 1;
-            periodOTV = 0;
-        } else {
-            periodOTH = 0;
-            periodOTV = 1;
-        }
+  // Player effect will increase as your player hits milestone skill levels
+  period.home.reg.score = Math.round(Math.random() * (5 + playerEffect));
+  period.away.reg.score = Math.round(Math.random() * 5);
+
+  // Randomly decides which team will win in overtime
+  if(period.home.reg.score === period.away.reg.score) {
+    if(Math.random() > 0.5) {
+      period.home.ot.score = 1;
+      period.away.ot.score = 0;
     } else {
-        periodOTH = 0;
-        periodOTV = 0;
+      period.home.ot.score = 0;
+      period.away.ot.score = 1;
     }
-    
-    maxPlayerPoints = periodRegH + periodOTH;
-    // Performs a callback and passes the the regulation scores as parameters
-    callback1(periodRegH, periodRegV);
-    
-    // Performs a callback and passes the regulation scorea of your team a parameter
-    callback2(maxPlayerPoints, goalsThisGame);
+  } else {
+    period.home.ot.score = 0;
+    period.away.ot.score = 0;
+  }
+  period.home.final.score = period.home.reg.score + period.home.ot.score;
+  period.away.final.score = period.away.reg.score + period.away.ot.score;
+  
+  // Performs a callback and passes the the regulation scores as parameters
+  callback1(period);
+
+  // Performs a callback and passes the regulation scorea of your team a parameter
+  callback2(period.home.final.score, goalsThisGame);
 }    
     
 /* Function that takes the regulation goals for both home and away team
 and somewhat randomizes how many of the total goals were scored in each period*/
-function goalsByPeriod(periodRegH, periodRegV){
-    
-    period1H = Math.floor(Math.random() * periodRegH);
-    period2H = Math.floor(Math.random() * (periodRegH - period1H));
-    period3H = periodRegH - period1H - period2H;
-    
-    period1V = Math.floor(Math.random() * periodRegV);
-    period2V = Math.floor(Math.random() * (periodRegV - period1V));
-    period3V = periodRegV - period1V - period2V;
+function goalsByPeriod(per){
+  
+  for (var loc in per) {
+    per[loc].one.score = Math.floor(Math.random() * per[loc].reg.score);
+    per[loc].two.score = Math.floor(Math.random() * (per[loc].reg.score - per[loc].one.score));
+    per[loc].three.score = per[loc].reg.score - per[loc].one.score - per[loc].two.score;
+  }
 }
 
 // Takes the final score of your team as a parameter and uses it to determine max player stats
@@ -1017,7 +973,7 @@ skills.shooting.impact = {
   goal: ability.high,
   assist: ability.low,
   hit: ability.low,
-  shot: ability.low
+  shot: ability.high
 };
 
 skills.passing.impact = {
@@ -1031,49 +987,49 @@ skills.handling.impact = {
   goal: ability.high,
   assist: ability.med,
   hit: ability.low,
-  shot: ability.low
+  shot: ability.med
 };
 
 skills.checking.impact = {
   goal: ability.low,
   assist: ability.low,
   hit: ability.high,
-  shot: ability.med
+  shot: ability.low
 };
 
 skills.positioning.impact = {
   goal: ability.low,
   assist: ability.low,
   hit: ability.high,
-  shot: ability.high
+  shot: ability.low
 };
 
 skills.takeaway.impact = {
   goal: ability.low,
   assist: ability.low,
   hit: ability.low,
-  shot: ability.high
+  shot: ability.med
 };
 
 skills.speed.impact = {
   goal: ability.high,
   assist: ability.high,
   hit: ability.med,
-  shot: ability.high
+  shot: ability.med
 };
 
 skills.strength.impact = {
   goal: ability.med,
   assist: ability.med,
   hit: ability.high,
-  shot: ability.high
+  shot: ability.med
 };
 
 skills.endurance.impact = {
   goal: ability.low,
   assist: ability.low,
   hit: ability.low,
-  shot: ability.high
+  shot: ability.med
 };
 
 // parameter should be goal, assist, shot, or hit
@@ -1083,232 +1039,267 @@ function getAbility(stat) {
   }
 }
 
+var stats = {
+  sim: {
+    goals: 0,
+    assists: 0,
+    points: 0,
+    hits: 0,
+    shots: 0
+  },
+  season: {
+    num: 0, // double check if this should be 0 or 1
+    games: 0,
+    goals: 0,
+    assists: 0,
+    points: 0,
+    hits: 0,
+    shots: 0,
+    wins: 0,
+    losses: 0,
+    lossesOT: 0,
+  },
+  playoffs: {
+    num: 0, // double check if this should be 0 or 1
+    games: 0,
+    goals: 0,
+    assists: 0,
+    points: 0,
+    hits: 0,
+    shots: 0,
+    wins: 0,
+    losses: 0,
+    lossesOT: 0,
+  },
+  series: {
+    games: 0,
+    wins: 0,
+    losses: 0
+  },
+  career: {
+    games: 0,
+    goals: 0,
+    assists: 0,
+    points: 0,
+    hits: 0,
+    shots: 0,
+    wins: 0,
+    losses: 0,
+    lossesOT: 0
+  }
+}
 
 // Function that determines how many assists your player gets in a given game
 function goalsThisGame(teamGoals, callback) {
-    // Radomizes a number between 1 and 200
-    goalChance = Math.random() * 200;
-    // Determines your players ability to record a goal based on your player attributes
-    getAbility('goal');
-    
-    /* Uses the ability.assist of your player to determine the likeliness
-    of your player recording one or more goals in a game.
-    Uses teamGoalsLeft as a safety net as to not allow your player to
-    record more goals than your team scores*/
-    if (ability.goal > (goalChance * 10)){
-        goals = 3;
-        if(goals > teamGoals){
-            goals = teamGoals;
-        }
-    } else if(ability.goal > (goalChance * 4)){
-        goals = 2;
-        if(goals > teamGoals){
-            goals = teamGoals;
-        }
-    } else if (ability.goal > goalChance){
-        goals = 1;
-        if(goals> teamGoals){
-            goals = 0;
-        }
-    } else {
-        goals = 0;
+  // Radomizes a number between 1 and 200
+  goalChance = Math.random() * 200;
+  // Determines your players ability to record a goal based on your player attributes
+  getAbility('goal');
+
+  /* Uses the ability.assist of your player to determine the likeliness
+  of your player recording one or more goals in a game.
+  Uses teamGoalsLeft as a safety net as to not allow your player to
+  record more goals than your team scores*/
+  
+  if (ability.goal > (goalChance * 10)){
+    stats.sim.goals = 3;
+    if(stats.sim.goals > teamGoals){
+      stats.sim.goals = teamGoals;
     }
-    
-    if (seasonEnd === true){
-        postGoals = goals;
-        playoffGoals += postGoals;
-    } else {
-        seasonGoals += goals;
+  } else if(ability.goal > (goalChance * 4)){
+    stats.sim.goals = 2;
+    if(stats.sim.goals > teamGoals){
+      stats.sim.goals = teamGoals;
     }
-    
-    careerGoals += goals;
-    callback(teamGoals, goals, hitsThisGame);
+  } else if (ability.goal > goalChance){
+    stats.sim.goals = 1;
+    if(stats.sim.goals> teamGoals){
+      stats.sim.goals = 0;
+    }
+  } else {
+    stats.sim.goals = 0;
+  }
+
+  if (seasonEnd === true){
+    stats.playoffs.goals += stats.sim.goals;
+  } else {
+    stats.season.goals += stats.sim.goals;
+  }
+
+  ability.goal = 0;
+  stats.career.goals += stats.sim.goals;
+  callback(teamGoals, stats.sim.goals, hitsThisGame);
 }
 
 // Function that determines how many assists your player gets in a given game
 function assistsThisGame(teamGoals, goals, callback) {
-    // Radomizes a number between 1 and 200
-    assistChance = Math.random() * 200;
-    // Determines your players ability to get an assist based on your player attributes
-    getAbility('assist');
-    
-    // Find how many goals were scored by your team, not including your player
-    teamGoalsLeft = teamGoals - goals;
-    
-    /* Uses the ability.assist of your player to determine the likeliness
-    of your player recording one or more assists in a game.
-    Uses teamGoalsLeft as a safety net as to not allow your player to
-    record more points than your team scores*/
-    if (ability.assist > (assistChance * 10)){
-        assists = 3;
-        if(assists > teamGoalsLeft){
-            assists = teamGoalsLeft;
-        }
-    } else if(ability.assist > (assistChance * 4)){
-        assists = 2;
-        if(assists > teamGoalsLeft){
-            assists = teamGoalsLeft;
-        }
-    } else if (ability.assist > assistChance){
-        assists = 1;
-        if(assists > teamGoalsLeft){
-            assists = 0;
-        }
-    } else {
-        assists = 0;
+  // Radomizes a number between 1 and 200
+  assistChance = Math.random() * 200;
+  // Determines your players ability to get an assist based on your player attributes
+  getAbility('assist');
+
+  // Find how many goals were scored by your team, not including your player
+  teamGoalsLeft = teamGoals - goals;
+
+  /* Uses the ability.assist of your player to determine the likeliness
+  of your player recording one or more assists in a game.
+  Uses teamGoalsLeft as a safety net as to not allow your player to
+  record more points than your team scores*/
+  if (ability.assist > (assistChance * 10)){
+    stats.sim.assists = 3;
+    if(stats.sim.assists > teamGoalsLeft){
+      stats.sim.assists = teamGoalsLeft;
     }
-    
-    points = goals + assists;
-    
-    if (seasonEnd === true){
-        postAssists = assists;
-        playoffAssists += postAssists;
-        postPoints = points;
-        playoffPoints += postPoints;
-    } else {
-        seasonAssists += assists;
-        seasonPoints += points;
+  } else if(ability.assist > (assistChance * 4)){
+    stats.sim.assists = 2;
+    if(stats.sim.assists > teamGoalsLeft){
+      stats.sim.assists = teamGoalsLeft;
     }
-    
-    careerAssists += assists;
-    careerPoints += points;
-    
-    /** Conditional to verify if user has reached 500 career points. Is linked
-    * to the legendary Achievement but not invoked until 500 to avoid multple calls.
-    */
-    if (careerPoints >= 500) { 
-    
-        // Check the if user has reached legendary status as career points is a requirement.
-        if (careerPoints >= 500 && allStarGames >= 7 && stanleyCups >= 3){
-            unlockAchievement(achievements.legend);
-        }
+  } else if (ability.assist > assistChance){
+    stats.sim.assists = 1;
+    if(stats.sim.assists > teamGoalsLeft){
+      stats.sim.assists = 0;
     }
-    
-    callback(timeOnIceThisGame);
+  } else {
+    stats.sim.assists = 0;
+  }
+
+  stats.sim.points = goals + stats.sim.assists;
+
+  if (seasonEnd === true){
+    stats.playoffs.assists += stats.sim.assists;
+    stats.playoffs.points += stats.sim.points;
+  } else {
+    stats.season.assists += stats.sim.assists;
+    stats.season.points += stats.sim.points;
+  }
+
+  ability.assist = 0;
+  stats.career.assists += stats.sim.assists;
+  stats.career.points += stats.sim.points;
+
+  /** Conditional to verify if user has reached 500 career points. Is linked
+  * to the legendary Achievement but not invoked until 500 to avoid multple calls.
+  */
+  if (stats.career.points >= 500) { 
+
+    // Check the if user has reached legendary status as career points is a requirement.
+    if (stats.career.points >= 500 && allStarGames >= 7 && stanleyCups >= 3){
+      unlockAchievement(achievements.legend);
+    }
+  }
+
+  callback(shotsThisGame);
 }
 
 function hitsThisGame(callback) {
-    // Radomizes a number between 1 and 100
-    hitChance = Math.random() * 80;
-    // Determines your players ability to record a hit based on your player attributes
-   getAbility('hit');
+  
+  // Radomizes a number between 1 and 100
+  hitChance = Math.random() * 80;
+  // Determines your players ability to record a hit based on your player attributes
+  getAbility('hit');
     
-    if(ability.hit > (hitChance * 15)){
-        hits = 5;
-    } else if (ability.hit > (hitChance * 12)){
-        hits = 4;
-    } else if (ability.hit > (hitChance * 7)){
-        hits = 3;
-    } else if (ability.hit > (hitChance * 2)){
-        hits = 2;
-    } else if (ability.hit > hitChance){
-        hits = 1;
-    } else {
-        hits = 0;
-    }
+  if(ability.hit > (hitChance * 15)){
+    stats.sim.hits = 5;
+  } else if (ability.hit > (hitChance * 12)){
+    stats.sim.hits = 4;
+  } else if (ability.hit > (hitChance * 7)){
+    stats.sim.hits = 3;
+  } else if (ability.hit > (hitChance * 2)){
+    stats.sim.hits = 2;
+  } else if (ability.hit > hitChance){
+    stats.sim.hits = 1;
+  } else {
+    stats.sim.hits = 0;
+  }
     
-    if (seasonEnd === true){
-        postHits = hits;
-        playoffHits += postHits;
-    } else {
-        seasonHits += hits;
-    }
+  if (seasonEnd === true){
+    stats.playoffs.hits += stats.sim.hits;
+  } else {
+    stats.season.hits += stats.sim.hits;
+  }
     
-    careerHits += hits;
-    callback();
+  ability.hit = 0;
+  stats.career.hits += stats.sim.hits;
+  callback(stats.sim.goals);
 }
 
-function timeOnIceThisGame() {
-    timeOnIce = 600;
+function shotsThisGame(goals) {
     
-    var timeOnIceRand = Math.round(Math.random() * 180);
-    timeOnIceAverage = Math.random() * 200;
+  
+  // Radomizes a number between 1 and 100
+  shotChance = Math.random() * 80;
+  // Determines your players ability to record a hit based on your player attributes
+  getAbility('shot');
     
-    getAbility('shot');
-
-    if(ability.shot > (timeOnIceAverage * 15)){
-        timeOnIce += 600 + timeOnIceRand;
-    } else if (ability.shot > (timeOnIceAverage * 12)){
-        timeOnIce += 480 + timeOnIceRand;
-    } else if (ability.shot > (timeOnIceAverage * 7)){
-        timeOnIce += 360 + timeOnIceRand;
-    } else if (ability.shot > (timeOnIceAverage * 2)){
-        timeOnIce += 240 + timeOnIceRand;
-    } else if (ability.shot > timeOnIceAverage){
-        timeOnIce += 120 + timeOnIceRand;
-    } else {
-        timeOnIce += timeOnIceRand;
-    }
-    timeOnIceMin = Math.floor(timeOnIce/60);
-    timeOnIceSec = Math.floor(timeOnIce%60);
-    totalTimeOnIceMin += timeOnIceMin;
-    totalTimeOnIceSec += timeOnIceSec;
+  if(ability.shot > (shotChance * 15)){
+    stats.sim.shots = 5;
+  } else if (ability.shot > (shotChance * 12)){
+    stats.sim.shots = 4;
+  } else if (ability.shot > (shotChance * 7)){
+    stats.sim.shots = 3;
+  } else if (ability.shot > (shotChance * 2)){
+    stats.sim.shots = 2;
+  } else if (ability.shot > shotChance){
+    stats.sim.shots = 1;
+  } else {
+    stats.sim.shots = 0;
+  }
+  stats.sim.shots += goals;
     
-    if (timeOnIceSec.toString().length === 1){
-        timeOnIceSec = "0" + timeOnIceSec.toString();   
-    }
-    timeOnIce = timeOnIceMin + ":" + timeOnIceSec;
+  if (seasonEnd === true){
+    stats.playoffs.shots += stats.sim.shots;
+  } else {
+    stats.season.shots += stats.sim.shots;
+  }
     
-    if (seasonEnd === true){
-        playoffTotalTimeOnIceMin += timeOnIceMin;
-        playoffTotalTimeOnIceSec += timeOnIceSec;
-        playoffTimeOnIce = Math.floor(playoffTotalTimeOnIceMin/(playoffGames+1)) + ":" + 
-            Math.floor(playoffTotalTimeOnIceSec/(playoffGames+1));
-    } else {
-        seasonTimeOnIce = Math.floor(totalTimeOnIceMin/(games+1)) + ":" + 
-            Math.floor(totalTimeOnIceSec/(games+1));
-    }
+  ability.shot = 0;
+  stats.career.shots += stats.sim.shots;
 }
 
 function determineWinner() {
-    if (periodRegH > periodRegV){
-        $("#teamWins h2").html("" + player.team + " Win");
-        if (seasonEnd === false) {
-            wins++;
-            careerWins++;
-        } else {
-            playoffWins++;
-            careerWins++;
-        }
-    } else if (periodRegH < periodRegV){
-        $("#teamWins h2").html("" + player.team + " Lose");
-        if (seasonEnd === false) {
-            losses++;
-        } else {
-            playoffLosses++;
-        }
+  
+  if (period.home.reg.score > period.away.reg.score){
+    var resultLabel = " Win";
+    var result = "wins";
+    var playoffResult = "wins";
+  } else if (period.home.reg.score < period.away.reg.score){
+    var resultLabel = " Lose";
+    var result = "losses";
+    var playoffResult = "losses";
+  } else {
+    if (period.home.ot.score > period.away.ot.score){
+      var resultLabel = " Win in Overtime";
+      var result = "wins";
+      var playoffResult = "wins";
     } else {
-        if (periodOTH > periodOTV){
-            $("#teamWins h2").html("" + player.team + " Win in Overtime");
-            if (seasonEnd === false) {
-                wins++;
-                careerWins++;
-            } else {
-                playoffWins++;
-                careerWins++;
-        }
-        } else {
-            $("#teamWins h2").html("" + player.team + " Lose in Overtime");
-            if (seasonEnd === false) {
-                losses++;
-            } else {
-                playoffLosses++;
-        }
-        }
+      var resultLabel = " Lose in Overtime";
+      var result = "lossesOT";
+      var playoffResult = "losses";
     }
-    
-    // Checks to see if user has reached 100 career wins.
-    if (careerWins >= 100) {
-        
-        // Invokes function to award user for reaching 100 career wins.
-        unlockAchievement(achievements.wins100);
-        
-    // Checks to see if user has reached 50 career wins.    
-    } else if (careerWins >= 50) {
-        
-        // Invokes function to award user for reaching 100 career wins.
-        unlockAchievement(achievements.wins50);
-    }
+  }
+
+  $("#teamWins h2").html("" + player.team + resultLabel);
+  stats.career[result]++;
+  if (seasonEnd === false) {
+    stats.season[result]++;
+  } else {
+    stats.playoff[playoffResult]++;
+  }
+
+  // Checks to see if user has reached 100 career wins.
+  if (stats.career.wins >= 100) {
+
+    // Invokes function to award user for reaching 100 career wins.
+    unlockAchievement(achievements.wins100);
+
+  // Checks to see if user has reached 50 career wins.    
+  } else if (stats.career.wins >= 50) {
+
+    // Invokes function to award user for reaching 100 career wins.
+    unlockAchievement(achievements.wins50);
+  }
+  
 }    
 
 // Function updates the html to reflect the new player stats
@@ -1366,29 +1357,7 @@ function resetGame(arr){
 }
     
 
-var gStats = {
-    goals: 0,
-    assists: 0,
-    points: 0,
-    hits: 0,
-    timeOnIce: 0,
-};
 
-var seasonStats = {
-    games: 0,
-    goals: 0,
-    assists: 0,
-    points: 0,
-    timeOnIce: 0
-};
-
-var playoffStats = {
-    games: 0,
-    goals: 0,
-    assists: 0,
-    points: 0,
-    timeOnIce: 0
-}
 
 var playoffStats = {};
 
@@ -1425,7 +1394,7 @@ function resetSeason() {
         
         // Alerts the user that they have been made Captain.
         alert("You have just finished your 7th season with the " + player.team +
-             "./n/nYour teammates have voted and you have been named Captain!");
+             ".\n\nYour teammates have voted and you have been named Captain!");
         
         /** Invoked function to award the user for finishing their 7th
         * season and being named captain.

@@ -53,8 +53,17 @@ button:focus {
     background: #efefef;
 }
 
+#playerInfoLink button {
+  float: left;
+}
+
 #basics, #record {
     background: #efefef;
+}
+
+#basics {
+  position: relative;
+  float: left;
 }
 
 #playGameLink, #playoffGameLink, #improvePlayerLink, #playerStatsLink, #welcome, #draft, #pick {

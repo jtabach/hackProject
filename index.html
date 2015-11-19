@@ -1,300 +1,297 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="css/style.css">
-        <link rel="stylesheet" href="css/jquery.fancybox.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-        <script src="js/jquery.fancybox.pack.js"></script>
-        <script src="js/script.js"></script>
+  <head>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/jquery.fancybox.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="js/jquery.fancybox.pack.js"></script>
+    <script src="js/script.js"></script>
         
-    </head>
-    <body>
+  </head>
+  <body>
         
-        <div id="wrapper">
-            <div id="info">
-                <div id="playerInfoLink"> 
-                    <h3 id="basics">Jeff Tabachnick - Left Wing</h3>
-                </div>
-                <div id="teamRecordLink">
-                    <h3 id="record">Team Record: 0-0-0</h3>
-                </div>
-            </div>
-
-            <div class="clear"></div>
-
-            <div class="main">
-                <a id="playerStatsLink">
-                    <button>
-                        <h1>Player Stats</h1>
-                        <img src="img/stats.jpg" height="152px" width="225px">
-                    </button>
-                </a>
-
-                <div class="clear"></div>
-                <a id="playoffGameLink" class="gray">
-                    <button>
-                        <h1>Play Playoff Game</h1>
-                        <img src="img/playoffRink.jpg" height="152px" width="225px">
-                    </button>
-                </a>
-            </div>
-            
-            <div class="main center">    
-                <a id="myPlayerLink">
-                    <button>
-                        <h1 id="mp">My Player</h1>
-                        <h2 id="yp">Years Pro: 1</h2>
-                        <h2 id="mpo">Overall: 65</h2>
-                        <img src="img/hockeyplayer3.jpeg" width="225px">
-                        <h2 id="ag">Allstar Games: 0</h2>
-                        <h2 id="pb">Playoff Births: 0</h2>
-                        <h2 id="sc">Stanley Cups: 0</h2>
-                    </button>
-                </a>
-            </div>
-                
-            <div class="main right">    
-                <a id="improvePlayerLink">
-                    <button>
-                        <h1>Improve Player</h1>
-                        <img src="img/attributes.jpeg" height="152px" width="225px">
-                    </button>
-                    </a>
-
-                <div class="clear"></div>
-                <a id="playGameLink" >
-                    <button>
-                        <h1>Play Season Game</h1>
-                        <img src="img/hockeyRink.jpeg" height="152px" width="225px">
-                    </button>
-                </a>
-                
-            </div>
-
-            
-            <div id="welcome">
-                <h1>Welcome to NHL Career Mode</h1>
-                <div class="clear"></div><br>
-                <p>You have just declared for the NHL draft. Scouts have estimated that your current skill set will have you drafted in the first round as a forward. Once drafted you will able to see your player skill ratings and improve categories that you believe will help your player become a top forward in the league. Throughout your career you can play games, keep track of your stats, improve your player, and hopefully win a Stanley Cup or two. Good Luck, and remember, speed kills. Click on Continue to Draft Form when ready.</p>
-                <div class="clear"></div><br>
-                <button id="welcomeNext">Continue to Draft Form</button>
-            </div>
-            
-            
-            
-            <div id="draft">
-                <h1>2015 NHL Draft Form</h1>
-                <div class="clear"></div><br>
-                <p>Please fill out your information below to become eligible for this year’s draft. Click Continue to Draft Day when ready.</p><br>
-                <div class="clear"></div>
-                <form id="draftForm">
-                    First Name:
-                    <input type="text" class="name" id="firstName" name="firstName" placeholder="type here..">
-                    Last Name:
-                    <input type="text" class="name" id="lastName" name="lastName" placeholder="type here..">
-                    <div class="clear"></div><br>Position: _
-                    Left Wing
-                    <input type="radio" id="leftWing" class="position" name="position" value="Left Wing" checked>
-                    Center
-                    <input type="radio" id="center" class="position" name="position" value="Center">
-                    Right Wing
-                    <input type="radio" id="rightWing" class="position" name="position" value="Right Wing">
-                    <div class="clear"></div>
-                    <input id="submit" type="submit" value="Continue to Draft Day">
-                </form>
-            </div>
-            
-            
-            <div id="pick">
-                <h1>Draft Day</h1>
-                <button id="beginDraft">Begin Draft</button>
-                <div class="clear"></div><br>
-                <p id="draftDetails">Today is the big day. All signs point to you being picked in the first round. You will likely be playing for the team that draft’s you for most of your career. Hope it’s a good one. Click 'Begin Draft' when ready.</p>
-                <input id="submitGames" type="button" value="Lets Start Playing"></button>
-            </form>
-            </div>
-            
-            
-            <div class="clear"></div>
-            <div id="playGame">
-                <div id="gameNumber">
-                    <h2>Regular Season Game #</h2>
-                    <button class="pGame" id="play">Play</button>
-                    <button class="pGame" id="gameStats">Stats</button>
-                    <button class="pGame" id="close">Close</button>
-                </div>
-                <div class="clear"></div>
-                <div id="scoreLine" >
-                    <h4 class="game" id="team">Team</h4>
-                    <h4 class="game" id="period1">1st</h4>
-                    <h4 class="game" id="period2">2nd</h4>
-                    <h4 class="game" id="period3">3rd</h4>
-                    <h4 class="game" id="periodOT">OT</h4>
-                    <h4 class="game" id="final">Final</h4>
-                    <div class="clear"></div>
-                    <h4 class="game" id="teamV">Visitor</h4>
-                    <h4 class="game" id="period1V">-</h4>
-                    <h4 class="game" id="period2V">-</h4>
-                    <h4 class="game" id="period3V">-</h4>
-                    <h4 class="game" id="periodOTV">-</h4>
-                    <h4 class="game" id="periodFV">-</h4>
-                    <div class="clear"></div>
-                    <h4 class="game home" id="teamH">Home</h4>
-                    <h4 class="game home" id="period1H">-</h4>
-                    <h4 class="game home" id="period2H">-</h4>
-                    <h4 class="game home" id="period3H">-</h4>
-                    <h4 class="game home" id="periodOTH">-</h4>
-                    <h4 class="game home" id="periodFH">-</h4>
-                </div>
-                <div class="clear"></div>
-                <div id="teamWins">
-                    <h2>Team Wins</h2>
-                </div>
-                <div class="clear"></div>
-                <div id="statLine">
-                    <h4 class="game">Player</h4>
-                    <h4 class="game">Goals</h4>
-                    <h4 class="game">Assists</h4>
-                    <h4 class="game">Points</h4>
-                    <h4 class="game">Hits</h4>
-                    <h4 class="game">Time On Ice</h4>
-                    <div class="clear"></div>
-                    <h4 class="game" id="playerName">Jeff</h4>
-                    <h4 class="game" id="gameGoals">0</h4>
-                    <h4 class="game" id="gameAssists">0</h4>
-                    <h4 class="game" id="gamePoints">0</h4>
-                    <h4 class="game" id="gameHits">0</h4>
-                    <h4 class="game" id="gameTOI">0</h4>
-                </div>
-                <div class="clear"></div>
-                <div id="attributesEarned">
-                    <h2>Attribute Points Earned</h2>
-                </div>
-                <div class="clear"></div>
-            </div>
-
-            
-            
-            
-            <div id="improvePlayer">
-                <div id="attributePoints">
-                    <h2>Player Attributes</h2>
-                    <h3>Points: NA</h3>
-                </div>
-                <div class="clear"><br>
-                </div>
-                <button class="skill" area="offense" id="shooting">Shooting: NA</button>
-                <button class="skill" area="offense" id="passing">Passing: NA</button>
-                <button class="skill" area="offense" id="handling">Handling: NA</button>
-                <div class="overall" id="overallOffense">
-                    <h3>Offense: NA</h3>
-                </div>
-                <div class="clear"></div>
-                <button class="skill" area="defense" id="checking">Checking: NA</button>
-                <button class="skill" area="defense" id="positioning">Positioning: NA</button>
-                <button class="skill" area="defense" id="takeaway">Takeaway: NA</button>
-                <div class="overall" id="overallDefense">
-                    <h3>Defense: NA</h3>
-                </div>
-                <div class="clear"></div>
-                <button class="skill" area="athletics" id="speed">Speed: NA</button>
-                <button class="skill" area="athletics" id="strength">Strength: NA</button>
-                <button class="skill" area="athletics" id="endurance">Endurance: NA</button>
-                <div class="overall" id="overallAthletics">
-                    <h3>Athlete: NA</h3>
-                </div>
-                <div class="clear"></div>
-                <div id="playerOverall">
-                    <h3>Player Overall: NA</h3>
-                </div>
-            </div>
-
-
-            <div class="acheivements" id="myPlayer">
-                <div class="clear"><br></div>
-                <p>Hover over the acheivements to learn how to unlock them</p>
-                <img id="achievePlayoffs" class="locked" src="img/achievements/playoffs.png"
-                     Title="Qualify for the playoffs" height="80px" width="80px">
-                <img id="achieveStanleyCup" class="locked" src="img/achievements/stanleyCup.jpeg"
-                     Title="Win a Stanley Cup" height="80px" width="80px">
-                <img id="achieve50Wins" class="locked" src="img/achievements/50wins.jpeg"
-                     Title="Win 50 career games" height="80px" width="80px">
-                <img id="achieve100Wins" class="locked" src="img/achievements/100wins.jpeg"
-                     Title="Win 100 career games" height="80px" width="80px">
-                <img id="achieve85Overall" class="locked" src="img/achievements/85overall.jpeg"
-                     Title="Reach 85 player overall" height="80px" width="80px">
-                <img id="achieve99Overall" class="locked" src="img/achievements/99overall.jpeg"
-                     Title="Reach 99 player overall" height="80px" width="80px">
-                    
-                <div class="clear"></div>
-                    
-                <img id="achieveAllStar" class="locked" src="img/achievements/allstar.png"
-                     Title="Allstar (Average a point per game by halfway point of season)" height="80px" width="80px">
-                <img id="achieveCaptain" class="locked" src="img/achievements/captain.png"
-                     Title="Play 5 seasons with the same team" height="80px" width="80px">
-                <img id="achieveRocket" class="locked" src="img/achievements/rocket.jpeg"
-                     Title="Average over a goal per game for a season" height="80px" width="80px">
-                <img id="achieveMVP" class="locked" src="img/achievements/mvp.png"
-                     Title="Average over a point per game and qualify for the playoffs" height="80px" width="80px">
-                <img id="achieveFinalsMVP" class="locked" src="img/achievements/finalsmvp.png"
-                     Title="Average over a point per game and win the Stanley Cup" height="80px" width="80px">
-                <img id="achieveLegend" class="locked" src="img/achievements/legend.jpeg"
-                     Title="Record 500 career points, be selected to 7 allstar games and win 3 Stanley Cups" 
-                     height="80px" width="80px">
-                
-            </div>
-
-            
-            
-            <div id="playerStats">
-                <div id="myPlayerStats">
-                    <h2>Player Stats</h2>
-                </div>
-                <div id="seeseasonStats" >
-                    <div class="clear"></div><br>
-                    <h4 class="stats">Season</h4>
-                    <h4 class="stats">Games</h4>
-                    <h4 class="stats">Goals</h4>
-                    <h4 class="stats">Assists</h4>
-                    <h4 class="stats">Points</h4>
-                    <h4 class="stats">Hits</h4>
-                    <h4 class="stats" id="seasonTOIC">Time on Ice</h4>
-                    <div class="clear"></div>
-                    <h4 class="stats" id="seasonNum">1</h4>
-                    <h4 class="stats" id="seasonGames">0</h4>
-                    <h4 class="stats" id="seasonGoals">0</h4>
-                    <h4 class="stats" id="seasonAssists">0</h4>
-                    <h4 class="stats" id="seasonPoints">0</h4>
-                    <h4 class="stats" id="seasonHits">0</h4>
-                    <h4 class="stats" id="seasonTOI">0</h4>
-                 </div>
-                <div id="seeplayoffStats" >
-                    <div class="clear"></div><br>
-                    <h4 class="stats">Playoff</h4>
-                    <h4 class="stats">Games</h4>
-                    <h4 class="stats">Goals</h4>
-                    <h4 class="stats">Assists</h4>
-                    <h4 class="stats">Points</h4>
-                    <h4 class="stats">Hits</h4>
-                    <h4 class="stats" id="playoffTOIC">Time on Ice</h4>
-                    <div class="clear"></div>
-                    <h4 class="stats" id="playoffNum">1</h4>
-                    <h4 class="stats" id="playoffGames">0</h4>
-                    <h4 class="stats" id="playoffGoals">0</h4>
-                    <h4 class="stats" id="playoffAssists">0</h4>
-                    <h4 class="stats" id="playoffPoints">0</h4>
-                    <h4 class="stats" id="playoffHits">0</h4>
-                    <h4 class="stats" id="playoffTOI">0</h4>
-                 </div>
-            </div>
-            
-            
-            
+    <div id="wrapper">
+      <div id="info">
+        <div id="playerInfoLink"> 
+          <h3 id="basics">Jeff Tabachnick - Left Wing</h3>
+<!--
+          <button>Slower</button>
+          <h3 id="gameSpeed">Game Speed</h3>
+          <button>Faster</button>
+-->
         </div>
-        
-        
-        
-        
-    </body>
+        <div id="teamRecordLink">
+          <h3 id="record">Team Record: 0-0-0</h3>
+        </div>
+      </div>
+
+      <div class="clear"></div>
+
+      <div class="main">
+        <a id="playerStatsLink">
+          <button>
+            <h1>Player Stats</h1>
+            <img src="img/stats.jpg" height="152px" width="225px">
+          </button>
+        </a>
+
+        <div class="clear"></div>
+        <a id="playoffGameLink" class="gray">
+          <button>
+            <h1>Play Playoff Game</h1>
+            <img src="img/playoffRink.jpg" height="152px" width="225px">
+          </button>
+        </a>
+      </div>
+
+      <div class="main center">    
+        <a id="myPlayerLink">
+          <button>
+            <h1 id="mp">My Player</h1>
+            <h2 id="yp">Years Pro: 1</h2>
+            <h2 id="mpo">Overall: 65</h2>
+            <img src="img/hockeyplayer3.jpeg" width="225px">
+            <h2 id="ag">Allstar Games: 0</h2>
+            <h2 id="pb">Playoff Births: 0</h2>
+            <h2 id="sc">Stanley Cups: 0</h2>
+          </button>
+        </a>
+      </div>
+
+      <div class="main right">    
+        <a id="improvePlayerLink">
+          <button>
+            <h1>Improve Player</h1>
+            <img src="img/attributes.jpeg" height="152px" width="225px">
+          </button>
+        </a>
+
+        <div class="clear"></div>
+        <a id="playGameLink" >
+          <button>
+            <h1>Play Season Game</h1>
+            <img src="img/hockeyRink.jpeg" height="152px" width="225px">
+          </button>
+        </a>
+      </div>
+
+
+      <div id="welcome">
+        <h1>Welcome to NHL Career Mode</h1>
+        <div class="clear"></div><br>
+        <p>You have just declared for the NHL draft. Scouts have estimated that your current skill set will have you drafted in the first round as a forward. Once drafted you will able to see your player skill ratings and improve categories that you believe will help your player become a top forward in the league. Throughout your career you can play games, keep track of your stats, improve your player, and hopefully win a Stanley Cup or two. Good Luck, and remember, speed kills. Click on Continue to Draft Form when ready.</p>
+        <div class="clear"></div><br>
+        <button id="welcomeNext">Continue to Draft Form</button>
+      </div>
+
+
+
+      <div id="draft">
+        <h1>2015 NHL Draft Form</h1>
+        <div class="clear"></div><br>
+        <p>Please fill out your information below to become eligible for this year’s draft. Click Continue to Draft Day when ready.</p><br>
+        <div class="clear"></div>
+        <form id="draftForm">
+          First Name:
+          <input type="text" class="name" id="firstName" name="firstName" placeholder="type here..">
+          Last Name:
+          <input type="text" class="name" id="lastName" name="lastName" placeholder="type here..">
+          <div class="clear"></div><br>Position: _
+          Left Wing
+          <input type="radio" id="leftWing" class="position" name="position" value="Left Wing" checked>
+          Center
+          <input type="radio" id="center" class="position" name="position" value="Center">
+          Right Wing
+          <input type="radio" id="rightWing" class="position" name="position" value="Right Wing">
+          <div class="clear"></div>
+          <input id="submit" type="submit" value="Continue to Draft Day">
+        </form>
+      </div>
+
+
+      <div id="pick">
+        <h1>Draft Day</h1>
+        <button id="beginDraft">Begin Draft</button>
+        <div class="clear"></div><br>
+        <p id="draftDetails">Today is the big day. All signs point to you being picked in the first round. You will likely be playing for the team that draft’s you for most of your career. Hope it’s a good one. Click 'Begin Draft' when ready.</p>
+        <input id="submitGames" type="button" value="Lets Start Playing"></button>
+      </form>
+      </div>
+
+
+      <div class="clear"></div>
+      <div id="playGame">
+        <div id="gameNumber">
+          <h2>Regular Season Game #</h2>
+          <button class="pGame" id="play">Play</button>
+          <button class="pGame" id="gameStats">Stats</button>
+          <button class="pGame" id="close">Close</button>
+        </div>
+        <div class="clear"></div>
+        <div id="scoreLine" >
+          <h4 class="game" id="team">Team</h4>
+          <h4 class="game" id="period1">1st</h4>
+          <h4 class="game" id="period2">2nd</h4>
+          <h4 class="game" id="period3">3rd</h4>
+          <h4 class="game" id="periodOT">OT</h4>
+          <h4 class="game" id="final">Final</h4>
+          <div class="clear"></div>
+          <h4 class="game" id="teamV">Visitor</h4>
+          <h4 class="game" id="period1V">-</h4>
+          <h4 class="game" id="period2V">-</h4>
+          <h4 class="game" id="period3V">-</h4>
+          <h4 class="game" id="periodOTV">-</h4>
+          <h4 class="game" id="periodFV">-</h4>
+          <div class="clear"></div>
+          <h4 class="game home" id="teamH">Home</h4>
+          <h4 class="game home" id="period1H">-</h4>
+          <h4 class="game home" id="period2H">-</h4>
+          <h4 class="game home" id="period3H">-</h4>
+          <h4 class="game home" id="periodOTH">-</h4>
+          <h4 class="game home" id="periodFH">-</h4>
+        </div>
+        <div class="clear"></div>
+        <div id="teamWins">
+          <h2>Team Wins</h2>
+        </div>
+        <div class="clear"></div>
+        <div id="statLine">
+          <h4 class="game">Player</h4>
+          <h4 class="game">Goals</h4>
+          <h4 class="game">Assists</h4>
+          <h4 class="game">Points</h4>
+          <h4 class="game">Hits</h4>
+          <h4 class="game">Time On Ice</h4>
+          <div class="clear"></div>
+          <h4 class="game" id="playerName">Jeff</h4>
+          <h4 class="game" id="gameGoals">0</h4>
+          <h4 class="game" id="gameAssists">0</h4>
+          <h4 class="game" id="gamePoints">0</h4>
+          <h4 class="game" id="gameHits">0</h4>
+          <h4 class="game" id="gameTOI">0</h4>
+        </div>
+          <div class="clear"></div>
+          <div id="attributesEarned">
+            <h2>Attribute Points Earned</h2>
+          </div>
+          <div class="clear"></div>
+      </div>
+
+
+
+
+      <div id="improvePlayer">
+        <div id="attributePoints">
+          <h2>Player Attributes</h2>
+          <h3>Points: NA</h3>
+        </div>
+        <div class="clear"><br></div>
+        <button class="skill" area="offense" id="shooting">Shooting: NA</button>
+        <button class="skill" area="offense" id="passing">Passing: NA</button>
+        <button class="skill" area="offense" id="handling">Handling: NA</button>
+        <div class="overall" id="overallOffense">
+          <h3>Offense: NA</h3>
+        </div>
+        <div class="clear"></div>
+        <button class="skill" area="defense" id="checking">Checking: NA</button>
+        <button class="skill" area="defense" id="positioning">Positioning: NA</button>
+        <button class="skill" area="defense" id="takeaway">Takeaway: NA</button>
+        <div class="overall" id="overallDefense">
+          <h3>Defense: NA</h3>
+        </div>
+        <div class="clear"></div>
+        <button class="skill" area="athletics" id="speed">Speed: NA</button>
+        <button class="skill" area="athletics" id="strength">Strength: NA</button>
+        <button class="skill" area="athletics" id="endurance">Endurance: NA</button>
+        <div class="overall" id="overallAthletics">
+          <h3>Athlete: NA</h3>
+        </div>
+        <div class="clear"></div>
+        <div id="playerOverall">
+          <h3>Player Overall: NA</h3>
+        </div>
+      </div>
+
+
+      <div class="acheivements" id="myPlayer">
+        <div class="clear"><br></div>
+        <p>Hover over the acheivements to learn how to unlock them</p>
+        <img id="achievePlayoffs" class="locked" src="img/achievements/playoffs.png"
+             Title="Qualify for the playoffs" height="80px" width="80px">
+        <img id="achieveStanleyCup" class="locked" src="img/achievements/stanleyCup.jpeg"
+             Title="Win a Stanley Cup" height="80px" width="80px">
+        <img id="achieve50Wins" class="locked" src="img/achievements/50wins.jpeg"
+             Title="Win 50 career games" height="80px" width="80px">
+        <img id="achieve100Wins" class="locked" src="img/achievements/100wins.jpeg"
+             Title="Win 100 career games" height="80px" width="80px">
+        <img id="achieve85Overall" class="locked" src="img/achievements/85overall.jpeg"
+             Title="Reach 85 player overall" height="80px" width="80px">
+        <img id="achieve99Overall" class="locked" src="img/achievements/99overall.jpeg"
+             Title="Reach 99 player overall" height="80px" width="80px">
+
+        <div class="clear"></div>
+
+        <img id="achieveAllStar" class="locked" src="img/achievements/allstar.png"
+             Title="Allstar (Average a point per game by halfway point of season)" height="80px" width="80px">
+        <img id="achieveCaptain" class="locked" src="img/achievements/captain.png"
+             Title="Play 5 seasons with the same team" height="80px" width="80px">
+        <img id="achieveRocket" class="locked" src="img/achievements/rocket.jpeg"
+             Title="Average over a goal per game for a season" height="80px" width="80px">
+        <img id="achieveMVP" class="locked" src="img/achievements/mvp.png"
+             Title="Average over a point per game and qualify for the playoffs" height="80px" width="80px">
+        <img id="achieveFinalsMVP" class="locked" src="img/achievements/finalsmvp.png"
+             Title="Average over a point per game and win the Stanley Cup" height="80px" width="80px">
+        <img id="achieveLegend" class="locked" src="img/achievements/legend.jpeg"
+             Title="Record 500 career points, be selected to 7 allstar games and win 3 Stanley Cups" 
+             height="80px" width="80px">
+      </div>
+
+
+
+      <div id="playerStats">
+        <div id="myPlayerStats">
+            <h2>Player Stats</h2>
+        </div>
+        <div id="seeseasonStats" >
+          <div class="clear"></div><br>
+          <h4 class="stats">Season</h4>
+          <h4 class="stats">Games</h4>
+          <h4 class="stats">Goals</h4>
+          <h4 class="stats">Assists</h4>
+          <h4 class="stats">Points</h4>
+          <h4 class="stats">Hits</h4>
+          <h4 class="stats" id="seasonTOIC">Time on Ice</h4>
+          <div class="clear"></div>
+          <h4 class="stats" id="seasonNum">1</h4>
+          <h4 class="stats" id="seasonGames">0</h4>
+          <h4 class="stats" id="seasonGoals">0</h4>
+          <h4 class="stats" id="seasonAssists">0</h4>
+          <h4 class="stats" id="seasonPoints">0</h4>
+          <h4 class="stats" id="seasonHits">0</h4>
+          <h4 class="stats" id="seasonTOI">0</h4>
+        </div>
+        <div id="seeplayoffStats" >
+          <div class="clear"></div><br>
+          <h4 class="stats">Playoff</h4>
+          <h4 class="stats">Games</h4>
+          <h4 class="stats">Goals</h4>
+          <h4 class="stats">Assists</h4>
+          <h4 class="stats">Points</h4>
+          <h4 class="stats">Hits</h4>
+          <h4 class="stats" id="playoffTOIC">Time on Ice</h4>
+          <div class="clear"></div>
+          <h4 class="stats" id="playoffNum">1</h4>
+          <h4 class="stats" id="playoffGames">0</h4>
+          <h4 class="stats" id="playoffGoals">0</h4>
+          <h4 class="stats" id="playoffAssists">0</h4>
+          <h4 class="stats" id="playoffPoints">0</h4>
+          <h4 class="stats" id="playoffHits">0</h4>
+          <h4 class="stats" id="playoffTOI">0</h4>
+         </div>
+      </div>
+
+    </div>
+      
+  </body>
     
 </html>
