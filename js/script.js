@@ -527,13 +527,8 @@ function close(){
   $(simButtons.close.id).hide();
   $(simButtons.play.id).show();
 
-  // Updates the team record
-
-  if (seasonEnd === false){
-    $("#record").html("Team Record: " + wins + "-" + losses + "-" + lossesOT);
-  } else {
-    $("#record").html("Playoff Series: " + playoffWins + "-" + playoffLosses);
-  }
+  // Updates the team record in upper left of screen
+  updateTeamRecord();
 
   // Sets both conditionals back to false to allow buttons to be clicked for the next game
   playButtonClicked = false;
@@ -884,13 +879,6 @@ $(document).ready(function() {
      
 });
 
-var period1H, period2H, period3H, periodOTH, periodRegH, periodFH;
-var period1V, period2V, period3V, periodOTV, periodRegV, periodFV;
-var resetGameArray = ["#period1V", "#period1H", "#period2V", "#period2H", "#period3V",
-                      "#period3H", "#periodOTV", "#periodOTH", "#periodFV", "#periodFH"];
-
-
-// Haven't used this object yet
 
 var period = {
   home: {
@@ -918,8 +906,18 @@ function resetGame(){
     for (var num in period[loc]) {
       if (period[loc][num].hasOwnProperty('id')) {
          $(period[loc][num].id).html("-")
-       }
+      }
     }
+  }
+}
+
+function updateTeamRecord() {
+  if (seasonEnd === false){
+    $("#record").html("Team Record: " + stats.season.wins + "-" + 
+                      stats.season.losses + "-" + stats.season.lossesOT);
+  } else {
+    $("#record").html("Playoff Series: " + stats.playoff.wins + "-" + 
+                      stats.playoff.losses);
   }
 }
     
