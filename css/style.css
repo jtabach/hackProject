@@ -225,7 +225,7 @@ button:focus {
     color: #ffffff;
 }
 
-.pGame:hover, #xGame:hover {
+.pGame:hover, #close:hover {
     background: #a30505;
     cursor: pointer;
 }
