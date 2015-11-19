@@ -503,11 +503,11 @@ function gameStats() {
   $("#gameStats").hide();
 
   $("#playerName").html(player.lastName);
-  $("#gameGoals").html(goals);
-  $("#gameAssists").html(assists);
-  $("#gamePoints").html(points);
-  $("#gameHits").html(hits);
-  $("#gameTOI").html(timeOnIce);
+  $("#gameGoals").html(stats.sim.goals);
+  $("#gameAssists").html(stats.sim.assists);
+  $("#gamePoints").html(stats.sim.points);
+  $("#gameHits").html(stats.sim.hits);
+  $("#gameTOI").html(stats.sim.shots);
 
   // shows the player stats and attribute points earned
   $("#statLine, #attributesEarned, #close").show();
@@ -519,43 +519,43 @@ function gameStats() {
 
 // When clicked hides the entire playGame Div
 function close(){
-    $("#playGame, #gameNumber, #scoreLine, #teamWins, #statLine, #attributesEarned").hide();
+  $("#playGame, #gameNumber, #scoreLine, #teamWins, #statLine, #attributesEarned").hide();
 
-    // Invokes resestGame which resets the html for the next game
-    resetGame(resetGameArray);
+  // Invokes resestGame which resets the html for the next game
+  resetGame();
 
-    $("#close").hide();
-    $("#play").show();
+  $(simButtons.close.id).hide();
+  $(simButtons.play.id).show();
 
-    // Updates the team record
+  // Updates the team record
 
-    if (seasonEnd === false){
-        $("#record").html("Team Record: " + wins + "-" + losses + "-" + lossesOT);
-    } else {
-        $("#record").html("Playoff Series: " + playoffWins + "-" + playoffLosses);
-    }
+  if (seasonEnd === false){
+    $("#record").html("Team Record: " + wins + "-" + losses + "-" + lossesOT);
+  } else {
+    $("#record").html("Playoff Series: " + playoffWins + "-" + playoffLosses);
+  }
 
-    // Sets both conditionals back to false to allow buttons to be clicked for the next game
-    playButtonClicked = false;
+  // Sets both conditionals back to false to allow buttons to be clicked for the next game
+  playButtonClicked = false;
 
-    $("#improvePlayerLink, #playerStatsLink, #myPlayerLink").removeClass('gray');
-    if (seasonEnd === false){
-        $("#playGameLink").removeClass('gray');
-    } else {
-        $("#playoffGameLink").removeClass('gray');
-    }
-    links.playGame.active = false;
-    links.playoffGame.active = false;
+  $("#improvePlayerLink, #playerStatsLink, #myPlayerLink").removeClass('gray');
+  if (seasonEnd === false){
+    $("#playGameLink").removeClass('gray');
+  } else {
+    $("#playoffGameLink").removeClass('gray');
+  }
+  links.playGame.active = false;
+  links.playoffGame.active = false;
 
-    // Adds attribute point for completion of game
-    attributePoints++;
-    $("#attributePoints > h3").html("Points: " + attributePoints);
-    if (seasonEnd === false) {
-        games++;
-    } else {
-        playoffGames++;
-        postGames++;
-    }
+  // Adds attribute point for completion of game
+  attributePoints++;
+  $("#attributePoints > h3").html("Points: " + attributePoints);
+  if (seasonEnd === false) {
+    games++;
+  } else {
+    playoffGames++;
+    postGames++;
+  }
 
     /** Conditional that is used to check if player has qualified as an allstar
     * at the halfway point of the season.
@@ -908,6 +908,18 @@ var period = {
     three: { id: "#period3V", score: 0 },
     ot: { id: "#periodOTV", score: 0 },
     final: { id: "#periodFV", score: 0 }
+  }
+}
+
+// Uses period object to loops through home/away which loops through each period id
+// Checks to see if the property has the property 'id'.
+function resetGame(){
+  for (var loc in period) {
+    for (var num in period[loc]) {
+      if (period[loc][num].hasOwnProperty('id')) {
+         $(period[loc][num].id).html("-")
+       }
+    }
   }
 }
     
@@ -1349,12 +1361,7 @@ function appendStatLine(preOrPostIDs) {
     $('#playerStats').height(statHeight+26);
 }
 
-// Receives an array as a parameter and passes it to a for which changes the html to the pregame settings
-function resetGame(arr){
-    for (var i = 0; i < arr.length; i++) {
-        $(arr[i]).html("-");
-    }
-}
+
     
 
 
