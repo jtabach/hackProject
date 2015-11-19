@@ -180,20 +180,22 @@ function getNewSkillsRating(ovr) {
     */
     playerEffect = 1;
   }
-  appendPlayerAttributesDiv(overallSkills);
+  editPlayerAttributesDiv(overallSkills);
 }
 
-function appendPlayerAttributesDiv(ovr) {
+function editPlayerAttributesDiv(ovr) {
   for (var attr in skills) {
     $(skills[attr].id).html(skills[attr].label + skills[attr].rating);
   }
   for (var type in ovr) {
     $(ovr[type].id).html(ovr[type].label + ovr[type].rating);
   }
-  $("#attributePoints > h3").html("Points: " + attributePoints);
+  editAttributePointHTML();
 }
 
-
+function editAttributePointHTML() {
+  $("#attributePoints > h3").html("Points: " + attributePoints);
+}
 
 function linkClickHandler() {
   for (var item in links) {
@@ -206,35 +208,35 @@ var links = {
     active: false,
     id: "#playerStatsLink",
     clickHandler: function() {
-      return togglePlayerStats();
+      togglePlayerStats();
     }
   },
   improvePlayer: {
     active: false,
     id: "#improvePlayerLink",
     clickHandler: function() {
-      return toggleImprovePlayer();
+      toggleImprovePlayer();
     }
   },
   myPlayer: {
     active: false,
     id: "#myPlayerLink",
     clickHandler: function() {
-      return toggleMyPlayer();
+      toggleMyPlayer();
     }
   },
   playGame: {
     active: false,
     id: "#playGameLink",
     clickHandler: function() {
-      return togglePlayGame();
+      togglePlayGame();
     }
   },
   playoffGame: {
     active: false,
     id: "#playoffGameLink",
     clickHandler: function() {
-      return togglePlayoffGame();
+      togglePlayoffGame();
     }
   }
 };
@@ -513,9 +515,37 @@ function gameStats() {
   $("#statLine, #attributesEarned, #close").show();
 }
 
+// Toggle appropriate links to gray at game's end.
+function toggleGrayEndOfGame() {
+  $("#improvePlayerLink, #playerStatsLink, #myPlayerLink").removeClass('gray');
+  if (seasonEnd === false){
+    $("#playGameLink").removeClass('gray');
+  } else {
+    $("#playoffGameLink").removeClass('gray');
+  }
+  links.playGame.active = false;
+  links.playoffGame.active = false;
+}
 
+// Add attribute points based on simulation game performance.
+function earnedAttributePoints() {
+  if (stats.sim.points > 3) {
+    attributePoints += 2;
+  }
+  if (stats.sim.points > 0) {
+    attributePoints++;
+  }
+}
 
-
+// Increase game based on regular season or playoffs
+function increaseGameCount() {
+  if (seasonEnd === false) {
+    stats.season.games++;
+  } else {
+    stats.playoffs.games++;
+    stats.series.games++;
+  }
+}
 
 // When clicked hides the entire playGame Div
 function close(){
@@ -530,56 +560,44 @@ function close(){
   // Updates the team record in upper left of screen
   updateTeamRecord();
 
-  // Sets both conditionals back to false to allow buttons to be clicked for the next game
-  playButtonClicked = false;
-
-  $("#improvePlayerLink, #playerStatsLink, #myPlayerLink").removeClass('gray');
-  if (seasonEnd === false){
-    $("#playGameLink").removeClass('gray');
-  } else {
-    $("#playoffGameLink").removeClass('gray');
-  }
-  links.playGame.active = false;
-  links.playoffGame.active = false;
+  // Toggle appropriate links to gray at game's end.
+  toggleGrayEndOfGame();
 
   // Adds attribute point for completion of game
-  attributePoints++;
-  $("#attributePoints > h3").html("Points: " + attributePoints);
-  if (seasonEnd === false) {
-    games++;
-  } else {
-    playoffGames++;
-    postGames++;
-  }
+  earnedAttributePoints();
+  editAttributePointHTML();
+  
+  // Increases game count for season/playoffs/series
+  increaseGameCount();
 
-    /** Conditional that is used to check if player has qualified as an allstar
-    * at the halfway point of the season.
+  /** Conditional that is used to check if player has qualified as an allstar
+  * at the halfway point of the season.
+  */
+  if (seasonLength/2 === games) {
+
+    /** Conditional to check if user has averaged at least one point per game
+    * at the half way point of the season. If so, they are selected as an allstar.
     */
-    if (seasonLength/2 === games) {
+    if (seasonPoints >= games) {
 
-        /** Conditional to check if user has averaged at least one point per game
-        * at the half way point of the season. If so, they are selected as an allstar.
-        */
-        if (seasonPoints >= games) {
+      // Increases the number of times user has been an allstar.
+      allStarGames++;
 
-            // Increases the number of times user has been an allstar.
-            allStarGames++;
+      // Appends the myPlayer Button to reflect number or allstar appearances
+      $("#ag").html("Allstar Games: " + allStarGames);
 
-            // Appends the myPlayer Button to reflect number or allstar appearances
-            $("#ag").html("Allstar Games: " + allStarGames);
+      // Alerts user that their player has been selected as an allstar.
+      alert("You have been selected as an allstar this season!");
 
-            // Alerts user that their player has been selected as an allstar.
-            alert("You have been selected as an allstar this season!");
+      // Invokes function to award user for being selected as an Allstar.
+      unlockAchievement(achievements.allStar);
 
-            // Invokes function to award user for being selected as an Allstar.
-            unlockAchievement(achievements.allStar);
-
-            // Check if the user has reached legendary status as allstar games is a requirement.
-            if (careerPoints >= 500 && allStarGames >= 7 && stanleyCups >= 3) {
-                unlockAchievement(achievements.legend);
-            }
-        }
+      // Check if the user has reached legendary status as allstar games is a requirement.
+      if (careerPoints >= 500 && allStarGames >= 7 && stanleyCups >= 3) {
+        unlockAchievement(achievements.legend);
+      }
     }
+  }
 
     if (playoffWins === winsToAdvance && playoffRound === 3) {
 
@@ -725,24 +743,16 @@ var attributePoints = 9;
 var playerEffect = 0;
 // Declares variables for playGame
 
-
-
-
-var playButtonClicked = false, statsButtonClicked = false;
 var formValidated = true;
 var opponentPicked = false;
 var gamespeed = 500;
 var increaseGameSpeed = false, askIncreaseGameSpeed = false;
-
-
 
 var seasonStatIDs = ["#seasonNum", "#seasonGames", "#seasonGoals", "#seasonAssists",
                      "#seasonPoints", "#seasonHits", "#seasonTOI"];
 
 var playoffStatIDs = ["#playoffNum", "#playoffGames", "#playoffGoals", "#playoffAssists",
                       "#playoffPoints", "#playoffHits", "#playoffTOI"];
-
-
 
 var games = 0, playoffGames = 0, postGames = 0, seasons = 1, playoffs = 1;
 var playoffRounds = ["Conference Quarterfinals", "Conference Semifinals",
