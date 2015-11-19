@@ -240,74 +240,64 @@ var links = {
 };
 
 
-// End of tab adjustment for now...
+
 
 
 function togglePlayerStats() {
-    
-    if (!$(links.playerStats.id).hasClass('gray')) { 
-        getLeaveGrayID(seasonEnd, links.playerStats, links, toggleLinksGray);
-        updateStatsArray();
-        updateStats(seasonStatIDs, seasonStats);
-        updateStats(playoffStatIDs, playoffStats);
-        $("#playerStats").toggle();
-    }
+  if (!$(links.playerStats.id).hasClass('gray')) { 
+    getLeaveGrayID(seasonEnd, links.playerStats, links, toggleLinksGray);
+    updateStatsArray();
+    updateStats(seasonStatIDs, seasonStats);
+    updateStats(playoffStatIDs, playoffStats);
+    $("#playerStats").toggle();
+  }
 }
 
 
 function toggleImprovePlayer(){
-    
-    if (!$(links.improvePlayer.id).hasClass('gray')) {
-        getLeaveGrayID(seasonEnd, links.improvePlayer, links, toggleLinksGray);
-
-        $("#improvePlayer").toggle();
-    }
+  if (!$(links.improvePlayer.id).hasClass('gray')) {
+    getLeaveGrayID(seasonEnd, links.improvePlayer, links, toggleLinksGray);
+    $("#improvePlayer").toggle();
+  }
 }
 
 
 function toggleMyPlayer() {
-    
-    if (!$(links.myPlayer.id).hasClass('gray')) {
-        getLeaveGrayID(seasonEnd, links.myPlayer, links, toggleLinksGray);
-        $("#myPlayer").toggle();
-    }
+  if (!$(links.myPlayer.id).hasClass('gray')) {
+    getLeaveGrayID(seasonEnd, links.myPlayer, links, toggleLinksGray);
+    $("#myPlayer").toggle();
+  }
 }
 
 
 function togglePlayGame() {
-        
-    if (!$(links.playGame.id).hasClass('gray')) {
-        getLeaveGrayID(seasonEnd, links.playGame, links, toggleLinksGray);
+  if (!$(links.playGame.id).hasClass('gray')) {
+    getLeaveGrayID(seasonEnd, links.playGame, links, toggleLinksGray);
+    $("#gameStats, #close").hide();
+    $("#playGame, #gameNumber, #scoreLine").toggle();
 
-        $("#gameStats, #close").hide();
-        $("#playGame, #gameNumber, #scoreLine").toggle();
-
-        //Updates the game number and changes the html
-        $("#gameNumber h2").html("Season " + seasons + " - Game #" + (games+1));
-        $("#teamH").html(player.team);
-        if (opponentPicked === false){
-            $("#teamV").html(opponents[Math.floor(Math.random()*opponents.length)]);
-        }
-        opponentPicked = true;
-
+    //Updates the game number and changes the html
+    $("#gameNumber h2").html("Season " + seasons + " - Game #" + (games+1));
+    $("#teamH").html(player.team);
+    if (opponentPicked === false){
+        $("#teamV").html(opponents[Math.floor(Math.random()*opponents.length)]);
     }
+    opponentPicked = true;
+  }
 }
     
 
 function togglePlayoffGame() {
-        
-    if (!$(links.playoffGame.id).hasClass('gray')) {
-        getLeaveGrayID(seasonEnd, links.playoffGame, links, toggleLinksGray);
-
-        $("#gameStats, #close").hide();
-        $("#playGame, #gameNumber, #scoreLine").toggle();
-
-        $("#gameNumber h2").html(playoffRounds[playoffRound] + " - Game #" + (postGames+1));
-        if (opponentPicked === false){
-            $("#teamV").html(opponents[Math.floor(Math.random()*opponents.length)]);
-        }
-        opponentPicked = true;
+  if (!$(links.playoffGame.id).hasClass('gray')) {
+    getLeaveGrayID(seasonEnd, links.playoffGame, links, toggleLinksGray);
+    $("#gameStats, #close").hide();
+    $("#playGame, #gameNumber, #scoreLine").toggle();
+    $("#gameNumber h2").html(playoffRounds[playoffRound] + " - Game #" + (postGames+1));
+    if (opponentPicked === false){
+        $("#teamV").html(opponents[Math.floor(Math.random()*opponents.length)]);
     }
+    opponentPicked = true;
+  }
 }
 
 /**
@@ -316,27 +306,27 @@ function togglePlayoffGame() {
 */
 
 function getLeaveGrayID(seasonEnd, clickedLink, linksObj, callbackLinks) {
-    var leaveGray;
-    leaveGray = (seasonEnd) ? "#playGameLink" : "#playoffGameLink";
-    callbackLinks(leaveGray, clickedLink, linksObj);
+  var leaveGray;
+  leaveGray = (seasonEnd) ? "#playGameLink" : "#playoffGameLink";
+  callbackLinks(leaveGray, clickedLink, linksObj);
 }
 
 function toggleLinksGray(leaveGray, clickedLink, linksObj) {
-    if (!clickedLink.active) {
-        clickedLink.active = true;
-        for (var item in linksObj) {
-            if (linksObj[item].id !== clickedLink.id) {
-                $(linksObj[item].id).addClass('gray');
-            }
-        }
-    } else {
-        clickedLink.active = false;
-        for (var item in linksObj) {
-            if (linksObj[item].id !== clickedLink.id && linksObj[item].id !== leaveGray) {
-                $(linksObj[item].id).removeClass('gray');
-            }
-        }
+  if (!clickedLink.active) {
+    clickedLink.active = true;
+    for (var item in linksObj) {
+      if (linksObj[item].id !== clickedLink.id) {
+        $(linksObj[item].id).addClass('gray');
+      }
     }
+  } else {
+    clickedLink.active = false;
+    for (var item in linksObj) {
+      if (linksObj[item].id !== clickedLink.id && linksObj[item].id !== leaveGray) {
+        $(linksObj[item].id).removeClass('gray');
+      }
+    }
+  }
 }
 
 
@@ -349,102 +339,105 @@ var unlockAlert = "You have unlocked the ";
     
 // Achievements Object.
 var achievements = {
-    playoffs: {
-        unlocked: false,
-        alert: unlockAlert + "Playoffs Achievement!",
-        id: "#achievePlayoffs"
-    },
-    stanleyCup: {
-        unlocked: false,
-        alert: unlockAlert + "Stanley Cup Winner Achievement!",
-        id: "#achieveStanleyCup"
-    },
-    wins50: {
-        unlocked: false,
-        alert: unlockAlert + "50 Wins Achievement!",
-        id: "#achieve50Wins"
-    },
-    wins100: {
-        unlocked: false,
-        alert: unlockAlert + "100 Wins Achievement!",
-        id: "#achieve100Wins"
-    },
-    overall85: {
-        unlocked: false,
-        alert: unlockAlert + "85 Overall Rating Achievement!",
-        id: "#achieve85Overall"
-    },
-    overall99: {
-        unlocked: false,
-        alert: unlockAlert + "99 Overall Rating Achievement!",
-        id: "#achieve99Overall"
-    },
-    allStar: {
-        unlocked: false,
-        alert: unlockAlert + "All Star Achievement!",
-        id: "#achieveAllStar"
-    },
-    captain: {
-        unlocked: false,
-        alert: unlockAlert + "Captain Achievement!",
-        id: "#achieveCaptain"
-    },
-    rocket: {
-        unlocked: false,
-        alert: unlockAlert + "Rocket Richard Achievement!",
-        id: "#achieveRocket"
-    },
-    mvp: {
-        unlocked: false,
-        alert: unlockAlert + "MVP Achievement!",
-        id: "#achieveMVP"
-    },
-    finalsMVP: {
-        unlocked: false,
-        alert: unlockAlert + "Finals MVP Achievement!",
-        id: "#achieveFinalsMVP"
-    },
-    legend: {
-        unlocked: false,
-        alert: unlockAlert + "Legend Achievement!",
-        id: "#achieveLegend"
-    }
+  playoffs: {
+    unlocked: false,
+    alert: unlockAlert + "Playoffs Achievement!",
+    id: "#achievePlayoffs"
+  },
+  stanleyCup: {
+    unlocked: false,
+    alert: unlockAlert + "Stanley Cup Winner Achievement!",
+    id: "#achieveStanleyCup"
+  },
+  wins50: {
+    unlocked: false,
+    alert: unlockAlert + "50 Wins Achievement!",
+    id: "#achieve50Wins"
+  },
+  wins100: {
+     unlocked: false,
+    alert: unlockAlert + "100 Wins Achievement!",
+    id: "#achieve100Wins"
+  },
+  overall85: {
+    unlocked: false,
+    alert: unlockAlert + "85 Overall Rating Achievement!",
+    id: "#achieve85Overall"
+  },
+  overall99: {
+    unlocked: false,
+    alert: unlockAlert + "99 Overall Rating Achievement!",
+    id: "#achieve99Overall"
+  },
+  allStar: {
+    unlocked: false,
+    alert: unlockAlert + "All Star Achievement!",
+    id: "#achieveAllStar"
+  },
+  captain: {
+    unlocked: false,
+    alert: unlockAlert + "Captain Achievement!",
+    id: "#achieveCaptain"
+  },
+  rocket: {
+    unlocked: false,
+    alert: unlockAlert + "Rocket Richard Achievement!",
+    id: "#achieveRocket"
+  },
+  mvp: {
+    unlocked: false,
+    alert: unlockAlert + "MVP Achievement!",
+    id: "#achieveMVP"
+  },
+  finalsMVP: {
+    unlocked: false,
+    alert: unlockAlert + "Finals MVP Achievement!",
+    id: "#achieveFinalsMVP"
+  },
+  legend: {
+    unlocked: false,
+    alert: unlockAlert + "Legend Achievement!",
+    id: "#achieveLegend"
+  }
 }
+
+
+// End of tab adjustment for now...
     
 function unlockAchievement(type) {
-    if (type.unlocked === false) {
-        alert(type.alert);
-        $(type.id).removeClass('locked');
-        type.unlocked = true;
-    }
+  if (type.unlocked === false) {
+    alert(type.alert);
+    $(type.id).removeClass('locked');
+    type.unlocked = true;
+  }
 }
 
 
 var simButtons = {
-    play: {
-        id: "#play",
-        clickHandler: function() {
-            play();
-        }
-    },
-    gameStats: {
-        id: "#gameStats",
-        clickHandler: function() {
-            gameStats();
-        }
-    },
-    close: {
-        id: "#close",
-        clickHandler: function() {
-            close();
-        }
+  play: {
+    id: "#play",
+    clickHandler: function() {
+      play();
     }
+  },
+  gameStats: {
+    id: "#gameStats",
+    clickHandler: function() {
+      gameStats();
+    }
+  },
+  close: {
+    id: "#close",
+    clickHandler: function() {
+      close();
+    }
+  }
 };
 
 function simClickHandler() {
-    for (var button in simButtons) {
-        $(simButtons[button].id).on('click', simButtons[button].clickHandler);
-    }
+  for (var button in simButtons) {
+    $(simButtons[button].id).on('click', simButtons[button].clickHandler);
+  }
 }
 
 // When play button is clicked, simulation begins showing the score of the game period by period
