@@ -699,6 +699,21 @@ function checkMVP() {
   }
 }
 
+function checkCaptain() {
+  // Conditional that checks to see if the user has reached their 7th seaon.
+  if (stats.count.seasons === 8) {
+
+    // Alerts the user that they have been made Captain.
+    alert("You have just finished your 7th season with the " + player.team +
+         ".\n\nYour teammates have voted and you have been named Captain!");
+
+    /** Invoked function to award the user for finishing their 7th
+    * season and being named captain.
+    */
+    unlockAchievement(achievements.captain);
+  }
+}
+
 // @desc - hold all possible oppenent's user may play (or be drafted to).
 // @array - contains strings.
 var opponents = ["Senators", "Lightning", "Bruins", "Red Wings", "Panthers", "Sabres",
@@ -738,84 +753,91 @@ function validateForm() {
     }
 }
 
+function welcome() {
+  $("#draft").show();
+  $("#welcome").hide();
+}
+
+function submitForm() {
+  event.preventDefault();
+  validateForm();
+  player.firstName = $("#firstName").val();
+  player.lastName = $("#lastName").val();
+  player.position = $("input[type='radio'][name='position']:checked").val();
+
+  if (formValidated === true) {
+    $("#welcome, #draft").hide();
+    $("#pick").show();
+  } else {
+    $("#draft").show();
+  }
+  //Sets the proper name and position
+  $("#playerInfoLink h3").html(player.firstName + " " + player.lastName  + " - " + player.position);
+}
+
+function beginDraft() {
+  $("#beginDraft").hide();
+  $("#draftDetails").append("<br><br><h2>With the number " + player.pick + " of the NHL draft, the " +
+             player.team + " select " + player.position + ", " + player.firstName + 
+             " " + player.lastName + ".</h2><br><br><form id='seasonLengthForm'>" + 
+             "<h4>How many games would you like to play each season?</h4><br>" +
+             "12 Games (Recommended)" + " " + "<input type='radio' class='games' id='12' name='length' value='12'     checked>" +
+             "32 Games" + " " + "<input type='radio' class='games' id='32' name='length' value='32'>" +
+             "82 Games" + " " + "<input type='radio' class='games' id='82' name='length' value='82'>" +
+             "4 Games (I just want to see if this works)" + " " + "<input type='radio' class='games' id='4' name='length' value='4'>" +
+             "<div class='clear'></div><br><br>" +
+              "<h4>How many games would you like to each playoff series to be?</h4><br>" +
+             "Best of 3" + " " + "<input type='radio' class='series' id='3' name='series' value='3' checked>" +
+             "Best of 5" + " " + "<input type='radio' class='series' id='5' name='series' value='5'>" +
+             "Best of 7" + " " + "<input type='radio' class='series' id='7' name='series' value='7'>" +
+             "<div class='clear'></div>");
+  $("#submitGames").show();
+}
+
+function submitGames() {
+  event.preventDefault();
+  seasonLength = Number($("input[type='radio'][name='length']:checked").val());
+  winsToQualify = seasonLength/2;
+  playoffLength = Number($("input[type='radio'][name='series']:checked").val());
+  winsToAdvance = Math.ceil(playoffLength/2);
+  $("#welcome, #draft, #pick").hide();
+  $("#playerInfoLink, #playGameLink, #improvePlayerLink, #playoffGameLink," +
+      "#playerStatsLink, #teamRecordLink, #myPlayerLink, #info").show();
+}
+
 // DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //
 // DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //
 
 $(document).ready(function() {
-    $("#playerInfoLink, #playGameLink, #myPlayerLink, #improvePlayerLink, #playoffGameLink, #playerStatsLink, #teamRecordLink, #pick, #draft, #submitGames, #info, #myPlayer").hide();
-    
-    // When next button is clicked, player it taken into the NHL draft
-    $("#welcomeNext").on('click', function(){
-        $("#draft").show();
-        $("#welcome").hide();
-    });
-    
-    $("#submit").click(function(event){
-        event.preventDefault();
-        validateForm();
-        player.firstName = $("#firstName").val();
-        player.lastName = $("#lastName").val();
-        player.position = $("input[type='radio'][name='position']:checked").val();
-        
-        if (formValidated === true) {
-            $("#welcome, #draft").hide();
-            $("#pick").show();
-        } else {
-            $("#draft").show();
-        }
-        //Sets the proper name and position
-        $("#playerInfoLink h3").html(player.firstName + " " + player.lastName  + " - " + player.position);
-    });
-    
-    $("#beginDraft").on('click', function(){
-        $("#beginDraft").hide();
-        $("#draftDetails").append("<br><br><h2>With the number " + player.pick + " of the NHL draft, the " +
-                     player.team + " select " + player.position + ", " + player.firstName + 
-                     " " + player.lastName + ".</h2><br><br><form id='seasonLengthForm'>" + 
-                     "<h4>How many games would you like to play each season?</h4><br>" +
-                     "12 Games (Recommended)" + " " + "<input type='radio' class='games' id='12' name='length' value='12' checked>" +
-                     "32 Games" + " " + "<input type='radio' class='games' id='32' name='length' value='32'>" +
-                     "82 Games" + " " + "<input type='radio' class='games' id='82' name='length' value='82'>" +
-                     "4 Games (I just want to see if this works)" + " " + "<input type='radio' class='games' id='4' name='length' value='4'>" +
-                     "<div class='clear'></div><br><br>" +
-                      "<h4>How many games would you like to each playoff series to be?</h4><br>" +
-                     "Best of 3" + " " + "<input type='radio' class='series' id='3' name='series' value='3' checked>" +
-                     "Best of 5" + " " + "<input type='radio' class='series' id='5' name='series' value='5'>" +
-                     "Best of 7" + " " + "<input type='radio' class='series' id='7' name='series' value='7'>" +
-                     "<div class='clear'></div>");
-        $("#submitGames").show();
-    });
-    
-    $("#submitGames").click(function(event){
-        event.preventDefault();
-        seasonLength = Number($("input[type='radio'][name='length']:checked").val());
-        winsToQualify = seasonLength/2;
-        playoffLength = Number($("input[type='radio'][name='series']:checked").val());
-        winsToAdvance = Math.ceil(playoffLength/2);
-        $("#welcome, #draft, #pick").hide();
-        $("#playerInfoLink, #playGameLink, #improvePlayerLink, #playoffGameLink," +
-          "#playerStatsLink, #teamRecordLink, #myPlayerLink, #info").show();
-    });
+  $("#playerInfoLink, #playGameLink, #myPlayerLink, #improvePlayerLink, #playoffGameLink, #playerStatsLink, #teamRecordLink, #pick, #draft, #submitGames, #info, #myPlayer").hide();
 
-    // Hides the divs for the playGame link when the page loads
-    $("#playGame, #gameNumber, #scoreLine, #teamWins, #statLine, #attributesEarned," +
-      "#playerStats, #improvePlayer, #pick, #draft").hide();
-    
-    // Array of the skills as they are identified by their IDs
-    var skillsIDs = ["shooting", "passing", "handling", "checking", "positioning",
-                     "takeaway", "speed", "strength", "endurance"];
-    
-    // Hides the divs for the playGame link when the page loads
-    $("#playGame, #gameNumber, #scoreLine, #teamWins, #statLine, #attributesEarned, #playerStats").hide();
+  // When next button is clicked, player it taken into the NHL draft
+  $("#welcomeNext").on('click', function(){
+    welcome();
+  });
 
-    updateMyPlayer();
-    getNewSkillsRating(overallSkills);
-    skillClickHandler();
-    linkClickHandler();
-    simClickHandler();
-     
+  $("#submitForm").click(function(event){
+    submitForm();
+  });
+    
+  $("#beginDraft").on('click', function(){
+    beginDraft();
+  });
+    
+  $("#submitGames").click(function(event){
+    submitGames();
+  });
+
+  // Hides the divs for the playGame link when the page loads
+  $("#playGame, #gameNumber, #scoreLine, #teamWins, #statLine, #attributesEarned," +
+    "#playerStats, #improvePlayer, #pick, #draft").hide();
+
+  updateMyPlayer();
+  getNewSkillsRating(overallSkills);
+  skillClickHandler();
+  linkClickHandler();
+  simClickHandler();
 });
-
 
 var period = {
   home: {
@@ -1320,17 +1342,5 @@ function resetSeasonPlayoffs() {
   stats.count.playoffs++;
   stats.series.games = 0;
   stats.series.round = 0;
-  
-  // Conditional that checks to see if the user has reached their 7th seaon.
-  if (stats.count.seasons === 8) {
-
-    // Alerts the user that they have been made Captain.
-    alert("You have just finished your 7th season with the " + player.team +
-         ".\n\nYour teammates have voted and you have been named Captain!");
-
-    /** Invoked function to award the user for finishing their 7th
-    * season and being named captain.
-    */
-    unlockAchievement(achievements.captain);
-  }
+  checkCaptain();
 }
