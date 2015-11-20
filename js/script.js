@@ -1,8 +1,8 @@
-
 // Created player object literal
 var player = {
   team: 'Canadiens',
   pick: 5,
+  effect: 0,
   yearsPro: {
     count: 1,
     id: "#yp",
@@ -39,7 +39,6 @@ function updateMyPlayer() {
 }
 
 var ratingStart = 60, ratingFlux = 10;
-
 var offense = "offense", defense = "defense", athletics = "athletics";
 
 var skills = {
@@ -170,9 +169,7 @@ function resetOveralls(ovr) {
 }
 
 function getNewSkillsRating(ovr) {
-    
   resetOveralls(ovr);
-
   for (var attr in skills) {
     if (skills[attr].type === offense) {
         ovr.offense.rating += skills[attr].rating;
@@ -199,7 +196,7 @@ function getNewSkillsRating(ovr) {
     * User's team has a max goals potential 2 higher than the opponent.
     * This will result in the user having a much greater chance of winning.
     */
-    playerEffect = 2;
+    player.effect = 2;
 
   // Checks to see if overallSkill has reached 85.
   } else if (ovr.overall.rating >= 85) {
@@ -211,7 +208,7 @@ function getNewSkillsRating(ovr) {
     * User's team has a max goals potential 1 higher than the opponent.
     * This will result in the user having a slightly greater chance of winning.
     */
-    playerEffect = 1;
+    player.effect = 1;
   }
   editPlayerAttributesDiv(overallSkills);
   player.overall.count = ovr.overall.rating;
@@ -276,10 +273,6 @@ var links = {
   }
 };
 
-
-
-
-
 function togglePlayerStats() {
   if (!$(links.playerStats.id).hasClass('gray')) { 
     getLeaveGrayID(seasonEnd, links.playerStats, links, toggleLinksGray);
@@ -290,14 +283,12 @@ function togglePlayerStats() {
   }
 }
 
-
 function toggleImprovePlayer(){
   if (!$(links.improvePlayer.id).hasClass('gray')) {
     getLeaveGrayID(seasonEnd, links.improvePlayer, links, toggleLinksGray);
     $("#improvePlayer").toggle();
   }
 }
-
 
 function toggleMyPlayer() {
   if (!$(links.myPlayer.id).hasClass('gray')) {
@@ -306,7 +297,6 @@ function toggleMyPlayer() {
   }
 }
 
-
 function togglePlayGame() {
   if (!$(links.playGame.id).hasClass('gray')) {
     getLeaveGrayID(seasonEnd, links.playGame, links, toggleLinksGray);
@@ -314,7 +304,7 @@ function togglePlayGame() {
     $("#playGame, #gameNumber, #scoreLine").toggle();
 
     //Updates the game number and changes the html
-    $("#gameNumber h2").html("Season " + seasons + " - Game #" + (stats.season.games+1));
+    $("#gameNumber h2").html("Season " + stats.count.seasons + " - Game #" + (stats.season.games+1));
     $("#teamH").html(player.team);
     if (opponentPicked === false){
         $("#teamV").html(opponents[Math.floor(Math.random()*opponents.length)]);
@@ -323,24 +313,18 @@ function togglePlayGame() {
   }
 }
     
-
 function togglePlayoffGame() {
   if (!$(links.playoffGame.id).hasClass('gray')) {
     getLeaveGrayID(seasonEnd, links.playoffGame, links, toggleLinksGray);
     $("#gameStats, #close").hide();
     $("#playGame, #gameNumber, #scoreLine").toggle();
-    $("#gameNumber h2").html(playoffRounds[playoffRound] + " - Game #" + (postGames+1));
+    $("#gameNumber h2").html(playoffRounds[stats.series.round] + " - Game #" + (stats.series.games+1));
     if (opponentPicked === false){
         $("#teamV").html(opponents[Math.floor(Math.random()*opponents.length)]);
     }
     opponentPicked = true;
   }
 }
-
-/**
-  * @seasonEnd - Boolean 
-  *
-*/
 
 function getLeaveGrayID(seasonEnd, clickedLink, linksObj, callbackLinks) {
   var leaveGray;
@@ -365,12 +349,6 @@ function toggleLinksGray(leaveGray, clickedLink, linksObj) {
     }
   }
 }
-
-
-
-
-
-
 
 var unlockAlert = "You have unlocked the ";
     
@@ -437,9 +415,6 @@ var achievements = {
     id: "#achieveLegend"
   }
 }
-
-
-// End of tab adjustment for now...
     
 function unlockAchievement(type) {
   if (type.unlocked === false) {
@@ -448,7 +423,6 @@ function unlockAchievement(type) {
     type.unlocked = true;
   }
 }
-
 
 var simButtons = {
   play: {
@@ -526,26 +500,25 @@ function play() {
     }, gamespeed);
   }, gamespeed); 
 
-  if (stats.season.games === 3 && askIncreaseGameSpeed === false) {
-    increaseGameSpeed = confirm("Would like to greatly increase the game speed?");
-    if (increaseGameSpeed) {
-      gamespeed = 100;
-      askIncreaseGameSpeed = true;
-    }
-  } 
+//  if (stats.season.games === 3 && askIncreaseGameSpeed === false) {
+//    increaseGameSpeed = confirm("Would like to greatly increase the game speed?");
+//    if (increaseGameSpeed) {
+//      gamespeed = 100;
+//      askIncreaseGameSpeed = true;
+//    }
+//  } 
 }         
       
 function gameStats() {
             
   $("#gameStats").hide();
-
   $("#playerName").html(player.lastName);
   $("#gameGoals").html(stats.sim.goals);
   $("#gameAssists").html(stats.sim.assists);
   $("#gamePoints").html(stats.sim.points);
   $("#gameHits").html(stats.sim.hits);
   $("#gameTOI").html(stats.sim.shots);
-
+  
   // shows the player stats and attribute points earned
   $("#statLine, #attributesEarned, #close").show();
 }
@@ -582,39 +555,12 @@ function increaseGameCount() {
   }
 }
 
-function checkAllStar() {
-  if (seasonLength/2 === stats.season.games) {
-
-    /** Conditional to check if user has averaged at least one point per game
-    * at the half way point of the season. If so, they are selected as an allstar.
-    */
-    if (stats.season.points >= stats.season.games) {
-
-      // Appends the myPlayer Button to reflect number or allstar appearances
-      player.allstars.count++;
-      updateMyPlayer();
-
-      // Alerts user that their player has been selected as an allstar.
-      alert("You have been selected as an allstar this season!");
-
-      // Invokes function to award user for being selected as an Allstar.
-      unlockAchievement(achievements.allStar);
-
-      // Check if the user has reached legendary status as allstar games is a requirement.
-      if (stats.career.points >= 500 && player.allstars.count >= 7 && player.stanleys.count >= 3) {
-        unlockAchievement(achievements.legend);
-      }
-    }
-  }
-}
-
 // When clicked hides the entire playGame Div
 function close(){
   $("#playGame, #gameNumber, #scoreLine, #teamWins, #statLine, #attributesEarned").hide();
 
   // Invokes resestGame which resets the html for the next game
   resetGame();
-
   $(simButtons.close.id).hide();
   $(simButtons.play.id).show();
 
@@ -630,139 +576,128 @@ function close(){
   
   // Increases game count for season/playoffs/series
   increaseGameCount();
-
-  /** Conditional that is used to check if player has qualified as an allstar
-  * at the halfway point of the season.
-  */
   checkAllStar();
 
-    if (stats.playoffs.wins === winsToAdvance && playoffRound === 3) {
-
-      // Invokes function to award user for winning the Stanley Cup.
-      unlockAchievement(achievements.stanleyCup);
-      player.playoffs.count++;
-      player.stanleys.count++;
-
-      /** Conditional to check if user has averaged at least one point per game
-      * throughout the Stanley Cup Playoffs.
-      */
-      if (stats.playoffs.points >= stats.playoffs.points) {
-
-        // Alerts user that their player has been selected as the finals MVP.
-        alert("You have been selected as an Conn Smythe Winner as the " +
-              "Stanley Cup Finals MVP!");
-
-        // Invokes function to award user for being selected as the finals MVP.
-        unlockAchievement(achievements.finalsMVP);
-      }
-
-      // Check the if user has reached legendary status as Stanley Cups is a requirement.
-      if (stats.career.points >= 500 && player.allstars.count >= 7 && player.stanleys.count >= 3){
-        unlockAchievement(achievements.legend);
-      }
-
-      alert("You won the Stanley Cup!");
-      updateMyPlayer();
-      alert("End of playoffs. Begin Next Season");
-      $('#playGameLink').removeClass('gray');
-      $('#playoffGameLink').addClass('gray');
-      $("#record").html("Team Record: " + 0 + "-" + 0 + "-" + 0);
-      updateStatsArray();
-      updateStats(seasonStatIDs, seasonStats);
-      updateStats(playoffStatIDs, playoffStats);
-      resetSeason();
-      resetPlayoffs();
-      appendStatLine(seasonStatIDs);
-      seasonEnd = false;
-      appendStatLine(playoffStatIDs);
-    } else if (stats.playoffs.wins === winsToAdvance) {
-      stats.playoffs.wins = 0;
-      stats.playoffs.losses = 0;
-      stats.series.games = 0;
-      playoffRound ++; // Need to edit later
-      alert("Congratulations you moved to the " +playoffRounds[playoffRound] + "!"); // Need to edit later
-      $("#record").html("Playoff Series: " + stats.playoffs.wins + "-" + stats.playoffs.losses); // Need to edit later
-    } else if (stats.playoffs.losses === winsToAdvance){
-
-      player.playoffs.count++;
-      updateMyPlayer();
-      alert("You lost in the " + playoffRounds[playoffRound]);
-      alert("End of playoffs. Begin Next Season");
-      $('#playGameLink').removeClass('gray');
-      $('#playoffGameLink').addClass('gray');
-      $("#record").html("Team Record: " + 0 + "-" + 0 + "-" + 0);
-      updateStatsArray();
-      updateStats(seasonStatIDs, seasonStats);
-      updateStats(playoffStatIDs, playoffStats);
-      resetSeason();
-      resetPlayoffs();
-      appendStatLine(seasonStatIDs);
-      seasonEnd = false;
-      appendStatLine(playoffStatIDs);
-
-    }
-
-    if(stats.season.games >= seasonLength){
-      seasonEnd = true;
-
-      /** Conditional that checks if the user scored at least as many goals
-      * as games played in the season.
-      */
-      if (stats.season.goals >= seasonLength && stats.playoffs.games === 0) {
-
-        // Alert the user that they have won the Rocket Richard Trophy this season.
-        alert("You have been awarded the Rocket Richard Trophy for " +
-              "the most goals by any player this season with " + stats.season.goals + " goals!");
-
-        // Invokes fuction for winning the Rocket Richard Trophy
-        unlockAchievement(achievements.rocket);
-      }
-
-      /** Conditional that checks if the user recorded at least as many points
-      * as games played in the season and qualified for the playoffs.
-      */
-      if (stats.season.points >= seasonLength && stats.season.wins >= winsToQualify && stats.playoffs.games === 0){
-
-        // Alert the user that they have won the Hart Memorial Trophy this season.
-        alert("You have been awarded the Hart Memorial Trophy for " +
-              "being selected the league's the most valuable player " + 
-              "in the regular season with " + stats.season.points + " points!");
-
-        // Invokes fuction for winning the Hart Memorial Trophy.
-        unlockAchievement(achievements.mvp);
-      }
-
-      if(stats.season.wins >= winsToQualify){
-
-          if (stats.playoffs.games === 0) {
-              alert("You have qualified for the playoffs!");
-          }
-
-          // Invokes the function to award user for qualifying for the playoffs.
-          unlockAchievement(achievements.playoffs);
-          $("#playGameLink").addClass('gray');
-          $("#playoffGameLink").removeClass('gray');
-          $("#record").html("Playoff Series: " + stats.playoffs.wins + "-" + stats.playoffs.losses);
-
-      } else {
-          alert("You did not qualify for the playoffs this year. You only won "
-               + stats.season.wins + " of the necessary " + winsToQualify + " in order to qualify.\n\n"
-               + "Better luck next year. Next season has begun.");
-          updateStatsArray();
-          updateStats(seasonStatIDs, seasonStats);
-          updateStats(playoffStatIDs, playoffStats);
-          resetSeason();
-          resetPlayoffs();
-          appendStatLine(seasonStatIDs);
-          seasonEnd = false;
-          appendStatLine(playoffStatIDs);
-      } 
+  if(stats.season.games >= seasonLength){
+    seasonEnd = true;
+    checkRocketAward();
+    checkMVP();
+    
+    if(stats.season.wins >= winsToQualify){
+      playoffQualify();
+    } else {
+      playoffDidNotQualify();      
+    } 
+}
+if (stats.playoffs.wins === winsToAdvance && stats.series.round === 3) {
+    wonStanleyCup();
+  } else if (stats.playoffs.wins === winsToAdvance) {
+    wonPlayoffSeries();
+  } else if (stats.playoffs.losses === winsToAdvance){
+    lostPlayoffSeries();
   }
 }
 
+function playoffDidNotQualify() {
+  alert("You did not qualify for the playoffs this year. You only won "
+       + stats.season.wins + " of the necessary " + winsToQualify + " in order to qualify.\n\n"
+       + "Better luck next year. Next season has begun.");
+  updateStatsDiv();
+  resetSeasonPlayoffs();
+  appendStatLinesSeasonPlayoffs();
+}
 
+function playoffQualify() {
+  if (stats.playoffs.games === 0) {
+    alert("You have qualified for the playoffs!");
+    player.playoffs.count++;
+    updateMyPlayer();
+    unlockAchievement(achievements.playoffs);
+    $("#playGameLink").addClass('gray');
+    $("#playoffGameLink").removeClass('gray');
+    updateTeamRecord();
+  }
+}
 
+function wonStanleyCup() {
+  unlockAchievement(achievements.stanleyCup);
+  player.stanleys.count++;
+  checkFinalsMVP();
+  checkLegend();
+  alert("You won the Stanley Cup!");
+  updateMyPlayer();
+  alert("End of playoffs. Begin Next Season");
+  $('#playGameLink').removeClass('gray');
+  $('#playoffGameLink').addClass('gray');
+  updateStatsDiv();
+  resetSeasonPlayoffs();
+  appendStatLinesSeasonPlayoffs();
+  updateTeamRecord();
+}
 
+function wonPlayoffSeries() {
+  stats.playoffs.wins = 0;
+  stats.playoffs.losses = 0;
+  stats.series.games = 0;
+  stats.series.round++;
+  alert("Congratulations you moved to the " +playoffRounds[stats.series.round] + "!");
+  updateTeamRecord();
+}
+
+function lostPlayoffSeries() {
+  updateMyPlayer();
+  alert("You lost in the " + playoffRounds[stats.series.round]);
+  alert("End of playoffs. Begin Next Season");
+  $('#playGameLink').removeClass('gray');
+  $('#playoffGameLink').addClass('gray');
+  updateStatsDiv();
+  resetSeasonPlayoffs();
+  appendStatLinesSeasonPlayoffs();
+  updateTeamRecord();
+}
+
+function checkAllStar() {
+  if (seasonLength/2 === stats.season.games) {
+    if (stats.season.points >= stats.season.games) {
+      player.allstars.count++;
+      updateMyPlayer();
+      alert("You have been selected as an allstar this season!");
+      unlockAchievement(achievements.allStar);
+      checkLegend();
+    }
+  }
+}
+
+function checkFinalsMVP() {
+  if (stats.playoffs.points >= stats.playoffs.points) {
+    alert("You have been selected as an Conn Smythe Winner as the " +
+          "Stanley Cup Finals MVP!");
+    unlockAchievement(achievements.finalsMVP);
+  }
+}
+
+function checkLegend() {
+  if (stats.career.points >= 500 && player.allstars.count >= 7 && player.stanleys.count >= 3){
+    unlockAchievement(achievements.legend);
+  }
+}
+
+function checkRocketAward() {
+  if (stats.season.goals >= seasonLength && stats.playoffs.games === 0) {
+    alert("You have been awarded the Rocket Richard Trophy for " +
+          "the most goals by any player this season with " + stats.season.goals + " goals!");
+    unlockAchievement(achievements.rocket);
+  }
+}
+
+function checkMVP() {
+  if (stats.season.points >= seasonLength && stats.season.wins >= winsToQualify && stats.playoffs.games === 0){
+    alert("You have been awarded the Hart Memorial Trophy for " +
+          "being selected the league's the most valuable player " + 
+          "in the regular season with " + stats.season.points + " points!");
+    unlockAchievement(achievements.mvp);
+  }
+}
 
 // @desc - hold all possible oppenent's user may play (or be drafted to).
 // @array - contains strings.
@@ -773,32 +708,22 @@ var opponents = ["Senators", "Lightning", "Bruins", "Red Wings", "Panthers", "Sa
                  "Flames", "Oilers"];
 
 var attributePoints = 9;
-
-// Player effect starts at zero but can be increased to directly effect outcome of games as player progresses
-var playerEffect = 0;
-// Declares variables for playGame
-
 var formValidated = true;
 var opponentPicked = false;
-var gamespeed = 500;
+var gamespeed = 50;
 var increaseGameSpeed = false, askIncreaseGameSpeed = false;
-
 var seasonStatIDs = ["#seasonNum", "#seasonGames", "#seasonGoals", "#seasonAssists",
                      "#seasonPoints", "#seasonHits", "#seasonTOI"];
-
 var playoffStatIDs = ["#playoffNum", "#playoffGames", "#playoffGoals", "#playoffAssists",
                       "#playoffPoints", "#playoffHits", "#playoffTOI"];
-
 var games = 0, playoffGames = 0, postGames = 0, seasons = 1, playoffs = 1;
 var playoffRounds = ["Conference Quarterfinals", "Conference Semifinals",
                      "Conference Finals", "Stanley Cup Finals"];
-var playoffRound = 0;
 var seasonLength, playoffLength;
 var winsToQualify, winsToAdvance;
 var careerLength = 10;
 var seasonEnd = false;
-
-var goalChance, assistChance, hitChance, timeOnIceAverage;
+var goalChance, assistChance, hitChance, shotChance;
 var teamGoalsLeft;
 
 function validateForm() {
@@ -815,9 +740,6 @@ function validateForm() {
 
 // DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //
 // DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //
-// DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //
-// DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //  // DOCUMENT IS READY //
-
 
 $(document).ready(function() {
     $("#playerInfoLink, #playGameLink, #myPlayerLink, #improvePlayerLink, #playoffGameLink, #playerStatsLink, #teamRecordLink, #pick, #draft, #submitGames, #info, #myPlayer").hide();
@@ -886,20 +808,6 @@ $(document).ready(function() {
     // Hides the divs for the playGame link when the page loads
     $("#playGame, #gameNumber, #scoreLine, #teamWins, #statLine, #attributesEarned, #playerStats").hide();
 
-
-    
-    
-    
-    
-    
-    
-    
-    
-        
-
-    
-    
-
     updateMyPlayer();
     getNewSkillsRating(overallSkills);
     skillClickHandler();
@@ -945,8 +853,8 @@ function updateTeamRecord() {
     $("#record").html("Team Record: " + stats.season.wins + "-" + 
                       stats.season.losses + "-" + stats.season.lossesOT);
   } else {
-    $("#record").html("Playoff Series: " + stats.playoff.wins + "-" + 
-                      stats.playoff.losses);
+    $("#record").html("Playoff Series: " + stats.playoffs.wins + "-" + 
+                      stats.playoffs.losses);
   }
 }
     
@@ -954,7 +862,7 @@ function updateTeamRecord() {
 function simulateGame(callback1, callback2) {
     
   // Player effect will increase as your player hits milestone skill levels
-  period.home.reg.score = Math.round(Math.random() * (5 + playerEffect));
+  period.home.reg.score = Math.round(Math.random() * (5 + player.effect));
   period.away.reg.score = Math.round(Math.random() * 5);
 
   // Randomly decides which team will win in overtime
@@ -993,9 +901,7 @@ function goalsByPeriod(per){
 
 // Takes the final score of your team as a parameter and uses it to determine max player stats
 function playerGameStats(teamGoals, callback){
-    
     callback(teamGoals, assistsThisGame);
-    
 }
 
 var ability = {
@@ -1079,6 +985,10 @@ function getAbility(stat) {
 }
 
 var stats = {
+  count: {
+    seasons: 1,
+    playoffs: 1,
+  },
   sim: {
     goals: 0,
     assists: 0,
@@ -1087,7 +997,6 @@ var stats = {
     shots: 0
   },
   season: {
-    num: 0, // double check if this should be 0 or 1
     games: 0,
     goals: 0,
     assists: 0,
@@ -1099,7 +1008,6 @@ var stats = {
     lossesOT: 0,
   },
   playoffs: {
-    num: 0, // double check if this should be 0 or 1
     games: 0,
     goals: 0,
     assists: 0,
@@ -1112,8 +1020,7 @@ var stats = {
   },
   series: {
     games: 0,
-    wins: 0,
-    losses: 0
+    round: 0,
   },
   career: {
     games: 0,
@@ -1135,7 +1042,7 @@ function goalsThisGame(teamGoals, callback) {
   // Determines your players ability to record a goal based on your player attributes
   getAbility('goal');
 
-  /* Uses the ability.assist of your player to determine the likeliness
+  /* Uses the ability.goal of your player to determine the likeliness
   of your player recording one or more goals in a game.
   Uses teamGoalsLeft as a safety net as to not allow your player to
   record more goals than your team scores*/
@@ -1265,7 +1172,6 @@ function hitsThisGame(callback) {
 
 function shotsThisGame(goals) {
     
-  
   // Radomizes a number between 1 and 100
   shotChance = Math.random() * 80;
   // Determines your players ability to record a hit based on your player attributes
@@ -1323,7 +1229,7 @@ function determineWinner() {
   if (seasonEnd === false) {
     stats.season[result]++;
   } else {
-    stats.playoff[playoffResult]++;
+    stats.playoffs[playoffResult]++;
   }
 
   // Checks to see if user has reached 100 career wins.
@@ -1341,116 +1247,90 @@ function determineWinner() {
   
 }    
 
+// Invokes following stats functions
+function updateStatsDiv() {
+  updateStatsArray();
+  updateStats(seasonStatIDs, seasonStats);
+  updateStats(playoffStatIDs, playoffStats);
+}
+
 // Function updates the html to reflect the new player stats
 function updateStats(preOrPostIDs, preOrPostStats) {
-    
     preOrPostIDs.forEach(function(element, index){
         $(element).html(preOrPostStats[index]);
     });
-
 }
 
 function updateStatsArray () {
+  seasonStats = [stats.count.seasons, stats.season.games, stats.season.goals,
+                 stats.season.assists, stats.season.points, stats.season.hits,
+                 stats.season.shots];
+  playoffStats = [stats.count.playoffs, stats.playoffs.games, stats.playoffs.goals,
+                  stats.playoffs.assists, stats.playoffs.points, stats.playoffs.hits,
+                  stats.playoffs.shots]; 
+}
 
-    seasonStats = [seasons, games, seasonGoals, seasonAssists, seasonPoints, seasonHits, seasonTimeOnIce];
-
-    playoffStats = [playoffs, playoffGames, playoffGoals, playoffAssists, playoffPoints, playoffHits, playoffTimeOnIce]; 
-    
+// Invokes the following functions.
+function appendStatLinesSeasonPlayoffs() {
+  appendStatLine(seasonStatIDs);
+  seasonEnd = false;
+  appendStatLine(playoffStatIDs);
 }
 
 function appendStatLine(preOrPostIDs) {
-    
-    preOrPostIDs.forEach(function(element, index){
-        $(element).attr('id', ''+element+'Past');
-    });
-            
-    if (seasonEnd === true) {
-        $("#seeseasonStats").append("<div class='clear'></div>" +
-            "<h4 class='stats' id='seasonNum'>1</h4>" +
-            "<h4 class='stats' id='seasonGames'>0</h4>" +
-            "<h4 class='stats' id='seasonGoals'>0</h4>" +
-            "<h4 class='stats' id='seasonAssists'>0</h4>" +
-            "<h4 class='stats' id='seasonPoints'>0</h4>" +
-            "<h4 class='stats' id='seasonHits'>0</h4>" +
-            "<h4 class='stats endOfStats' id='seasonTOI'>0</h4>");
-    } else {
-        $("#seeplayoffStats").append("<div class='clear'></div>" +
-            "<h4 class='stats' id='playoffNum'>1</h4>" +
-            "<h4 class='stats' id='playoffGames'>0</h4>" +
-            "<h4 class='stats' id='playoffGoals'>0</h4>" +
-            "<h4 class='stats' id='playoffAssists'>0</h4>" +
-            "<h4 class='stats' id='playoffPoints'>0</h4>" +
-            "<h4 class='stats' id='playoffHits'>0</h4>" +
-            "<h4 class='stats endOfStats' id='playoffTOI'>0</h4>");
-    }
-        
-    var statHeight = $('#playerStats').height();
-    $('#playerStats').height(statHeight+26);
+  preOrPostIDs.forEach(function(element, index){
+    $(element).attr('id', ''+element+'Past');
+  });
+
+  if (seasonEnd === true) {
+    $("#seeseasonStats").append("<div class='clear'></div>" +
+        "<h4 class='stats' id='seasonNum'>1</h4>" +
+        "<h4 class='stats' id='seasonGames'>0</h4>" +
+        "<h4 class='stats' id='seasonGoals'>0</h4>" +
+        "<h4 class='stats' id='seasonAssists'>0</h4>" +
+        "<h4 class='stats' id='seasonPoints'>0</h4>" +
+        "<h4 class='stats' id='seasonHits'>0</h4>" +
+        "<h4 class='stats endOfStats' id='seasonTOI'>0</h4>");
+  } else {
+    $("#seeplayoffStats").append("<div class='clear'></div>" +
+        "<h4 class='stats' id='playoffNum'>1</h4>" +
+        "<h4 class='stats' id='playoffGames'>0</h4>" +
+        "<h4 class='stats' id='playoffGoals'>0</h4>" +
+        "<h4 class='stats' id='playoffAssists'>0</h4>" +
+        "<h4 class='stats' id='playoffPoints'>0</h4>" +
+        "<h4 class='stats' id='playoffHits'>0</h4>" +
+        "<h4 class='stats endOfStats' id='playoffTOI'>0</h4>");
+  }
+
+  var statHeight = $('#playerStats').height();
+  $('#playerStats').height(statHeight+26);
 }
 
+function resetSeasonPlayoffs() {
+  for (var cat in stats.season) {
+    stats.season[cat] = 0;
+  }
+  stats.count.seasons++;
+  player.yearsPro.count = stats.count.seasons;
+  updateMyPlayer();
 
-    
+  for (var cat in stats.playoffs) {
+    stats.playoffs[cat] = 0;
+  }
+  stats.count.playoffs++;
+  stats.series.games = 0;
+  stats.series.round = 0;
+  
+  // Conditional that checks to see if the user has reached their 7th seaon.
+  if (stats.count.seasons === 8) {
 
+    // Alerts the user that they have been made Captain.
+    alert("You have just finished your 7th season with the " + player.team +
+         ".\n\nYour teammates have voted and you have been named Captain!");
 
-
-var playoffStats = {};
-
-var careerStats = {};
-
-
-function resetSeason() {
-    seasons++;
-    yearsPro++;
-    games = 0;
-    goals = 0;
-    assists = 0;
-    points = 0;
-    hits = 0;
-    timeOnIce = 0;
-    wins = 0;
-    losses = 0;
-    lossesOT = 0;
-    seasonGoals = 0; 
-    seasonAssists = 0; 
-    seasonPoints = 0; 
-    seasonHits = 0; 
-    seasonTimeOnIce = 0;
-    timeOnIceSec = 0;
-    timeOnIceMin = 0;
-    totalTimeOnIceMin = 0;
-    totalTimeOnIceSec = 0;
-    $('#yp').html("Years Pro: " + yearsPro);
-    $('#sc').html("Stanley Cups: " + stanleyCups);
-    pointPerGameSeason = false;
-    
-    // Conditional that checks to see if the user has reached their 7th seaon.
-    if (seasons === 8) {
-        
-        // Alerts the user that they have been made Captain.
-        alert("You have just finished your 7th season with the " + player.team +
-             ".\n\nYour teammates have voted and you have been named Captain!");
-        
-        /** Invoked function to award the user for finishing their 7th
-        * season and being named captain.
-        */
-        unlockAchievement(achievements.captain);
-    }
+    /** Invoked function to award the user for finishing their 7th
+    * season and being named captain.
+    */
+    unlockAchievement(achievements.captain);
+  }
 }
- 
-function resetPlayoffs() {
-    playoffs++;
-    playoffWins = 0;
-    playoffLosses = 0;
-    playoffGames = 0;
-    postGames = 0;
-    playoffRound = 0;
-    playoffGoals = 0; 
-    playoffAssists = 0; 
-    playoffPoints = 0; 
-    playoffHits = 0; 
-    playoffTimeOnIce = 0;
-    playoffTotalTimeOnIceMin = 0;
-    playoffTotalTimeOnIceSec = 0;
-    pointPerGamePlayoff = false;
-}
-
