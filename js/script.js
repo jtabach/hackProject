@@ -1,7 +1,9 @@
-// Created player object literal
+//player object holds properties for updating the myPlayer link and myPlayer Div.
 var player = {
   team: 'Canadiens',
   pick: 5,
+  
+  // effect changes based on player overall and has a direct effect on the outcome of games.
   effect: 0,
   yearsPro: {
     count: 1,
@@ -30,17 +32,27 @@ var player = {
   }
 };
 
+/**
+  * updateMyPlayer() updates the html of the myPlayer link.
+  * Uses properties of player that have the property 'label'.
+*/
 function updateMyPlayer() {
   for (var cat in player) {
-    if (player[cat].hasOwnProperty('count')) {
+    if (player[cat].hasOwnProperty('label')) {
       $(player[cat].id).html(player[cat].label + player[cat].count);
     }
   }
 }
 
+// Variable used for setting players starting attributes.
 var ratingStart = 60, ratingFlux = 10;
 var offense = "offense", defense = "defense", athletics = "athletics";
 
+/**
+  * skills object holds all nine player attribute used for setting/updating player ratings.
+  * Contains IDs and labels for updating the HTML of the playerAttributes div.
+  * Each attrbiute has a click handler for updating player attributes on every button click.
+*/
 var skills = {
   shooting: { 
     rating: Math.floor(Math.random() * ratingFlux + ratingStart),
@@ -125,6 +137,10 @@ var skills = {
   }
 };
 
+/**
+  * overallSkills object holds 4 attribute averages used for updating player overall ratings.
+  * Contains IDs and labels for updating the HTML of the playerAttributes div.
+*/
 var overallSkills = {
   offense: {
     rating: 0,
@@ -148,12 +164,19 @@ var overallSkills = {
   }
 }
 
+// skillClickHandler() loops through all properties of skills and sets up a click handler for each.
 function skillClickHandler() {
   for (var attr in skills) {
     $(skills[attr].id).on('click', skills[attr].clickHandler);
   }
 }
 
+/** 
+  * addSkillPoint() is invoked from the skill's property's click handler.
+  * Receives parameter skill, which is the property of the skills object that was clicked.
+  * skill has its own property, rating, which is increased.
+  * Then invokes the function getNewSkillsRating() and passes the overallSkills object.
+*/
 function addSkillPoint(skill) {
   if (attributePoints > 0){
     skill.rating++;
@@ -162,12 +185,21 @@ function addSkillPoint(skill) {
   }
 }
 
+// resetOveralls() receives overallSkills object as a parameter.
+// Loops through each property of overallSkills and sets the rating property to 0.
 function resetOveralls(ovr) {
   for (var type in ovr) {
     ovr[type].rating = 0;
   }
 }
 
+/**
+  * getNewSkillsRating() is invoked from addSkillPoint().
+  * Receives overallSkills object as a parameter.
+  * Resets the player overall ratings prior to updating.
+  * Loops through each property of the skills object to get overall ratings.
+  * Checks overall rating acheivements, invokes the editPLayerAttributesDiv(), and updates myPLayer.
+*/
 function getNewSkillsRating(ovr) {
   resetOveralls(ovr);
   for (var attr in skills) {
@@ -181,60 +213,55 @@ function getNewSkillsRating(ovr) {
         ovr.athletics.rating += skills[attr].rating;
     }
   }
+  
   ovr.offense.rating = Math.floor(ovr.offense.rating / 3);
   ovr.defense.rating = Math.floor(ovr.defense.rating / 3);
   ovr.athletics.rating = Math.floor(ovr.athletics.rating / 3);
   ovr.overall.rating = Math
     .floor((ovr.offense.rating + ovr.defense.rating + ovr.athletics.rating) / 3);
     
-  if (ovr.overall.rating >= 99) {
-
-    // Invokes function to award user for reaching 99 overall.
-    unlockAchievement(achievements.overall99);
-
-    /** User's overall has reached an ability to directly effect outcome of games.
-    * User's team has a max goals potential 2 higher than the opponent.
-    * This will result in the user having a much greater chance of winning.
-    */
-    player.effect = 2;
-
-  // Checks to see if overallSkill has reached 85.
-  } else if (ovr.overall.rating >= 85) {
-
-    // Invokes function to award user for reaching 85 overall.
-    unlockAchievement(achievements.overall85);
-
-    /** User's overall has reached an ability to directly effect outcome of games.
-    * User's team has a max goals potential 1 higher than the opponent.
-    * This will result in the user having a slightly greater chance of winning.
-    */
-    player.effect = 1;
-  }
+  checkOverallRating();
   editPlayerAttributesDiv(overallSkills);
   player.overall.count = ovr.overall.rating;
   updateMyPlayer();
 }
 
+/**
+  * editPlayerAttributesDiv() is invoked from the getNewSkillsRating().
+  * Receives the overallSkills object as a parameter.
+  * Loops through each property in the object and updates the HTML of the playerAttributes div.
+  * Invokes editAttributePointHTML();
+*/
 function editPlayerAttributesDiv(ovr) {
   for (var attr in skills) {
     $(skills[attr].id).html(skills[attr].label + skills[attr].rating);
   }
+  
   for (var type in ovr) {
     $(ovr[type].id).html(ovr[type].label + ovr[type].rating);
   }
+  
   editAttributePointHTML();
 }
 
+// editAttributePointHTML() is invoked from editPlayerAttributesOverall() or close().
+// Is updated after every time a skill is increased and after every game.
 function editAttributePointHTML() {
   $("#attributePoints > h3").html("Points: " + attributePoints);
 }
 
+// linkClickHandler() loops through all properties of links object and sets up a click handler for each.
 function linkClickHandler() {
   for (var item in links) {
     $(links[item].id).on('click', links[item].clickHandler);
   }
 }
 
+/**
+  * links object holds the links for all the buttons on the game's main div.
+  * Contains id and active properties used to set up permissions for clicking on links.
+  * Each link has a click handler used for adding opacity and displaying each link's associated div.
+*/
 var links = {
   playerStats: {
     active: false,
@@ -276,9 +303,7 @@ var links = {
 function togglePlayerStats() {
   if (!$(links.playerStats.id).hasClass('gray')) { 
     getLeaveGrayID(seasonEnd, links.playerStats, links, toggleLinksGray);
-    updateStatsArray();
-    updateStats(seasonStatIDs, seasonStats);
-    updateStats(playoffStatIDs, playoffStats);
+    updateStatsDiv();
     $("#playerStats").toggle();
   }
 }
@@ -309,6 +334,7 @@ function togglePlayGame() {
     if (opponentPicked === false){
         $("#teamV").html(opponents[Math.floor(Math.random()*opponents.length)]);
     }
+    
     opponentPicked = true;
   }
 }
@@ -322,6 +348,7 @@ function togglePlayoffGame() {
     if (opponentPicked === false){
         $("#teamV").html(opponents[Math.floor(Math.random()*opponents.length)]);
     }
+    
     opponentPicked = true;
   }
 }
@@ -492,21 +519,14 @@ function play() {
             $(period.home.final.id).html(period.home.final.score);
           }, gamespeed);
         }
+        
         // Displays if your team wins or loses
         setTimeout(function(){
           $("#teamWins, #gameStats").show();
         }, gamespeed);
       }, gamespeed);
     }, gamespeed);
-  }, gamespeed); 
-
-//  if (stats.season.games === 3 && askIncreaseGameSpeed === false) {
-//    increaseGameSpeed = confirm("Would like to greatly increase the game speed?");
-//    if (increaseGameSpeed) {
-//      gamespeed = 100;
-//      askIncreaseGameSpeed = true;
-//    }
-//  } 
+  }, gamespeed);  
 }         
       
 function gameStats() {
@@ -531,6 +551,7 @@ function toggleGrayEndOfGame() {
   } else {
     $("#playoffGameLink").removeClass('gray');
   }
+  
   links.playGame.active = false;
   links.playoffGame.active = false;
 }
@@ -540,6 +561,7 @@ function earnedAttributePoints() {
   if (stats.sim.points > 3) {
     attributePoints += 2;
   }
+  
   if (stats.sim.points > 0) {
     attributePoints++;
   }
@@ -582,14 +604,14 @@ function close(){
     seasonEnd = true;
     checkRocketAward();
     checkMVP();
-    
     if(stats.season.wins >= winsToQualify){
       playoffQualify();
     } else {
       playoffDidNotQualify();      
     } 
-}
-if (stats.playoffs.wins === winsToAdvance && stats.series.round === 3) {
+  }
+  
+  if (stats.playoffs.wins === winsToAdvance && stats.series.round === 3) {
     wonStanleyCup();
   } else if (stats.playoffs.wins === winsToAdvance) {
     wonPlayoffSeries();
@@ -654,6 +676,16 @@ function lostPlayoffSeries() {
   resetSeasonPlayoffs();
   appendStatLinesSeasonPlayoffs();
   updateTeamRecord();
+}
+
+function checkOverallRating() {
+  if (ovr.overall.rating >= 99) {
+    unlockAchievement(achievements.overall99);
+    player.effect = 2;
+  } else if (ovr.overall.rating >= 85) {
+    unlockAchievement(achievements.overall85);
+    player.effect = 1;
+  }
 }
 
 function checkAllStar() {
@@ -742,15 +774,15 @@ var goalChance, assistChance, hitChance, shotChance;
 var teamGoalsLeft;
 
 function validateForm() {
-    var first = document.forms["draftForm"]["firstName"].value;
-    var last = document.forms["draftForm"]["lastName"].value;
-    var regex = /^[a-zA-Z]+$/;
-    if (!first.match(regex) || !last.match(regex)) {
-        alert("Please input a full name. No numbers, special characters, or spaces");
-        formValidated = false;
-    } else {
-        formValidated = true;
-    }
+  var first = document.forms["draftForm"]["firstName"].value;
+  var last = document.forms["draftForm"]["lastName"].value;
+  var regex = /^[a-zA-Z]+$/;
+  if (!first.match(regex) || !last.match(regex)) {
+    alert("Please input a full name. No numbers, special characters, or spaces");
+    formValidated = false;
+  } else {
+    formValidated = true;
+  }
 }
 
 function welcome() {
@@ -771,6 +803,7 @@ function submitForm() {
   } else {
     $("#draft").show();
   }
+  
   //Sets the proper name and position
   $("#playerInfoLink h3").html(player.firstName + " " + player.lastName  + " - " + player.position);
 }
@@ -831,7 +864,6 @@ $(document).ready(function() {
   // Hides the divs for the playGame link when the page loads
   $("#playGame, #gameNumber, #scoreLine, #teamWins, #statLine, #attributesEarned," +
     "#playerStats, #improvePlayer, #pick, #draft").hide();
-
   updateMyPlayer();
   getNewSkillsRating(overallSkills);
   skillClickHandler();
@@ -900,6 +932,7 @@ function simulateGame(callback1, callback2) {
     period.home.ot.score = 0;
     period.away.ot.score = 0;
   }
+  
   period.home.final.score = period.home.reg.score + period.home.ot.score;
   period.away.final.score = period.away.reg.score + period.away.ot.score;
   
@@ -1133,7 +1166,6 @@ function assistsThisGame(teamGoals, goals, callback) {
   }
 
   stats.sim.points = goals + stats.sim.assists;
-
   if (seasonEnd === true){
     stats.playoffs.assists += stats.sim.assists;
     stats.playoffs.points += stats.sim.points;
@@ -1212,8 +1244,8 @@ function shotsThisGame(goals) {
   } else {
     stats.sim.shots = 0;
   }
+  
   stats.sim.shots += goals;
-    
   if (seasonEnd === true){
     stats.playoffs.shots += stats.sim.shots;
   } else {
@@ -1256,7 +1288,6 @@ function determineWinner() {
 
   // Checks to see if user has reached 100 career wins.
   if (stats.career.wins >= 100) {
-
     // Invokes function to award user for reaching 100 career wins.
     unlockAchievement(achievements.wins100);
 
@@ -1266,7 +1297,6 @@ function determineWinner() {
     // Invokes function to award user for reaching 100 career wins.
     unlockAchievement(achievements.wins50);
   }
-  
 }    
 
 // Invokes following stats functions
@@ -1332,13 +1362,14 @@ function resetSeasonPlayoffs() {
   for (var cat in stats.season) {
     stats.season[cat] = 0;
   }
+  
   stats.count.seasons++;
   player.yearsPro.count = stats.count.seasons;
   updateMyPlayer();
-
   for (var cat in stats.playoffs) {
     stats.playoffs[cat] = 0;
   }
+  
   stats.count.playoffs++;
   stats.series.games = 0;
   stats.series.round = 0;
