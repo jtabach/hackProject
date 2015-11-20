@@ -220,7 +220,7 @@ function getNewSkillsRating(ovr) {
   ovr.overall.rating = Math
     .floor((ovr.offense.rating + ovr.defense.rating + ovr.athletics.rating) / 3);
     
-  checkOverallRating();
+  checkOverallRating(overallSkills);
   editPlayerAttributesDiv(overallSkills);
   player.overall.count = ovr.overall.rating;
   updateMyPlayer();
@@ -318,6 +318,7 @@ function toggleImprovePlayer(){
 function toggleMyPlayer() {
   if (!$(links.myPlayer.id).hasClass('gray')) {
     getLeaveGrayID(seasonEnd, links.myPlayer, links, toggleLinksGray);
+    updateCareerStats();
     $("#myPlayer").toggle();
   }
 }
@@ -375,6 +376,16 @@ function toggleLinksGray(leaveGray, clickedLink, linksObj) {
       }
     }
   }
+}
+
+function updateCareerStats() {
+  $("#cGames").html(stats.career.games);
+  $("#cWins").html(stats.career.wins);
+  $("#cGoals").html(stats.career.goals);
+  $("#cAssists").html(stats.career.assists);
+  $("#cPoints").html(stats.career.points);
+  $("#cHits").html(stats.career.hits);
+  $("#cShots").html(stats.career.shots);
 }
 
 var unlockAlert = "You have unlocked the ";
@@ -537,7 +548,7 @@ function gameStats() {
   $("#gameAssists").html(stats.sim.assists);
   $("#gamePoints").html(stats.sim.points);
   $("#gameHits").html(stats.sim.hits);
-  $("#gameTOI").html(stats.sim.shots);
+  $("#gameShots").html(stats.sim.shots);
   
   // shows the player stats and attribute points earned
   $("#statLine, #attributesEarned, #close").show();
@@ -678,7 +689,7 @@ function lostPlayoffSeries() {
   updateTeamRecord();
 }
 
-function checkOverallRating() {
+function checkOverallRating(ovr) {
   if (ovr.overall.rating >= 99) {
     unlockAchievement(achievements.overall99);
     player.effect = 2;
@@ -757,12 +768,12 @@ var opponents = ["Senators", "Lightning", "Bruins", "Red Wings", "Panthers", "Sa
 var attributePoints = 9;
 var formValidated = true;
 var opponentPicked = false;
-var gamespeed = 50;
+var gamespeed = 500;
 var increaseGameSpeed = false, askIncreaseGameSpeed = false;
 var seasonStatIDs = ["#seasonNum", "#seasonGames", "#seasonGoals", "#seasonAssists",
-                     "#seasonPoints", "#seasonHits", "#seasonTOI"];
+                     "#seasonPoints", "#seasonHits", "#seasonShots"];
 var playoffStatIDs = ["#playoffNum", "#playoffGames", "#playoffGoals", "#playoffAssists",
-                      "#playoffPoints", "#playoffHits", "#playoffTOI"];
+                      "#playoffPoints", "#playoffHits", "#playoffShots"];
 var games = 0, playoffGames = 0, postGames = 0, seasons = 1, playoffs = 1;
 var playoffRounds = ["Conference Quarterfinals", "Conference Semifinals",
                      "Conference Finals", "Stanley Cup Finals"];
@@ -800,6 +811,7 @@ function submitForm() {
   if (formValidated === true) {
     $("#welcome, #draft").hide();
     $("#pick").show();
+    $("#chooseGames").hide();
   } else {
     $("#draft").show();
   }
@@ -812,18 +824,8 @@ function beginDraft() {
   $("#beginDraft").hide();
   $("#draftDetails").append("<br><br><h2>With the number " + player.pick + " of the NHL draft, the " +
              player.team + " select " + player.position + ", " + player.firstName + 
-             " " + player.lastName + ".</h2><br><br><form id='seasonLengthForm'>" + 
-             "<h4>How many games would you like to play each season?</h4><br>" +
-             "12 Games (Recommended)" + " " + "<input type='radio' class='games' id='12' name='length' value='12'     checked>" +
-             "32 Games" + " " + "<input type='radio' class='games' id='32' name='length' value='32'>" +
-             "82 Games" + " " + "<input type='radio' class='games' id='82' name='length' value='82'>" +
-             "4 Games (I just want to see if this works)" + " " + "<input type='radio' class='games' id='4' name='length' value='4'>" +
-             "<div class='clear'></div><br><br>" +
-              "<h4>How many games would you like to each playoff series to be?</h4><br>" +
-             "Best of 3" + " " + "<input type='radio' class='series' id='3' name='series' value='3' checked>" +
-             "Best of 5" + " " + "<input type='radio' class='series' id='5' name='series' value='5'>" +
-             "Best of 7" + " " + "<input type='radio' class='series' id='7' name='series' value='7'>" +
-             "<div class='clear'></div>");
+             " " + player.lastName + ".</h2><br><br><form id='seasonLengthForm'>");
+  $("#chooseGames").show();
   $("#submitGames").show();
 }
 
@@ -859,6 +861,22 @@ $(document).ready(function() {
     
   $("#submitGames").click(function(event){
     submitGames();
+  });
+  
+  $("#slower").on('click', function(){
+    if (gamespeed < 1000){
+      gamespeed += 100;
+    } else {
+      alert ("This is the slowest speed you can simulate at.")
+    }
+  });
+  
+  $("#faster").on('click', function(){
+    if (gamespeed > 0){
+      gamespeed -= 100;
+    } else {
+      alert ("This is the fastest speed you can simulate at.")
+    }
   });
 
   // Hides the divs for the playGame link when the page loads
@@ -1279,6 +1297,7 @@ function determineWinner() {
   }
 
   $("#teamWins h2").html("" + player.team + resultLabel);
+  stats.career.games++;
   stats.career[result]++;
   if (seasonEnd === false) {
     stats.season[result]++;
@@ -1335,27 +1354,25 @@ function appendStatLine(preOrPostIDs) {
   });
 
   if (seasonEnd === true) {
-    $("#seeseasonStats").append("<div class='clear'></div>" +
-        "<h4 class='stats' id='seasonNum'>1</h4>" +
-        "<h4 class='stats' id='seasonGames'>0</h4>" +
-        "<h4 class='stats' id='seasonGoals'>0</h4>" +
-        "<h4 class='stats' id='seasonAssists'>0</h4>" +
-        "<h4 class='stats' id='seasonPoints'>0</h4>" +
-        "<h4 class='stats' id='seasonHits'>0</h4>" +
-        "<h4 class='stats endOfStats' id='seasonTOI'>0</h4>");
+    $("#seeseasonStats").append("<tr>" +
+        "<td class='stats' id='seasonNum'>1</td>" +
+        "<td class='stats' id='seasonGames'>0</td>" +
+        "<td class='stats' id='seasonGoals'>0</td>" +
+        "<td class='stats' id='seasonAssists'>0</td>" +
+        "<td class='stats' id='seasonPoints'>0</td>" +
+        "<td class='stats' id='seasonHits'>0</td>" +
+        "<td class='stats endOfStats' id='seasonShots'>0</td></tr>");
   } else {
-    $("#seeplayoffStats").append("<div class='clear'></div>" +
-        "<h4 class='stats' id='playoffNum'>1</h4>" +
-        "<h4 class='stats' id='playoffGames'>0</h4>" +
-        "<h4 class='stats' id='playoffGoals'>0</h4>" +
-        "<h4 class='stats' id='playoffAssists'>0</h4>" +
-        "<h4 class='stats' id='playoffPoints'>0</h4>" +
-        "<h4 class='stats' id='playoffHits'>0</h4>" +
-        "<h4 class='stats endOfStats' id='playoffTOI'>0</h4>");
+    $("#seeplayoffStats").append("<tr>" +
+        "<td class='stats' id='playoffNum'>1</td>" +
+        "<td class='stats' id='playoffGames'>0</td>" +
+        "<td class='stats' id='playoffGoals'>0</td>" +
+        "<td class='stats' id='playoffAssists'>0</td>" +
+        "<td class='stats' id='playoffPoints'>0</td>" +
+        "<td class='stats' id='playoffHits'>0</td>" +
+        "<td class='stats endOfStats' id='playoffShots'>0</td>" +
+        "</tr>");
   }
-
-  var statHeight = $('#playerStats').height();
-  $('#playerStats').height(statHeight+26);
 }
 
 function resetSeasonPlayoffs() {

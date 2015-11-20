@@ -19,7 +19,6 @@
     border: 3px solid gray;
     position: relative;
     width: 92.5%;
-    height: 205px;
     margin-bottom: 10px;
 }
 
@@ -53,8 +52,13 @@ button:focus {
     background: #efefef;
 }
 
-#playerInfoLink button {
+#gameSpeed {
+  margin: 5px 0 0 10px;
   float: left;
+}
+
+#gameSpeed h3 {
+  display: inline-block;
 }
 
 #basics, #record {
@@ -177,7 +181,7 @@ button:focus {
 }
 
 #stats {
-    border: 5px solid blue;
+    border: 2px solid blue;
 }
 
 #attributePoints h2 {
@@ -210,9 +214,7 @@ button:focus {
     margin-bottom: 10px;
 }
 
-#playerStats {
-    height: 180px;
-}
+
 
 #improvePlayer {
     height: 250px;
@@ -240,18 +242,30 @@ button:focus {
 }
 
 .game, .stats{
-    float: left;
     text-align: center;
-    width: 113.7px;
     border: 1px solid #bfbfbf;
-    padding: 3px 0px;
+    width: 17%;
 }
 
 .home {
     color: #a30505;
 }
 
+#seeseasonStats, #seeplayoffStats, #scoreLine, #statLine {
+  width:100%;
+}
+
 .stats {
-    width: 97px;
+    width: 14%;
+}
+
+#cAchievements {
+  float: left;
+  width: 80%;
+}
+
+#cStats {
+  float: left;
+  width: 20%;
 }
 
