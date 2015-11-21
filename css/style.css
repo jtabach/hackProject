@@ -14,6 +14,11 @@ header, footer {
   padding: 5px;
 }
 
+footer {
+  position: relative;
+  top: 300px;
+}
+
 footer p {
   color: white;
   background: #26263c;
@@ -132,7 +137,7 @@ button:focus {
 }
 
 #myPlayerLink button {
-    cursor:default;
+    cursor: pointer;
   
 }
 

@@ -300,6 +300,11 @@ var links = {
   }
 };
 
+/**
+  * togglePlayerStats() is a click handler invoked as a property of the links object.
+  * Checks if the link is inactive (gray), if not, invokes the callback function getLeaveGray().
+  * Updates the stats div and toggles it to show.
+*/
 function togglePlayerStats() {
   if (!$(links.playerStats.id).hasClass('gray')) { 
     getLeaveGrayID(seasonEnd, links.playerStats, links, toggleLinksGray);
@@ -308,6 +313,7 @@ function togglePlayerStats() {
   }
 }
 
+// See description togglePlayerStats (similar).
 function toggleImprovePlayer(){
   if (!$(links.improvePlayer.id).hasClass('gray')) {
     getLeaveGrayID(seasonEnd, links.improvePlayer, links, toggleLinksGray);
@@ -315,6 +321,7 @@ function toggleImprovePlayer(){
   }
 }
 
+// See description togglePlayerStats (similar).
 function toggleMyPlayer() {
   if (!$(links.myPlayer.id).hasClass('gray')) {
     getLeaveGrayID(seasonEnd, links.myPlayer, links, toggleLinksGray);
@@ -323,13 +330,18 @@ function toggleMyPlayer() {
   }
 }
 
+/**
+  * togglePlayGame() is a click handler invoked as a property of the links object.
+  * Checks if the link is inactive (gray), if not, invokes the callbac function getLeaveGray().
+  * Hides the gameStats and close div in play. Toggles the play game div to show.
+  * Updates the season and game number of the HTML of the div.
+  * Checks if an oppoenent has been picked and then updates the HTML with opponent name.
+*/
 function togglePlayGame() {
   if (!$(links.playGame.id).hasClass('gray')) {
     getLeaveGrayID(seasonEnd, links.playGame, links, toggleLinksGray);
     $("#gameStats, #close").hide();
     $("#playGame, #gameNumber, #scoreLine").toggle();
-
-    //Updates the game number and changes the html
     $("#gameNumber h2").html("Season " + stats.count.seasons + " - Game #" + (stats.season.games+1));
     $("#teamH").html(player.team);
     if (opponentPicked === false){
@@ -346,11 +358,11 @@ function togglePlayoffGame() {
     $("#gameStats, #close").hide();
     $("#playGame, #gameNumber, #scoreLine").toggle();
     $("#gameNumber h2").html(playoffRounds[stats.series.round] + " - Game #" + (stats.series.games+1));
-    if (opponentPicked === false){
+    if (playoffOpponentPicked === false){
         $("#teamV").html(opponents[Math.floor(Math.random()*opponents.length)]);
     }
     
-    opponentPicked = true;
+    playoffOpponentPicked = true;
   }
 }
 
@@ -551,7 +563,10 @@ function gameStats() {
   $("#gameShots").html(stats.sim.shots);
   
   // shows the player stats and attribute points earned
-  $("#statLine, #attributesEarned, #close").show();
+  $("#statLine, #close").show();
+  if (stats.sim.points > 0) {
+    $("#attributesEarned").show();
+  }
 }
 
 // Toggle appropriate links to gray at game's end.
@@ -643,7 +658,9 @@ function playoffDidNotQualify() {
 
 function playoffQualify() {
   if (stats.playoffs.games === 0) {
-    alert("You have qualified for the playoffs!");
+    attributePoints += 3;
+    editAttributePointHTML();
+    alert("You have qualified for the playoffs!\n\n You earned 3 attribute points.");
     player.playoffs.count++;
     updateMyPlayer();
     unlockAchievement(achievements.playoffs);
@@ -654,11 +671,13 @@ function playoffQualify() {
 }
 
 function wonStanleyCup() {
+  alert("You won the Stanley Cup!\n\n You earned 10 attribute points.");
   unlockAchievement(achievements.stanleyCup);
+  attributePoints += 10;
+  editAttributePointHTML();
   player.stanleys.count++;
   checkFinalsMVP();
   checkLegend();
-  alert("You won the Stanley Cup!");
   updateMyPlayer();
   alert("End of playoffs. Begin Next Season");
   $('#playGameLink').removeClass('gray');
@@ -674,8 +693,12 @@ function wonPlayoffSeries() {
   stats.playoffs.losses = 0;
   stats.series.games = 0;
   stats.series.round++;
-  alert("Congratulations you moved to the " +playoffRounds[stats.series.round] + "!");
+  attributePoints += 3;
+  editAttributePointHTML();
+  alert("Congratulations you moved to the " +playoffRounds[stats.series.round] + 
+        "!\n\nYou earned 3 attribute points.");
   updateTeamRecord();
+  playoffOpponentPicked = false;
 }
 
 function lostPlayoffSeries() {
@@ -758,32 +781,43 @@ function checkCaptain() {
   }
 }
 
-// @desc - hold all possible oppenent's user may play (or be drafted to).
-// @array - contains strings.
+// Array of possible opponenets. Randomly chosen for season/playoff games.
 var opponents = ["Senators", "Lightning", "Bruins", "Red Wings", "Panthers", "Sabres",
                  "Maple Leafs", "Rangers", "Capitals", "Penguins", "Devils", "Islanders",
                  "Flyers", "Hurricanes", "Jackets", "Stars", "Blues", "Wild", "Predators",
                  "Jets", "Blackhawks", "Avalanche", "Kings", "Canucks", "Coyotes", "Ducks",
                  "Flames", "Oilers"];
 
+// Booleans used to determine is a playoff/season opponent has been chosen.
+var opponentPicked = false, playoffOpponentPicked = false;
+
+// Variables set in submitGames(). Used as a conditinoal for season/playoff end and achievements.
+var seasonLength, playoffLength, winsToQualify, winsToAdvance;
+
+// Variable used for updating player attributes.
 var attributePoints = 9;
+
+// Boolean used in submitForm() and validateForm() to determine user input allowed.
 var formValidated = true;
-var opponentPicked = false;
+
+// Variable for setting simulation speed. Can be adjusted via the faster/slower buttons.
 var gamespeed = 500;
-var increaseGameSpeed = false, askIncreaseGameSpeed = false;
+
+// Arrays of IDs used to update and append season and playoff stats.
 var seasonStatIDs = ["#seasonNum", "#seasonGames", "#seasonGoals", "#seasonAssists",
                      "#seasonPoints", "#seasonHits", "#seasonShots"];
 var playoffStatIDs = ["#playoffNum", "#playoffGames", "#playoffGoals", "#playoffAssists",
                       "#playoffPoints", "#playoffHits", "#playoffShots"];
-var games = 0, playoffGames = 0, postGames = 0, seasons = 1, playoffs = 1;
+
+// Array of strings used to notify user what playoff round they are in.
 var playoffRounds = ["Conference Quarterfinals", "Conference Semifinals",
                      "Conference Finals", "Stanley Cup Finals"];
-var seasonLength, playoffLength;
-var winsToQualify, winsToAdvance;
-var careerLength = 10;
+
+// Boolean for determining if game played in regular season or playoffs.
 var seasonEnd = false;
-var goalChance, assistChance, hitChance, shotChance;
-var teamGoalsLeft;
+
+// Used in game simulation to determine user chance of registering stats.
+var goalChance, assistChance, hitChance, shotChance, teamGoalsLeft;
 
 function validateForm() {
   var first = document.forms["draftForm"]["firstName"].value;
@@ -1368,6 +1402,19 @@ function appendStatLine(preOrPostIDs) {
   }
 }
 
+function checkRetirement() {
+  if (player.yearsPro.count === 21) {
+    for (var buttons in links) {
+      $(links[buttons].id).addClass('gray');
+    }
+    
+    alert("You have just completed your 20th season as an NHL Pro.\n\n" +
+         "It's time to retire. Let's take a look back at your career.");
+    $("#myPlayer").show();
+    $("#playerStats").show();
+  }
+}
+
 function resetSeasonPlayoffs() {
   for (var cat in stats.season) {
     stats.season[cat] = 0;
@@ -1384,4 +1431,5 @@ function resetSeasonPlayoffs() {
   stats.series.games = 0;
   stats.series.round = 0;
   checkCaptain();
+  checkRetirement();
 }
