@@ -10,23 +10,24 @@
   </head>
   <body>
         
-    <div id="wrapper">
+    <header>
       <div id="info">
+        <div id="gameSpeed">
+          <button id="slower">Slower</button>
+          <h4 id="simSpeed">Sim Speed</h4>
+          <button id="faster">Faster</button>
+        </div>
         <div id="playerInfoLink"> 
           <h3 id="basics">Jeff Tabachnick - Left Wing</h3>
         </div>
-        <div id="gameSpeed">
-          <button id="slower">Slower</button>
-          <h3>Game Speed</h3>
-          <button id="faster">Faster</button>
-        </div>
         <div id="teamRecordLink">
-          <h3 id="record">Team Record: 0-0-0</h3>
+          <h4 id="record">Team Record: 0-0-0</h4>
         </div>
       </div>
+    </header>
 
       <div class="clear"></div>
-
+    <div id="wrapper">
       <div class="main">
         <a id="playerStatsLink">
           <button>
@@ -39,7 +40,7 @@
         <a id="playoffGameLink" class="gray">
           <button>
             <h1>Play Playoff Game</h1>
-            <img src="img/playoffRink.jpg" height="152px" width="225px">
+            <img src="img/playoffRink.jpg" height="153px" width="225px">
           </button>
         </a>
       </div>
@@ -70,60 +71,73 @@
         <a id="playGameLink" >
           <button>
             <h1>Play Season Game</h1>
-            <img src="img/hockeyRink.jpeg" height="152px" width="225px">
+            <img src="img/hockeyRink.jpeg" height="153px" width="225px">
           </button>
         </a>
       </div>
 
 
       <div id="welcome">
+        <br><br>
         <h1>Welcome to NHL Career Mode</h1>
+        <br>
         <div class="clear"></div><br>
-        <p>You have just declared for the NHL draft. Scouts have estimated that your current skill set will have you drafted in the first round as a forward. Once drafted you will able to see your player skill ratings and improve categories that you believe will help your player become a top forward in the league. Throughout your career you can play games, keep track of your stats, improve your player, and hopefully win a Stanley Cup or two. Good Luck, and remember, speed kills. Click on Continue to Draft Form when ready.</p>
+        <p>&emsp;&emsp;&emsp;NHL Career Mode allows you to simulate your career as an NHL player beginning with the NHL rookie draft through as many seasons as you desire. You will have the ability to select your season and playoff series length.</p><br>
+        <p>&emsp;&emsp;&emsp;To qualify for the playoffs, your team must win at least half their games. The playoff structure is as follows: Conference Quarterfinals, Conference Semifinals, Conference Finals, and Stanley Cup Finals. You must win all 4 playoff series to win the Stanley Cup.</p><br>
+        <p>&emsp;&emsp;&emsp;In order to win more games and improve your stats, it is important that you update your skills regularly. You will begin with a base skill set between 60 and 70 overall and 9 attribute points to use. Each game you will have the opportunity to earn attribute points. If you register at least 1 point (goal or assist), you will earn 1 attribute point. 3 or more points and you will earn 2 attribute points.</p><br>
+        <p>&emsp;&emsp;&emsp;If you reach 85 overall you will have a small but direct impact on your team&#39s likeliness to win games. Reach 99 overall, and that impact becomes much larger.</p><br>
+        <p>&emsp;&emsp;&emsp;Your stats are recorded every season and playoffs and can be viewed by clicking on the Player Stats button. In addition, you will have your My Player where you can keep track of a variety of statistics.</p><br>
+        <p>&emsp;&emsp;&emsp;By clicking on the My Player button, you will see 12 possible achievements and your career stats. Hover your mouse over each achievement to see how to unlock it. It is recommended that if you wish to try and earn all of the achievements, that you play at least a 12 game season.</p><br>
+        <p>IMPORTANT: If you refresh or close the page you will lose all of your progress. Good Luck!</p><br>
+        <p>Click on &#39Continue to Draft Form&#39 when ready.</p>
         <div class="clear"></div><br>
         <button id="welcomeNext">Continue to Draft Form</button>
+        <br><br>
       </div>
 
 
 
       <div id="draft">
+        <br><br>
         <h1>2015 NHL Draft Form</h1>
+        <br>
         <div class="clear"></div><br>
-        <p>Please fill out your information below to become eligible for this year’s draft. Click Continue to Draft Day when ready.</p><br>
+        <p>Please fill out your information below and click &#39Continue to Draft Form&#39 when ready to submit your form for this year&#39s draft.</p><br>
         <div class="clear"></div>
+        <br>
         <form id="draftForm">
           First Name:
-          <input type="text" class="name" id="firstName" name="firstName" placeholder="type here..">
+          <input type="text" class="name" id="firstName" name="firstName" placeholder="type here.." maxlength="10">
           Last Name:
-          <input type="text" class="name" id="lastName" name="lastName" placeholder="type here..">
-          <div class="clear"></div><br>Position: _
-          Left Wing
-          <input type="radio" id="leftWing" class="position" name="position" value="Left Wing" checked>
-          Center
-          <input type="radio" id="center" class="position" name="position" value="Center">
-          Right Wing
-          <input type="radio" id="rightWing" class="position" name="position" value="Right Wing">
+          <input type="text" class="name" id="lastName" name="lastName" placeholder="type here.." maxlength="14">
+          <div class="clear"></div><br><br>Position:
+          <input type="radio" id="leftWing" class="position" name="position" value="Left Wing" checked>Left Wing
+          <input type="radio" id="center" class="position" name="position" value="Center">Center
+          <input type="radio" id="rightWing" class="position" name="position" value="Right Wing">Right Wing
           <div class="clear"></div><br>
           <input id="submitForm" type="submit" value="Continue to Draft Day">
-        </form>
+        </form><br><br>
       </div>
 
 
       <div id="pick">
+        <br><br>
         <h1>Draft Day</h1>
-        <button id="beginDraft">Begin Draft</button>
+        <br>
         <div class="clear"></div><br>
-        <p id="draftDetails">Today is the big day. All signs point to you being picked in the first round. You will likely be playing for the team that draft’s you for most of your career. Hope it’s a good one. Click 'Begin Draft' when ready.</p>
+        <p id="draftDetails">Today is the big day. All signs point to you being picked in the first round. Hope it&#39s a good one. Click 'Begin Draft' when ready.</p>
+        <button id="beginDraft">Begin Draft</button>
         <div id="chooseGames">
           <h4>How many games would you like to play each season?</h4><br>
+            4 Games&nbsp
+          <input type='radio' class='games' id='4' name='length' value='4'>
              12 Games (Recommended)&nbsp
           <input type='radio' class='games' id='12' name='length' value='12' checked>
              32 Games&nbsp
           <input type='radio' class='games' id='32' name='length' value='32'>
              82 Games&nbsp
           <input type='radio' class='games' id='82' name='length' value='82'>
-             4 Games (I just want to see if this works)&nbsp
-          <input type='radio' class='games' id='4' name='length' value='4'>
+             
              <div class='clear'></div><br><br>
               <h4>How many games would you like to each playoff series to be?</h4><br>
              Best of 3&nbsp
@@ -136,7 +150,7 @@
         <div class='clear'></div>
         
         
-        <input id="submitGames" type="button" value="Lets Start Playing"></button>
+        <input id="submitGames" type="button" value="Lets Start Playing"></button><br>
       </form>
       </div>
 
@@ -178,7 +192,7 @@
         </table>
         <div class="clear"></div>
         <div id="teamWins">
-          <h2>Team Wins</h2>
+          <h3>Team Wins</h3>
         </div>
         <div class="clear"></div>
         <table id="statLine">
@@ -201,7 +215,7 @@
         </table>
           <div class="clear"></div>
           <div id="attributesEarned">
-            <h2>Attribute Points Earned</h2>
+            <h3>Attribute Points Earned</h3>
           </div>
           <div class="clear"></div>
       </div>
@@ -212,9 +226,9 @@
       <div id="improvePlayer">
         <div id="attributePoints">
           <h2>Player Attributes</h2>
-          <h3>Points: NA</h3>
+          <h3>Attribute Points: NA</h3>
         </div>
-        <div class="clear"><br></div>
+        <div class="clear"></div>
         <button class="skill" area="offense" id="shooting">Shooting: NA</button>
         <button class="skill" area="offense" id="passing">Passing: NA</button>
         <button class="skill" area="offense" id="handling">Handling: NA</button>
@@ -243,7 +257,6 @@
 
 
       <div class="acheivements" id="myPlayer">
-        <div class="clear"><br></div>
         <div id="cAchievements">
           <h3>Achievements</h3>
           <img id="achievePlayoffs" class="locked" src="img/achievements/playoffs.png"
@@ -264,7 +277,7 @@
           <img id="achieveAllStar" class="locked" src="img/achievements/allstar.png"
                Title="Allstar (Average a point per game by halfway point of season)" height="80px" width="80px">
           <img id="achieveCaptain" class="locked" src="img/achievements/captain.png"
-               Title="Play 5 seasons with the same team" height="80px" width="80px">
+               Title="Complete 7 seasons" height="80px" width="80px">
           <img id="achieveRocket" class="locked" src="img/achievements/rocket.jpeg"
                Title="Average over a goal per game for a season" height="80px" width="80px">
           <img id="achieveMVP" class="locked" src="img/achievements/mvp.png"
@@ -274,7 +287,7 @@
           <img id="achieveLegend" class="locked" src="img/achievements/legend.jpeg"
                Title="Record 500 career points, be selected to 7 allstar games and win 3 Stanley Cups" 
                height="80px" width="80px">
-          <p>Hover over the acheivements to learn how to unlock them</p>
+          <p>Hover over the achievements to learn how to unlock them</p>
         </div>
         <div id="cStats">
           <h3>Career Stats</h3>
@@ -338,12 +351,15 @@
             <td class="stats" id="playoffAssists">0</td>
             <td class="stats" id="playoffPoints">0</td>
             <td class="stats" id="playoffHits">0</td>
-            <td class="stats" id="playoffTOI">0</td>
+            <td class="stats" id="playoffShots">0</td>
           </tr>
          </table>
       </div>
 
     </div>
+    <footer>
+      <p id="footerContent">Copyright &copy; 2015 &middot; All Rights Reserved &middot; www.groupffl.com</p>
+    </footer>
       
   </body>
     

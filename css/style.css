@@ -1,25 +1,91 @@
 * {
-    margin: 0;
-    padding: 0;
-    background: #efefef;
-    color: #26263c;
+  margin: 0;
+  padding: 0;
+  background: #efefef;
+  color: #26263c;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-.gray {
-    opacity: 0.3;
+header, footer {
+  float: left;
+  width: 100%;
+  background: #26263c;
+  text-align: center;
+  padding: 5px;
 }
 
-.locked {
-    opacity: 0.2;
+footer p {
+  color: white;
+  background: #26263c;
+  padding: 11px;
+}
+
+#info {
+  margin: 0 auto;
+  width: 751px;
+  display: inline-block;
+  background: #26263c;
+}
+
+#playerInfoLink, #teamRecordLink, #gameSpeed {
+  float: left;
+  width: 32.4%;
+  background: #26263c;
+}
+
+#gameSpeed {
+  text-align: center;
+  padding-left: 5px;
+  color: #cbcbcb;
+}
+
+#slower, #faster {
+  background: #26263c;
+  font-size: 12px;
+  margin: 9px 2px 5px 2px;
+  padding: 0px 3px;
+  color: white;
+}
+
+#slower:hover, #faster:hover {
+  background: #a30505;
+  cursor: pointer;
+  color: white;
+}
+
+#gameSpeed h4 {
+  display: inline-block;
+  background: #26263c;
+  color: white;
+}
+
+#basics {
+  margin: 7px 0 0px 0;
+  text-align: center;
+  color: white;
+}
+
+#teamRecordLink {
+  text-align: center;
+  padding-right: 10px;
+  margin: 9px 0 5px 0;
+}
+
+#basics, #record {
+  background: #26263c;
+  color: white;
+}
+
+#record {
+  margin-left: 5px;
 }
 
 #myPlayer {
-    padding: 0px 10px;
-    margin: 5px auto 10px auto;
-    border: 3px solid gray;
-    position: relative;
-    width: 92.5%;
-    margin-bottom: 10px;
+  margin: 5px auto 10px auto;
+  position: relative;
+  width: 96.8%;
+  margin-bottom: 10px;
+  background: white;
 }
 
 .achievements img{
@@ -31,49 +97,20 @@ button:focus {
 }
 
 #wrapper {
-    margin: auto;
-    width: 80%;
-    width: 751px;
-    border: solid 1px gray;
-    background: #cbcbcb;
+  margin: auto;
+  width: 80%;
+  width: 751px;
+  background: white;
+/*  border: 2px solid #26263c;*/
 }
 
-#playerInfoLink, #teamRecordLink {
-    margin: 5px 10px;
-}
 
-#playerInfoLink {
-    float: left;
-    background: #efefef;
-}
-
-#teamRecordLink {
-    float: right;
-    background: #efefef;
-}
-
-#gameSpeed {
-  margin: 5px 0 0 10px;
-  float: left;
-}
-
-#gameSpeed h3 {
-  display: inline-block;
-}
-
-#basics, #record {
-    background: #efefef;
-}
-
-#basics {
-  position: relative;
-  float: left;
-}
 
 #playGameLink, #playoffGameLink, #improvePlayerLink, #playerStatsLink, #welcome, #draft, #pick {
     position: relative;
     float: left;
     margin: 10px 15px;
+  background: white;
 }
 
 #improvePlayerLink, #playGameLink {
@@ -85,16 +122,18 @@ button:focus {
 }
 
 #myPlayerLink {
-    width:100%;
-    position: relative;
-    float: left;
-    text-align: center;
-    margin: 10px auto;
-    background: #cbcbcb;
+  width:100%;
+  position: relative;
+  float: left;
+  text-align: center;
+  margin: 10px auto;
+  background: white;
+
 }
 
 #myPlayerLink button {
     cursor:default;
+  
 }
 
 #myPlayerLink h2 {
@@ -107,30 +146,64 @@ button:focus {
     color: #26263c;
 }
 
-#info {
-    float: left;
-    margin: 10px 15px 0 15px;
-    width: 96%;
-    border: 1px solid gray;
-}
+
 
 .main {
-    position: relative;
-    float:left;
-    background: #cbcbcb;
-    width: 33.3333%;
-    min-width: 235px;
+  position: relative;
+  float:left;
+  width: 33.3333%;
+  min-width: 235px;
+  background: white;
 }
 
 .right {
     float:right;
 }
 
-
-
 #welcome, #draft, #pick {
-    padding: 10px;
+    padding: 0px 40px;
     margin: auto;
+}
+
+#welcome h1, #welcome p {
+  background: white;
+}
+
+#draft h1, #draft p, #draft form, #draft input {
+  background: white;
+}
+
+#firstName, #lastName {
+  margin: 0 50px 0 5px !important;
+}
+
+#draft input {
+  margin: 0 5px 0 25px;
+}
+
+
+
+#pick h1, #pick h3, #pick h2, #pick form, #pick input, #pick h4, #pick p{
+  background: white;
+  text-align: center;
+}
+
+#draftDetails {
+  background: white;
+}
+
+#chooseGames {
+  background: white;
+  text-align: center;
+}
+
+#submitGames, #submitForm, #beginDraft{
+  margin-top: 15px;
+  float: right;
+}
+
+#beginDraft, #submitGames{
+  margin-bottom: 10px;
 }
 
 .position, .name, .games, .series {
@@ -149,25 +222,27 @@ button:focus {
     float: right;
 }
 
-#pick h1 {
-    float: left;
-    padding-left: 230px;
-}
+
 
 #pick button {
     float: right;
 }
 
 .skill {
-    margin: 0px 19.8px 10px 10px;
-    padding: 5px;
-    width: 163px;
-    height: 50px;
-    float: left;
-    border-radius: 5px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #6f3c3c;
+  margin: 0px 44px 10px 0px;
+  padding: 5px;
+  width: 163px;
+  height: 50px;
+  float: left;
+  border-radius: 5px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #830000;
+  background: white;
+}
+
+#handling, #takeaway, #endurance {
+  margin-right: 0px;
 }
 
 .skill:hover {
@@ -177,7 +252,8 @@ button:focus {
 }
 
 .clear {
-    clear: both;
+  clear: both;
+  background: white;
 }
 
 #stats {
@@ -185,50 +261,64 @@ button:focus {
 }
 
 #attributePoints h2 {
-    margin-left: 10px;
-    float: left;
+  padding-left: 3px;
+  float: left;
+  background: white;
+  margin-bottom: 15px
 }
 
 #attributePoints h3 {
-    margin-right: 14px;
-    margin-top: 5px;
-    float: right;
+  margin-right: 3px;
+  margin-top: 5px;
+  float: right;
+  background: white;
 }
 
-.overall {
-    text-align: center;
-    float: left;
-    margin: 14px 10px 0 10px;
+.overall h3 {
+  text-align: center;
+  float: right;
+  margin: 16px 3px 0 10px;
+  background: white;
 }
 
-#playerOverall {
-    text-align: center;
+#playerOverall h3 {
+  text-align: right;
+  background: white;
+  margin: 10px 0px;
+  padding: 0 3px;
 }
 
 #playGame, #playerStats, #improvePlayer{
-    padding: 0px 10px;
-    margin: 5px auto 10px auto;
-    border: 3px solid gray;
-    position: relative;
-    width: 92.5%;
-    margin-bottom: 10px;
+  padding: 0px 0px 10px 0px;
+  margin: 0px auto 0px auto;
+/*    border: 3px solid gray;*/
+  position: relative;
+  width: 96.8%;
+  background: white;
 }
 
-
-
-#improvePlayer {
-    height: 250px;
+#gameNumber h2 {
+  float: left;
+  padding: 1px 0px 0px 3px;
+  background: white;
 }
 
-#gameNumber h2, #teamWins h2, #attributesEarned h2 {
-    float: left;
-    padding: 5px 0px 0px 3px;
+#teamWins h3 {
+  float: left;
+  padding: 8px 0px 4px 3px;
+  background: white;
+}
+
+#attributesEarned h3 {
+  float: left;
+  padding: 8px 0px 0px 3px;
+  background: white;
 }
 
 .pGame {
     float: right;
-    margin: 5px 0px;
-    padding: 0px 20px 1px 20px;
+    margin: 0px 3px 0px 0px;
+    padding: 0px 20px 0px 20px;
     font-size: 16px;
     height: 25px;
     width: 117px;
@@ -242,9 +332,10 @@ button:focus {
 }
 
 .game, .stats{
-    text-align: center;
-    border: 1px solid #bfbfbf;
-    width: 17%;
+  text-align: center;
+  border: 1px solid #bfbfbf;
+  width: 16.8%;
+  background: white;
 }
 
 .home {
@@ -253,6 +344,12 @@ button:focus {
 
 #seeseasonStats, #seeplayoffStats, #scoreLine, #statLine {
   width:100%;
+  background: white;
+}
+
+#myPlayerStats h2{
+  background: white;
+  padding: 0 0 5px 4px;
 }
 
 .stats {
@@ -262,10 +359,43 @@ button:focus {
 #cAchievements {
   float: left;
   width: 80%;
+  background: white;
+}
+
+#cAchievements h3, #cAchievements p {
+  background: white;
+  padding: 0 0 5px 3px;
+}
+
+#cAchievements img {
+  margin-right: 10px;
+  border: 1px solid gray;
 }
 
 #cStats {
-  float: left;
+  float: right;
+  text-align: right;
   width: 20%;
+  background: white;
 }
 
+#cStats h3 {
+  background: white;
+}
+
+#cStats h4, #cStats span, #cStats table {
+  background: white;
+  padding-bottom: 3px;
+}
+
+#cStats table {
+  float: right;
+}
+
+.gray {
+    opacity: 0.3;
+}
+
+.locked {
+    opacity: 0.2;
+}

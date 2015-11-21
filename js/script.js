@@ -238,7 +238,7 @@ function editPlayerAttributesDiv(ovr) {
   }
   
   for (var type in ovr) {
-    $(ovr[type].id).html(ovr[type].label + ovr[type].rating);
+    $(ovr[type].id + "> h3").html(ovr[type].label + ovr[type].rating);
   }
   
   editAttributePointHTML();
@@ -247,7 +247,7 @@ function editPlayerAttributesDiv(ovr) {
 // editAttributePointHTML() is invoked from editPlayerAttributesOverall() or close().
 // Is updated after every time a skill is increased and after every game.
 function editAttributePointHTML() {
-  $("#attributePoints > h3").html("Points: " + attributePoints);
+  $("#attributePoints > h3").html("Attribute Points: " + attributePoints);
 }
 
 // linkClickHandler() loops through all properties of links object and sets up a click handler for each.
@@ -638,6 +638,7 @@ function playoffDidNotQualify() {
   updateStatsDiv();
   resetSeasonPlayoffs();
   appendStatLinesSeasonPlayoffs();
+  updateTeamRecord();
 }
 
 function playoffQualify() {
@@ -801,7 +802,7 @@ function welcome() {
   $("#welcome").hide();
 }
 
-function submitForm() {
+function submitForm(event) {
   event.preventDefault();
   validateForm();
   player.firstName = $("#firstName").val();
@@ -814,22 +815,23 @@ function submitForm() {
     $("#chooseGames").hide();
   } else {
     $("#draft").show();
+    
   }
   
   //Sets the proper name and position
-  $("#playerInfoLink h3").html(player.firstName + " " + player.lastName  + " - " + player.position);
+  $("#playerInfoLink h3").html(player.firstName + " " + player.lastName);
 }
 
 function beginDraft() {
   $("#beginDraft").hide();
-  $("#draftDetails").append("<br><br><h2>With the number " + player.pick + " of the NHL draft, the " +
-             player.team + " select " + player.position + ", " + player.firstName + 
-             " " + player.lastName + ".</h2><br><br><form id='seasonLengthForm'>");
+  $("#draftDetails").append("<br><br><br><h3>With the number " + player.pick + " of the NHL draft...<br><br>The " +
+             player.team + " select " + player.position + "</h3><br><br><h1>" + player.firstName + 
+             " " + player.lastName + "!</h1><br><br><br><form id='seasonLengthForm'>");
   $("#chooseGames").show();
   $("#submitGames").show();
 }
 
-function submitGames() {
+function submitGames(event) {
   event.preventDefault();
   seasonLength = Number($("input[type='radio'][name='length']:checked").val());
   winsToQualify = seasonLength/2;
@@ -852,7 +854,7 @@ $(document).ready(function() {
   });
 
   $("#submitForm").click(function(event){
-    submitForm();
+    submitForm(event);
   });
     
   $("#beginDraft").on('click', function(){
@@ -860,7 +862,7 @@ $(document).ready(function() {
   });
     
   $("#submitGames").click(function(event){
-    submitGames();
+    submitGames(event);
   });
   
   $("#slower").on('click', function(){
@@ -1196,16 +1198,7 @@ function assistsThisGame(teamGoals, goals, callback) {
   stats.career.assists += stats.sim.assists;
   stats.career.points += stats.sim.points;
 
-  /** Conditional to verify if user has reached 500 career points. Is linked
-  * to the legendary Achievement but not invoked until 500 to avoid multple calls.
-  */
-  if (stats.career.points >= 500) { 
-
-    // Check the if user has reached legendary status as career points is a requirement.
-    if (stats.career.points >= 500 && allStarGames >= 7 && stanleyCups >= 3){
-      unlockAchievement(achievements.legend);
-    }
-  }
+  checkLegend();
 
   callback(shotsThisGame);
 }
@@ -1296,7 +1289,7 @@ function determineWinner() {
     }
   }
 
-  $("#teamWins h2").html("" + player.team + resultLabel);
+  $("#teamWins h3").html("" + player.team + resultLabel);
   stats.career.games++;
   stats.career[result]++;
   if (seasonEnd === false) {
