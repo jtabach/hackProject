@@ -198,7 +198,7 @@ function resetOveralls(ovr) {
   * Receives overallSkills object as a parameter.
   * Resets the player overall ratings prior to updating.
   * Loops through each property of the skills object to get overall ratings.
-  * Checks overall rating acheivements, invokes the editPLayerAttributesDiv(), and updates myPLayer.
+  * Checks overall rating achievements, invokes the editPLayerAttributesDiv(), and updates myPLayer.
 */
 function getNewSkillsRating(ovr) {
   resetOveralls(ovr);
@@ -317,6 +317,9 @@ function togglePlayerStats() {
 function toggleImprovePlayer(){
   if (!$(links.improvePlayer.id).hasClass('gray')) {
     getLeaveGrayID(seasonEnd, links.improvePlayer, links, toggleLinksGray);
+    
+    // Invokes editAttributePointHTML() - updates the HTML of the attributePoints div. 
+    editAttributePointHTML();
     $("#improvePlayer").toggle();
   }
 }
@@ -335,7 +338,7 @@ function toggleMyPlayer() {
   * Checks if the link is inactive (gray), if not, invokes the callbac function getLeaveGray().
   * Hides the gameStats and close div in play. Toggles the play game div to show.
   * Updates the season and game number of the HTML of the div.
-  * Checks if an oppoenent has been picked and then updates the HTML with opponent name.
+  * Checks if an opponent has been picked and then updates the HTML with opponent name.
 */
 function togglePlayGame() {
   if (!$(links.playGame.id).hasClass('gray')) {
@@ -352,6 +355,7 @@ function togglePlayGame() {
   }
 }
     
+// See description togglePlayGame (similar).
 function togglePlayoffGame() {
   if (!$(links.playoffGame.id).hasClass('gray')) {
     getLeaveGrayID(seasonEnd, links.playoffGame, links, toggleLinksGray);
@@ -366,12 +370,27 @@ function togglePlayoffGame() {
   }
 }
 
+/**
+  * getLeaveGratID is a callback (helper) function.
+  * takes a boolen, 2 objects, and a function as parameters.
+  * Determines which play game link will remain gray.
+  * Invokes callbackLinks() and passes the new variable and 2 objects as parameters.
+*/
 function getLeaveGrayID(seasonEnd, clickedLink, linksObj, callbackLinks) {
   var leaveGray;
   leaveGray = (seasonEnd) ? "#playGameLink" : "#playoffGameLink";
   callbackLinks(leaveGray, clickedLink, linksObj);
 }
 
+/**
+  * toggleLinksGray() is invoked from a callback function.
+  * Receives a string and 2 objects as parameters.
+  * Determines if the link clicked is active or inactive.
+  * If inactive, loops through each property of the linksObj and adds the class gray.
+  * Does not add the class gray to the clicked link.
+  * If active, loops through each property of the linksObj and removes the class gray.
+  * Except for the link clicked and the link's id that was passed as leaveGray.
+*/
 function toggleLinksGray(leaveGray, clickedLink, linksObj) {
   if (!clickedLink.active) {
     clickedLink.active = true;
@@ -390,6 +409,7 @@ function toggleLinksGray(leaveGray, clickedLink, linksObj) {
   }
 }
 
+// updateCareerStats() selects each below item by id and updates the HTML for the myPlayer Div.
 function updateCareerStats() {
   $("#cGames").html(stats.career.games);
   $("#cWins").html(stats.career.wins);
@@ -400,9 +420,14 @@ function updateCareerStats() {
   $("#cShots").html(stats.career.shots);
 }
 
+// Variable unlockAlert holds beginning string used for each achievement alert.
 var unlockAlert = "You have unlocked the ";
     
-// Achievements Object.
+/**
+  * achievements object contains 12 unlockable achievements as properties.
+  * Each property holds a boolean - unlocked, an alert, and an id.
+  * Is used in the unlockAchievements() function to display achievement to myPLayer div.
+*/
 var achievements = {
   playoffs: {
     unlocked: false,
@@ -466,6 +491,14 @@ var achievements = {
   }
 }
     
+/**
+  * unlockAchievements() is invoked from various locations in the code depending on user progress.
+  * The funciton recieves a property of the achievements object as a parameter.
+  * Has condtional to check if achivement has previosly been earned.
+  * Alert the user of the achievement.
+  * Removes the class locked, which is an opacity filter.
+  * Sets the property, unlocked, to true to avoid multiple alerts of the achievement.
+*/
 function unlockAchievement(type) {
   if (type.unlocked === false) {
     alert(type.alert);
@@ -474,6 +507,10 @@ function unlockAchievement(type) {
   }
 }
 
+/**
+  * simButtons object holds the buttons for each part of the simulation of playGame or playoffGame div.
+  * Each button has an id and click handler used for proceeding to the next step in the game simulation.
+*/
 var simButtons = {
   play: {
     id: "#play",
@@ -495,29 +532,37 @@ var simButtons = {
   }
 };
 
+// simClickHandler() loops through all properties of simButtons object and sets up a click handler for each.
 function simClickHandler() {
   for (var button in simButtons) {
     $(simButtons[button].id).on('click', simButtons[button].clickHandler);
   }
 }
 
-// When play button is clicked, simulation begins showing the score of the game period by period
+// play() is a funtion invoked by a click handler and begins the simulation of a season/playoff game.
 function play() {
-  
+  // Loops through each property of the links objects and adds the class gray,
+  // restricting the user from clicking any buttons during the simulation.
   for (var item in links) {
     $(links[item].id).addClass('gray');
   }
 
+  // Sets opponentPicked to false to allow for a new random opponenet for next simulation game.
   opponentPicked = false;
 
+  // Hides the play button to restrict user from clicking again.
   $(simButtons.play.id).hide();
 
   // Invokes the simulationGame callback function and passes goalsByPeriod and playerGameStats
   simulateGame(goalsByPeriod, playerGameStats);
-
+  
+  // invokes determineWinner() which randomizes the result of the game and determines what team wins.
   determineWinner();
 
-  // Uses jQueary callback function to display the score in a more exciting way.
+  /**
+    * setTimeout() used to display the score of the game one period at a time at the speed of the user's liking.
+    * Updates the html of the current period as well as the final score with respect to how many periods are displayed.
+  */
   setTimeout(function(){
     $(period.away.one.id).html(period.away.one.score);
     $(period.home.one.id).html(period.home.one.score);
@@ -533,7 +578,8 @@ function play() {
         $(period.home.three.id).html(period.home.three.score);
         $(period.away.final.id).html(period.away.reg.score);
         $(period.home.final.id).html(period.home.reg.score);
-        // Checks to see if the game requires overtime
+        
+        // Conditional to check if game requires overtime and diplays the html accordingly.
         if (period.away.reg.score === period.home.reg.score) {
           setTimeout(function(){
             $(period.away.ot.id).html(period.away.ot.score);
@@ -543,8 +589,8 @@ function play() {
           }, gamespeed);
         }
         
-        // Displays if your team wins or loses
         setTimeout(function(){
+          //  Displays the Div showing the result of the game and the stats button.
           $("#teamWins, #gameStats").show();
         }, gamespeed);
       }, gamespeed);
@@ -552,9 +598,12 @@ function play() {
   }, gamespeed);  
 }         
       
+// gameStats() is a funtion invoked by a click handler and shows the stats of the simulated season/playoff game. 
 function gameStats() {
-            
+  // Hides the stats button to restrict multiple clicks on it.
   $("#gameStats").hide();
+  
+  // Selects each element by id and updtes the gameStats div with the appropriate html.
   $("#playerName").html(player.lastName);
   $("#gameGoals").html(stats.sim.goals);
   $("#gameAssists").html(stats.sim.assists);
@@ -562,14 +611,81 @@ function gameStats() {
   $("#gameHits").html(stats.sim.hits);
   $("#gameShots").html(stats.sim.shots);
   
-  // shows the player stats and attribute points earned
+  // Shows the player stats for the simulated game in the updated gameStats div.
   $("#statLine, #close").show();
+  
+  // Checks if the player earned attribute points that game and alerts the user if true.
   if (stats.sim.points > 0) {
     $("#attributesEarned").show();
   }
 }
 
-// Toggle appropriate links to gray at game's end.
+// gameStats() is a funtion invoked by a click handler and hides the playGame/playoffGame div.
+function close(){
+  $("#playGame, #gameNumber, #scoreLine, #teamWins, #statLine, #attributesEarned").hide();
+
+  // Invokes resestGame() which resets the html for the next game to a blank scorebaord with "-"s.
+  resetGame();
+  
+  // Hides the close button and displays the play button in preperation for the next game.
+  $(simButtons.close.id).hide();
+  $(simButtons.play.id).show();
+
+  // Invokes updateTeamRecord() - Updates the team record in upper right of the main div.
+  updateTeamRecord();
+
+  // Invokes toggleGrayEndOfGame() - Adds/removes the class 'gray' to the appropriate links. 
+  toggleGrayEndOfGame();
+
+  // Invokes earnedAttributePoints - Awards the player with attribute points based on performance.
+  earnedAttributePoints();
+  
+  // invokes increaseGameCount - Increases game count for season/playoffs/series
+  increaseGameCount();
+  
+  // Invkokes checkAllstar() - Checks to see if player earned allstar for the season.
+  checkAllStar();
+
+  // Conditional to check if the season has ended.
+  if(stats.season.games >= seasonLength){
+    seasonEnd = true;
+    
+    // Invokes checkRocketAward() - Checks to see if player earned award for averaging a goal per game.
+    checkRocketAward();
+    
+    // Invokes checkMVP() -  Checks to see if player earned a point per game and made playoffs.
+    checkMVP();
+    
+    // Conditional to see if player won enough games to qualify for playoffs.
+    if(stats.season.wins >= winsToQualify){
+      // Invokes playoffQualify() - Puts player on track for playoffs.
+      playoffQualify();
+    } else {
+      // Invokes playoffDidNotQualify() - Puts player on track for a new season.
+      playoffDidNotQualify();      
+    } 
+  }
+  
+  // Conditional - Checks if player won required games to win series and required series to win the stanley cup.
+  if (stats.playoffs.wins === winsToAdvance && stats.series.round === 3) {
+    wonStanleyCup();
+    
+    // Condtional - Checks if player won required games to win series.
+  } else if (stats.playoffs.wins === winsToAdvance) {
+    // Puts player on path to begin next playoff series.
+    wonPlayoffSeries();
+    
+    // Contional - Checks if the player lost required games to lose series.
+  } else if (stats.playoffs.losses === winsToAdvance){
+    // Puts players on path to begin next season.
+    lostPlayoffSeries();
+  }
+}
+
+/**
+  * toggleGrayEndOfGame() invoked after completed season/playoff game.
+  * Checks if in season or playoffs. Removes 'gray' class from appropriate links.
+*/
 function toggleGrayEndOfGame() {
   $("#improvePlayerLink, #playerStatsLink, #myPlayerLink").removeClass('gray');
   if (seasonEnd === false){
@@ -577,12 +693,12 @@ function toggleGrayEndOfGame() {
   } else {
     $("#playoffGameLink").removeClass('gray');
   }
-  
-  links.playGame.active = false;
-  links.playoffGame.active = false;
 }
 
-// Add attribute points based on simulation game performance.
+/**
+  * earnedAttributePoints() invoked when gameStats button clicked.
+  * Adds attribute points based on player performance in simulation game.
+*/
 function earnedAttributePoints() {
   if (stats.sim.points > 3) {
     attributePoints += 2;
@@ -593,7 +709,7 @@ function earnedAttributePoints() {
   }
 }
 
-// Increase game based on regular season or playoffs
+// increaseGameCount() invoked from the close() funciton. Adds a game to season/playoff/series as appropriate.
 function increaseGameCount() {
   if (seasonEnd === false) {
     stats.season.games++;
@@ -603,138 +719,157 @@ function increaseGameCount() {
   }
 }
 
-// When clicked hides the entire playGame Div
-function close(){
-  $("#playGame, #gameNumber, #scoreLine, #teamWins, #statLine, #attributesEarned").hide();
-
-  // Invokes resestGame which resets the html for the next game
-  resetGame();
-  $(simButtons.close.id).hide();
-  $(simButtons.play.id).show();
-
-  // Updates the team record in upper left of screen
-  updateTeamRecord();
-
-  // Toggle appropriate links to gray at game's end.
-  toggleGrayEndOfGame();
-
-  // Adds attribute point for completion of game
-  earnedAttributePoints();
-  editAttributePointHTML();
-  
-  // Increases game count for season/playoffs/series
-  increaseGameCount();
-  checkAllStar();
-
-  if(stats.season.games >= seasonLength){
-    seasonEnd = true;
-    checkRocketAward();
-    checkMVP();
-    if(stats.season.wins >= winsToQualify){
-      playoffQualify();
-    } else {
-      playoffDidNotQualify();      
-    } 
-  }
-  
-  if (stats.playoffs.wins === winsToAdvance && stats.series.round === 3) {
-    wonStanleyCup();
-  } else if (stats.playoffs.wins === winsToAdvance) {
-    wonPlayoffSeries();
-  } else if (stats.playoffs.losses === winsToAdvance){
-    lostPlayoffSeries();
-  }
-}
-
+/**
+  * playoffDidNotQualify() is invoked from the close() function. 
+  * Is invoked only if player had fewer than the required wins for playoffs.
+  * Alerts user they missed playoffs and why.
+*/
 function playoffDidNotQualify() {
-  alert("You did not qualify for the playoffs this year. You only won "
-       + stats.season.wins + " of the necessary " + winsToQualify + " in order to qualify.\n\n"
+  alert("You did not qualify for the playoffs this year.\n\nYou won "
+       + stats.season.wins + " of the required " + winsToQualify + " wins to qualify for playoffs.\n\n"
        + "Better luck next year. Next season has begun.");
-  updateStatsDiv();
-  resetSeasonPlayoffs();
-  appendStatLinesSeasonPlayoffs();
-  updateTeamRecord();
+  
+  // Invokes endOfSeason() - in turn invokes a variety of functions to update divs and prepare for next season.
+  endOfSeason();
 }
 
+/**
+  * playoffQualify() is invoked from the close() function. 
+  * Is invoked only if player had more than or equal to the required wins for playoffs.
+*/
 function playoffQualify() {
+  // Conditional - run only at first game of playoffs to avoid repeated funciton invocations.
   if (stats.playoffs.games === 0) {
-    attributePoints += 3;
-    editAttributePointHTML();
     alert("You have qualified for the playoffs!\n\n You earned 3 attribute points.");
     player.playoffs.count++;
-    updateMyPlayer();
+    attributePoints += 3;
+    
+    // Invokes unlockAchievement() - passes property of achievement object as a parameter to award player.
     unlockAchievement(achievements.playoffs);
-    $("#playGameLink").addClass('gray');
-    $("#playoffGameLink").removeClass('gray');
+    
+    // Invokes updateTeamRecord() - Updates the team record in upper right of the main div.
     updateTeamRecord();
   }
 }
 
+/**
+  * wonStanleyCup() is invoked from the close() function. 
+  * Is invoked only if player has won all 4 playoff series.
+*/
 function wonStanleyCup() {
   alert("You won the Stanley Cup!\n\n You earned 10 attribute points.");
-  unlockAchievement(achievements.stanleyCup);
-  attributePoints += 10;
-  editAttributePointHTML();
   player.stanleys.count++;
+  attributePoints += 10;
+  
+  // Invokes unlockAchievement() - passes property of achievement object as a parameter to award player.
+  unlockAchievement(achievements.stanleyCup);
+  
+  // Invocations check if the player has been awarded achievements based on performace.
   checkFinalsMVP();
   checkLegend();
-  updateMyPlayer();
   alert("End of playoffs. Begin Next Season");
-  $('#playGameLink').removeClass('gray');
-  $('#playoffGameLink').addClass('gray');
-  updateStatsDiv();
-  resetSeasonPlayoffs();
-  appendStatLinesSeasonPlayoffs();
-  updateTeamRecord();
+  
+  // Invokes endOfSeason() - in turn invokes a variety of functions to update divs and prepare for next season.
+  endOfSeason();
 }
 
+/**
+  * wonStanleyCup() is invoked from the close() function. 
+  * Is invoked only if player has won the required games to win the series and not the Stanley Cup.
+*/
 function wonPlayoffSeries() {
+  
+  // resets wins, losses, and games to 0 for start of series and adds round to series.
   stats.playoffs.wins = 0;
   stats.playoffs.losses = 0;
   stats.series.games = 0;
   stats.series.round++;
   attributePoints += 3;
-  editAttributePointHTML();
   alert("Congratulations you moved to the " +playoffRounds[stats.series.round] + 
         "!\n\nYou earned 3 attribute points.");
+  
+  // Invokes updateTeamRecord() - Updates the team record in upper right of the main div.
   updateTeamRecord();
+  
+  // Sets the playoffOpponentPicked to false to allow for a new team to be picked for the next series.
   playoffOpponentPicked = false;
 }
 
+/**
+  * wonStanleyCup() is invoked from the close() function. 
+  * Is invoked only if player has lost the required games to lose the series.
+*/
 function lostPlayoffSeries() {
-  updateMyPlayer();
   alert("You lost in the " + playoffRounds[stats.series.round]);
   alert("End of playoffs. Begin Next Season");
-  $('#playGameLink').removeClass('gray');
-  $('#playoffGameLink').addClass('gray');
-  updateStatsDiv();
-  resetSeasonPlayoffs();
-  appendStatLinesSeasonPlayoffs();
-  updateTeamRecord();
+  
+  // Invokes endOfSeason() - in turn invokes a variety of functions to update divs and prepare for next season.
+  endOfSeason();
 }
 
+// endOfSeason() is invoked after player has either missed playoffs, been eliminated, or won Stanley Cup.
+function endOfSeason() {
+  
+  // Invokes updateStatsDiv() - Updates player stats.
+  updateStatsDiv();
+  
+  // Invokes resetSeasonPlayoffs() - Sets all season and playoff stats to 0 in prep for them to appended to the next season.
+  resetSeasonPlayoffs();
+  
+  // Invokes appendStatLinesSeasonPlayoffs() - Adds HTML to the playerStats div for the next season and playoffs.
+  appendStatLinesSeasonPlayoffs();
+  
+  // Invokes updateTeamRecord() - Updates the team record in upper right of the main div.
+  updateTeamRecord();
+  
+  // Invokes updateMyPlayer() - Updates the HTML of all the myPlayer tags.
+  updateMyPlayer();
+  
+  // Adds removes/adds the 'gray' class in preperation for the next season.
+  $('#playGameLink').removeClass('gray');
+  $('#playoffGameLink').addClass('gray');
+}
+
+/**
+  * checkOverallRating() - invoked from getNewSkillsRating() function.
+  * Checks to see if your player reached a skill level milestone and rewards them accordingly.
+*/
 function checkOverallRating(ovr) {
   if (ovr.overall.rating >= 99) {
-    unlockAchievement(achievements.overall99);
+    // Increase player effect which adds to the total possible number of goals your team can score in a game by 2.
     player.effect = 2;
+    unlockAchievement(achievements.overall99);
   } else if (ovr.overall.rating >= 85) {
-    unlockAchievement(achievements.overall85);
+    // Increase player effect which adds to the total possible number of goals your team can score in a game by 1.
     player.effect = 1;
+    unlockAchievement(achievements.overall85);
   }
 }
 
+/**
+  * checkAllStar() - Invoked from the close() function.
+  * Checks to see player has averaged a point per game at the half way mark of the season and awards accordingly.
+*/
 function checkAllStar() {
   if (seasonLength/2 === stats.season.games) {
     if (stats.season.points >= stats.season.games) {
       player.allstars.count++;
-      updateMyPlayer();
       alert("You have been selected as an allstar this season!");
       unlockAchievement(achievements.allStar);
+      
+      // Invokes updateMyPlayer() - Updates the HTML of all the myPlayer tags.
+      updateMyPlayer();
+      
+      // Invokes checkLegend() - this checks for legend achievement as allstar appearances is a conditional.
       checkLegend();
     }
   }
 }
 
+/**
+  * checkFinalsMVP() - Invoked from the wonStanleyCup() function.
+  * Checks to see if player has averaged a point per game throughout the playoffs and awards accordingly.
+*/
 function checkFinalsMVP() {
   if (stats.playoffs.points >= stats.playoffs.points) {
     alert("You have been selected as an Conn Smythe Winner as the " +
@@ -743,12 +878,21 @@ function checkFinalsMVP() {
   }
 }
 
+/**
+  * checkLegend() - Invoked from the checkAllStar(), wonStanleyCup(), assistsThisGame().
+  * Checks to see if player has met the requirements for allstar appearances,
+  * Stanley Cups, and career points and awards accordingly.
+*/
 function checkLegend() {
   if (stats.career.points >= 500 && player.allstars.count >= 7 && player.stanleys.count >= 3){
     unlockAchievement(achievements.legend);
   }
 }
 
+/**
+  * checkRocketAward() - Invoked from the close() function.
+  * Checks to see if player has averaged a goal per game at end of season and awards accordingly.
+*/
 function checkRocketAward() {
   if (stats.season.goals >= seasonLength && stats.playoffs.games === 0) {
     alert("You have been awarded the Rocket Richard Trophy for " +
@@ -757,6 +901,11 @@ function checkRocketAward() {
   }
 }
 
+/**
+  * checkMVP() - Invoked from the close() function.
+  * Checks to see if player has averaged a point per game at end of season and qualified for the playoffs,
+  * and awards accordingly.
+*/
 function checkMVP() {
   if (stats.season.points >= seasonLength && stats.season.wins >= winsToQualify && stats.playoffs.games === 0){
     alert("You have been awarded the Hart Memorial Trophy for " +
@@ -782,11 +931,11 @@ function checkCaptain() {
 }
 
 // Array of possible opponenets. Randomly chosen for season/playoff games.
-var opponents = ["Senators", "Lightning", "Bruins", "Red Wings", "Panthers", "Sabres",
+var opponents = ["Senators", "Lightning", "Bruins", "Canadiens", "Red Wings", "Panthers", "Sabres",
                  "Maple Leafs", "Rangers", "Capitals", "Penguins", "Devils", "Islanders",
                  "Flyers", "Hurricanes", "Jackets", "Stars", "Blues", "Wild", "Predators",
                  "Jets", "Blackhawks", "Avalanche", "Kings", "Canucks", "Coyotes", "Ducks",
-                 "Flames", "Oilers"];
+                 "Flames", "Oilers", "Sharks"];
 
 // Booleans used to determine is a playoff/season opponent has been chosen.
 var opponentPicked = false, playoffOpponentPicked = false;
@@ -829,6 +978,13 @@ function validateForm() {
   } else {
     formValidated = true;
   }
+}
+
+function getRandomTeamPick() {
+  var temp = Math.floor(Math.random() * 30);
+  player.team = opponents[temp];
+  opponents.splice(temp,1);
+  player.pick = Math.ceil(Math.random() * 30);
 }
 
 function welcome() {
@@ -881,6 +1037,9 @@ function submitGames(event) {
 
 $(document).ready(function() {
   $("#playerInfoLink, #playGameLink, #myPlayerLink, #improvePlayerLink, #playoffGameLink, #playerStatsLink, #teamRecordLink, #pick, #draft, #submitGames, #info, #myPlayer").hide();
+  
+  // Invokes getRandomTeamPick() - randomizes the team and pick the player will be drafted prior to the draft.
+  getRandomTeamPick();
 
   // When next button is clicked, player it taken into the NHL draft
   $("#welcomeNext").on('click', function(){
