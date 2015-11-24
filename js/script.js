@@ -1,4 +1,15 @@
-// player object holds properties used in the draft, updating html on the divs, and updating myPlayer info.
+/**
+  * Project by Jeff Tabachnick
+  * For submission to Hack Reactor - SF
+  * NHL Career Mode - Simulation Game
+  * Approximate Start Date - October 29, 2015
+  * Submission Date - November 23, 2015
+  * All code and commenting written by Jeff Tabachnick
+  * Goal - Show understanding and implementation of higher order functions, use of Objects, 
+  * good code and styling, and ability to create a fun, working, browser-side web game. Enjoy.
+  */
+
+// player object holds properties used in the draft, updating html of the divs, and updating myPlayer info.
 var player = {
   team: 'NA', // not set until draft.
   rookieTeam: 'NA', // not set until draft.
@@ -688,7 +699,7 @@ function close(){
 }
 
 /**
-  * determineWinner() is invoked from the play function.
+  * determineWinner() is invoked from the play() function.
   * Uses conditionals to set variable used to update the html of the gameStats div.
   */
 function determineWinner() {
@@ -891,6 +902,10 @@ function endOfSeason() {
   // Invokes updateStatsDiv() - Updates player stats.
   updateStatsDiv();
   
+  // Adds removes/adds the 'gray' class in preperation for the next season.
+  $('#playGameLink').removeClass('gray');
+  $('#playoffGameLink').addClass('gray');
+  
   // Invokes resetSeasonPlayoffs() - Sets all season and playoff stats to 0 in prep for them to appended to the next season.
   resetSeasonPlayoffs();
   
@@ -902,10 +917,6 @@ function endOfSeason() {
   
   // Invokes updateMyPlayer() - Updates the HTML of all the myPlayer tags.
   updateMyPlayer();
-  
-  // Adds removes/adds the 'gray' class in preperation for the next season.
-  $('#playGameLink').removeClass('gray');
-  $('#playoffGameLink').addClass('gray');
 }
 
 /**
@@ -1131,7 +1142,7 @@ function beginDraft() {
   $("#submitGames").show();
 }
 
-/** validateForm() - Invoked when 'Lets Start Playing' button is clicked().
+/** validateForm() - Invoked when 'Lets Start Playing' button is clicked.
   * event is passed as a parameter to prevent the button from submitting the form.
   * sets the value of seasonLength and playofflength based on radio of input selected.
   * Uses the value os seasonLength and playofflength to set num wins for playoffs and series victory.
